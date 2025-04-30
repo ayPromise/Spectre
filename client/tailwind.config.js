@@ -1,14 +1,39 @@
 module.exports = {
-  content: ['./app/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  theme: {
+  content: ['./app/**/*.{js,ts,jsx,tsx}', 
+    './components/**/*.{js,ts,jsx,tsx}',
+    "./node_modules/@shadcn/ui/**/*.{ts,tsx}"],
+  darkMode: "class",
+    theme: {
     extend: {
       colors: {
-        primary: '#1D4ED8',     // синій
-        secondary: '#FACC15',   // жовтий
-        danger: '#DC2626',      // червоний
-        bg: '#0F172A',          // темний фон
-        surface: '#1E293B'      // для карток
+        primary: "#2563eb", // синій
+        secondary: "#64748b", // сірий
+        accent: "#f97316", // помаранчевий
+        background: "#f8fafc",
+        foreground: "#0f172a",
       },
+
+      fontFamily: {
+        sans: "var(--font-sans)",
+      },
+
+      fontSize: {
+        xs: "0.75rem",
+        sm: "0.875rem",
+        base: "1rem",
+        lg: "1.125rem",
+        xl: "1.25rem",
+        "2xl": "1.5rem",
+        "3xl": "1.875rem",
+        "4xl": "2.25rem",
+        "5xl": "3rem",
+      },
+
+    borderRadius: {
+      lg: "1rem",
+      md: "0.5rem",
+      sm: "0.25rem",
+    },
     },
   },
   plugins: [],
