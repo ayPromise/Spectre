@@ -4,14 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
 
 const TopBar: React.FC = () => {
-    const pathName = usePathname()
-
     const navLinks = [
-        { href: "/about", label: "About Us" },
-        { href: "/faq", label: "FAQ" },
+        { id: "about", label: "About Us" },
+        { id: "faq", label: "FAQ" },
     ];
 
     return (
@@ -23,21 +20,19 @@ const TopBar: React.FC = () => {
                 </Link>
 
                 <nav className="hidden md:flex gap-6 items-center">
-                    {navLinks.map(({ href, label }) => (
+                    {navLinks.map(({ id, label }) => (
                         <Link
-                            href={href}
-                            key={href}
+                            href={`#${id}`}
+                            key={id}
                             className={cn(
-                                "text-sm font-medium transition-colors",
-                                pathName === href ? "text-primary" : "text-muted-foreground hover:text-primary"
-                            )}
+                                "text-sm font-medium transition-colors")}
                         >
                             {label}
                         </Link>
                     ))}
 
                     <div className="flex items-center gap-4">
-                        <Link href="/sign-in">
+                        <Link href="#apply">
                             <Button variant="default" className="rounded-xl px-6 cursor-pointer">
                                 Join
                             </Button>

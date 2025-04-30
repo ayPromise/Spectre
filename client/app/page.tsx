@@ -1,9 +1,34 @@
-import { Button } from "@/components/ui/button";
+import { Metadata } from 'next';
+import { JSX } from 'react';
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'Welcome - Icarus Eye',
+  description: 'Learn about our UAV operator training school.',
+};
+
+export default function AboutPage(): JSX.Element {
   return (
-    <div>
-      <Button>Click me</Button>
-    </div>
+    <>
+      <h1 className="text-3xl font-bold mb-4" id="about">Про нас</h1>
+      <p className="text-lg">
+        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
+      </p>
+
+      <h1 className="text-3xl font-bold mb-4" id="faq">FAQ</h1>
+      <p className="text-lg">
+        1. Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
+      </p>
+      <p className="text-lg">
+        2. Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
+      </p>
+      <p className="text-lg">
+        3. Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
+      </p>
+
+      <h1 className="text-3xl font-bold mb-4" id='apply'>Apply</h1>
+      <p className="text-lg">
+        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
+      </p>
+    </>
   );
 }
