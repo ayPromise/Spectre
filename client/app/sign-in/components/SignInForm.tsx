@@ -13,6 +13,20 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import { gql, useMutation } from "@apollo/client";
+
+const SIGN_IN = gql`
+  mutation SignIn($email: String!, $password: String!) {
+    signIn(email: $email, password: $password) {
+      id
+      firstName
+      lastName
+      email
+      role
+      profileImageUrl
+    }
+  }
+`;
 
 
 const SignInForm: React.FC = () => {
@@ -20,10 +34,14 @@ const SignInForm: React.FC = () => {
     const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const [signin, { loading, error }] = useMutation(SIGN_IN);
+
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // TODO: Add actual sign-in logic
-        console.log({ email, password });
+        const { data } = await signin({ variables: { email, password } });
+        console.log(data)
+
     };
 
     return (
