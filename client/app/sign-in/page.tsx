@@ -1,17 +1,15 @@
 import React from "react";
+import SignInForm from "./components/SignInForm";
 
 export const dynamic = 'force-dynamic';
 
 
 const SignInPage: React.FC = () => {
     return (
-        <>
-            <h1 className="text-3xl font-bold mb-4">SignInPage</h1>
-            <p className="text-lg">
-                Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
-            </p>
-        </>
+        <div className="flex flex-col items-center justify-center h-full">
+            <SignInForm />
+        </div>
     );
-}
+};
 
 export default SignInPage
