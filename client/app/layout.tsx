@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
+import Providers from "@/components/providers";
 
 
 const inter = Inter({
@@ -25,13 +26,15 @@ export default function RootLayout({
       <body
         className={`antialiased ${inter.variable}`}
       >
-        <TopBar />
-        <main className="flex">
-          <SideBar />
-          <div className="px-4 sm:px-12 lg:px-16 py-4 max-w-7xl flex-grow">
-            {children}
-          </div>
-        </main>
+        <Providers>
+          <TopBar />
+          <main className="flex">
+            <SideBar />
+            <div className="px-4 sm:px-12 lg:px-16 py-4 max-w-7xl flex-grow">
+              {children}
+            </div>
+          </main>
+        </Providers>
       </body>
     </html>
   );
