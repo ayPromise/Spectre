@@ -1,0 +1,58 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserInput {
+  email: String!
+  firstName: String!
+  hashedPassword: String!
+  lastName: String!
+  phone: String!
+  role: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  newUser(input: CreateUserInput!): User!
+  updateUser(id: String!, input: UpdateUserInput!): User!
+}
+
+type Query {
+  allUsers: [User!]!
+  userById(id: String!): User
+}
+
+input UpdateUserInput {
+  certificates: [String!]!
+  completedArticles: [String!]!
+  completedLectures: [String!]!
+  completedVideos: [String!]!
+  email: String
+  hashedPassword: String!
+  lastLogin: DateTime
+  phone: String!
+  profileImageUrl: String
+  updatedAt: DateTime!
+}
+
+type User {
+  certificates: [String!]!
+  completedArticles: [String!]!
+  completedLectures: [String!]!
+  completedVideos: [String!]!
+  createdAt: DateTime!
+  email: String
+  firstName: String!
+  hashedPassword: String!
+  id: String!
+  lastLogin: DateTime
+  lastName: String!
+  phone: String!
+  profileImageUrl: String
+  role: String!
+  updatedAt: DateTime!
+}
