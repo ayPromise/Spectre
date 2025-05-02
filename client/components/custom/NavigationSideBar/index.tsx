@@ -37,7 +37,7 @@ const SideBar: React.FC = () => {
     return (
         <aside
             className={cn(
-                "h-screen border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
+                "border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
                 collapsed ? "w-16" : "min-w-52"
             )}
         >

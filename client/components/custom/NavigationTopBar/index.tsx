@@ -22,7 +22,7 @@ const TopBar: React.FC = () => {
                 <nav className="hidden md:flex gap-6 items-center">
                     {navLinks.map(({ id, label }) => (
                         <Link
-                            href={`#${id}`}
+                            href={`/#${id}`}
                             key={id}
                             className={cn(
                                 "text-sm font-medium transition-colors")}
@@ -32,9 +32,17 @@ const TopBar: React.FC = () => {
                     ))}
 
                     <div className="flex items-center gap-4">
-                        <Link href="#apply">
+                        <Link href="/#apply">
                             <Button variant="default" className="rounded-xl px-6 cursor-pointer">
                                 Join
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <Link href="/sign-in">
+                            <Button variant="outline" className="rounded-xl px-6 cursor-pointer">
+                                Sign In
                             </Button>
                         </Link>
                     </div>
