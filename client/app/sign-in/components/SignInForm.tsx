@@ -13,34 +13,34 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
-import { gql, useMutation } from "@apollo/client";
-
-const SIGN_IN = gql`
-  mutation SignIn($email: String!, $password: String!) {
-    signIn(email: $email, password: $password) {
-      id
-      firstName
-      lastName
-      email
-      role
-      profileImageUrl
-    }
-  }
-`;
+import { useMutation } from "@apollo/client";
+import { SIGN_IN, SIGN_IN_RESPONSE } from "@/graphql/mutations";
 
 
 const SignInForm: React.FC = () => {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("danylo@example.com");
+    const [password, setPassword] = useState<string>("hashedpassword1");
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
-    const [signin, { loading, error }] = useMutation(SIGN_IN);
-
+    const [signin, { loading, error }] = useMutation<SIGN_IN_RESPONSE>(SIGN_IN);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const { data } = await signin({ variables: { email, password } });
-        console.log(data)
+        try {
+            const { data } = await signin({ variables: { email, password } });
+            if (data) {
+                const { token, user } = data.signIn
+                console.log(token, user)
+            }
+        } catch (e: any) {
+            if (error && error.cause) {
+                //@ts-expect-error For some reasong ts type has no info about status property even so it has it in response
+                const status: number | undefined = error.cause.extensions?.status
+                if (status === 404) setErrorMessage("Incorrect email or password. Try again")
+            }
+            else setErrorMessage("")
+        }
 
     };
 
@@ -90,6 +90,10 @@ const SignInForm: React.FC = () => {
                                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
 
                             </button>
+                        </div>
+
+                        <div className="text-red-600 font-bold">
+                            {errorMessage}
                         </div>
                     </div>
 
