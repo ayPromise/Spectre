@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String!
@@ -18,7 +23,7 @@ scalar DateTime
 
 type Mutation {
   newUser(input: CreateUserInput!): User!
-  signIn(email: String!, password: String!): User!
+  signIn(email: String!, password: String!): AuthPayload!
   updateUser(id: String!, input: UpdateUserInput!): User!
 }
 
