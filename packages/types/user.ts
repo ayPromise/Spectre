@@ -24,3 +24,6 @@ export interface IUser {
   completedVideos: string[]; // their ids
   certificates: string[]; // their ids
 }
+
+
+export type IUserClient = Omit<IUser, 'hashedPassword'>;
