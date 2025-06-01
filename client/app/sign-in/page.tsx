@@ -1,13 +1,120 @@
-import React from "react";
-import { LoginForm } from "./components/LoginForm";
-export const dynamic = "force-dynamic";
+"use client";
 
-const SignInPage: React.FC = () => {
+// HOOKS
+import React from "react";
+import { useFormik } from "formik";
+import { useMutation } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
+// UTILS
+import { showError, showSuccess } from "@/utils/toast";
+import * as Yup from "yup";
+import signIn from "./utils/signIn";
+
+// COMPONENTS
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+
+export function SignInPage() {
+  const router = useRouter();
+  const { refetchUser } = useAuth();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: signIn,
+    onSuccess: (data) => {
+      refetchUser();
+      showSuccess(data.message);
+      router.push("/");
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (error: any) => {
+      let errorMessage = error.message;
+      if (errorMessage === "Invalid credentials") {
+        errorMessage = "Введено невірні дані";
+      }
+      showError(errorMessage || "Помилка входу");
+    },
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      email: "test@example.com",
+      password: "strongPassword123",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Невірний email").required("Обов'язково"),
+      password: Yup.string().required("Обов'язково"),
+    }),
+    onSubmit: (values) => {
+      mutate(values);
+    },
+  });
+
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <LoginForm />
+      <div className="flex flex-col gap-6 w-[500px]">
+        <Card>
+          <CardHeader>
+            <CardTitle>Увійдіть в свій акаунт</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={formik.handleSubmit}>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-3">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="example@gmail.com"
+                    required
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
+                <div className="grid gap-3">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+                    <Link
+                      href="/reset-password"
+                      className="ml-auto inline-block text-sm underline-offset-4 underline"
+                    >
+                      Забули свій пароль?
+                    </Link>
+                  </div>
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+
+                  <div className="text-sm min-h-[1.5rem] text-red-500">
+                    {formik.touched.password && formik.errors.password}
+                  </div>
+                </div>
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? "Зачекайте..." : "Увійти"}
+                </Button>
+              </div>
+              <div className="mt-4 text-center text-sm">
+                Бажаєте приєднатися до Спектру?{" "}
+                <Link href="/#apply" className="underline underline-offset-4">
+                  Заповніть форму
+                </Link>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
-};
+}
 
 export default SignInPage;

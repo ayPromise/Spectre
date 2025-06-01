@@ -5,14 +5,22 @@ import { useAuthStatus } from "@/hooks/useAuthStatus";
 const AuthContext = createContext<{
   isAuth: boolean;
   setIsAuth: (v: boolean) => void;
+  refetchUser: () => void;
 }>({
   isAuth: false,
   setIsAuth: () => {},
+  refetchUser: () => {},
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuth, setIsAuth] = useState(false);
-  const { data, isError } = useAuthStatus();
+export function AuthProvider({
+  children,
+  initialAuth = false,
+}: {
+  children: React.ReactNode;
+  initialAuth?: boolean;
+}) {
+  const { data, isError, refetch } = useAuthStatus();
+  const [isAuth, setIsAuth] = useState(initialAuth);
 
   useEffect(() => {
     if (data) setIsAuth(true);
@@ -20,7 +28,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [data, isError]);
 
   return (
-    <AuthContext.Provider value={{ isAuth, setIsAuth }}>
+    <AuthContext.Provider
+      value={{ isAuth, setIsAuth, refetchUser: () => refetch() }}
+    >
       {children}
     </AuthContext.Provider>
   );

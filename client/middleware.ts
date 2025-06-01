@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const protectedPaths = ["/dashboard", "/profile", "/settings"];
+const protectedPaths = ["/dashboard", "/profile", "/materials", "/schedule", "/archive"];
 const publicOnlyPaths = ["/sign-in"];
 
 export function middleware(req: NextRequest) {
@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
 
   if (isProtected) {
     if (!token) {
-      const loginUrl = new URL("/login", req.url);
+      const loginUrl = new URL("/sign-in", req.url);
       return NextResponse.redirect(loginUrl);
     }
     return NextResponse.next();
@@ -33,7 +33,9 @@ export const config = {
     matcher: [
       "/dashboard/:path*",
       "/profile/:path*",
-      "/settings/:path*",
+      "/materials/:path*",
+      "/archive/:path*",
+      "/schedule/:path*",
       "/sign-in",
     ],
   };
