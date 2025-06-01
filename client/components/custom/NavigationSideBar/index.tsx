@@ -1,11 +1,18 @@
 "use client";
 
+// HOOKS
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+// UTILS
 import { cn } from "@/lib/utils";
+import { showError, showSuccess } from "@/utils/toast";
+
+// COMPONENTS
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
 
 const links = [
   { href: "/dashboard", label: "Панель керування" },
@@ -17,12 +24,14 @@ const links = [
 
 const iconOnlyLinks = [
   { href: "/profile/achievements", icon: Trophy, label: "Досягнення" },
-  { href: "/profile/certificate", icon: FileText, label: "Сертифікат" },
+  { href: "/profile/certificate", icon: FileText, label: "Сертифікати" },
 ];
 
 const SideBar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const pathName = usePathname();
+  const { isAuth, setIsAuth } = useAuth();
+  const router = useRouter();
 
   const toggleCollapse = (): void => {
     setCollapsed((prev) => !prev);
@@ -34,72 +43,95 @@ const SideBar: React.FC = () => {
     return pathName === href;
   };
 
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/sign-out", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        setIsAuth(false);
+        router.push("/");
+        showSuccess("Ви успішно вийшли зі свого профілю");
+      } else {
+        showError("Щось пішло не так. Звернітся до служби підтримки!");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      showError(`Помилка: ${error.message}`);
+    }
+  };
+
   return (
-    <aside
-      className={cn(
-        "border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
-        collapsed ? "w-16" : "min-w-52"
-      )}
-    >
-      {/* Collapse button */}
-      <div className="absolute -right-4">
-        <Button
-          variant="default"
-          size="icon"
-          onClick={toggleCollapse}
-          className="cursor-pointer"
-        >
-          {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-        </Button>
-      </div>
+    isAuth && (
+      <aside
+        className={cn(
+          "border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
+          collapsed ? "w-16" : "min-w-52"
+        )}
+      >
+        {/* Collapse button */}
+        <div className="absolute -right-4">
+          <Button
+            variant="default"
+            size="icon"
+            onClick={toggleCollapse}
+            className="cursor-pointer"
+          >
+            {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </Button>
+        </div>
 
-      {/* Full nav */}
-      <nav className="flex flex-col gap-2 px-2">
-        {!collapsed &&
-          links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                "hover:bg-muted hover:text-primary",
-                isActive(href) && "bg-muted"
-              )}
-            >
-              {!collapsed && <span>{label}</span>}
-            </Link>
-          ))}
-
-        {/* Icon-only links */}
-        <div className="flex flex-row gap-2 px-2 mt-4">
+        {/* Full nav */}
+        <nav className="flex flex-col gap-2 px-2">
           {!collapsed &&
-            iconOnlyLinks.map(({ href, icon: Icon, label }) => (
+            links.map(({ href, label }) => (
               <Link
                 key={href}
                 href={href}
                 className={cn(
-                  "p-2 rounded-md hover:bg-muted transition-colors",
+                  "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                  "hover:bg-muted hover:text-primary",
                   isActive(href) && "bg-muted"
                 )}
-                title={label}
               >
-                <Icon className="w-5 h-5 text-primary" />
+                {!collapsed && <span>{label}</span>}
               </Link>
             ))}
-        </div>
 
-        {!collapsed && (
-          <Button
-            className={cn(
-              "px-4 py-2 rounded-md text-sm font-medium transition-colors",
-              "mt-20 cursor-pointer"
-            )}
-          >
-            <span>Вийти</span>
-          </Button>
-        )}
-      </nav>
-    </aside>
+          {/* Icon-only links */}
+          <div className="flex flex-row gap-2 px-2 mt-4">
+            {!collapsed &&
+              iconOnlyLinks.map(({ href, icon: Icon, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "p-2 rounded-md hover:bg-muted transition-colors",
+                    isActive(href) && "bg-muted"
+                  )}
+                  title={label}
+                >
+                  <Icon className="w-5 h-5 text-primary" />
+                </Link>
+              ))}
+          </div>
+
+          {!collapsed && (
+            <Button
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                "mt-20 cursor-pointer"
+              )}
+              onClick={handleLogout}
+            >
+              <span>Вийти</span>
+            </Button>
+          )}
+        </nav>
+      </aside>
+    )
   );
 };
 

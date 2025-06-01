@@ -6,7 +6,13 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
+const Providers = ({
+  children,
+  isAuth,
+}: {
+  children: React.ReactNode;
+  isAuth: boolean;
+}) => {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -15,7 +21,7 @@ const Providers: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   return (
     <QueryProvider>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider initialAuth={isAuth}>{children}</AuthProvider>
       {hasMounted && (
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       )}
