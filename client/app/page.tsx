@@ -10,30 +10,13 @@ export const metadata: Metadata = {
 export default function AboutPage(): JSX.Element {
   return (
     <>
-      <h1 className="text-3xl font-bold mb-4" id="about">
+      {/* <h1 className="text-3xl font-bold mb-4" id="about">
         Про нас
       </h1>
-      <p className="text-lg">
-        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
-        технології та бойову ефективність.
-      </p>
 
       <h1 className="text-3xl font-bold mb-4" id="faq">
         FAQ
-      </h1>
-      <p className="text-lg">
-        1. Ми є провідною школою підготовки операторів БПЛА, з фокусом на
-        сучасні технології та бойову ефективність.
-      </p>
-      <p className="text-lg">
-        2. Ми є провідною школою підготовки операторів БПЛА, з фокусом на
-        сучасні технології та бойову ефективність.
-      </p>
-      <p className="text-lg">
-        3. Ми є провідною школою підготовки операторів БПЛА, з фокусом на
-        сучасні технології та бойову ефективність.
-      </p>
-
+      </h1> */}
       <ApplySection />
     </>
   );

@@ -7,49 +7,84 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import FormInput from "@/components/custom/FormInput";
+import emailjs from "@emailjs/browser";
+import { showError, showSuccess } from "@/utils/toast";
 
 const validationSchema = Yup.object({
+  firstName: Yup.string().required("Ім'я не може бути порожнім"),
+  lastName: Yup.string().required("Прізвище не може бути порожнім"),
   email: Yup.string()
     .email("Неправильний формат адреси")
     .required("Це поле не може бути пустим"),
   phoneNumber: Yup.string()
-    .min(14, "Неправильний формат")
+    .min(10, "Неправильний формат")
     .required("Це поле не може бути пустим"),
   motivation: Yup.string()
     .min(10, "Що це за мотиваційний лист менше 10 літер?")
-    .required("Не забудьте вказати ваші мотиви"),
+    .required("Нам важливо знати вашу мотивацію"),
 });
 
 const ApplySection: React.FC = () => {
   const formik = useFormik({
     initialValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       phoneNumber: "",
       motivation: "",
     },
     validationSchema,
-    onSubmit: (values, { resetForm }) => {
-      console.log("Form Data:", values);
-      resetForm();
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+        const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+        const publicKEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+        if (!serviceID || !templateID || !publicKEY) {
+          return;
+        }
+        await emailjs.send(
+          serviceID,
+          templateID,
+          {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            email: values.email,
+            phoneNumber: values.phoneNumber,
+            motivation: values.motivation,
+          },
+          publicKEY
+        );
+        showSuccess(
+          "Дякуємо за лист! Очікуйте на відповідь або дзвінок на вказаний номер."
+        );
+        resetForm();
+      } catch (error) {
+        showError("Помилка при відправці листа. Спробуйте пізніше.");
+        console.error(error);
+      }
     },
     validateOnChange: false,
     validateOnBlur: true,
   });
 
-  const { values, handleBlur, handleSubmit, errors, touched, isSubmitting } =
-    formik;
+  const {
+    values,
+    handleBlur,
+    handleSubmit,
+    errors,
+    touched,
+    isSubmitting,
+    setFieldError,
+  } = formik;
 
-  const handleChange = (e: React.ChangeEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     formik.handleChange(e);
 
-    if (formik.errors.email) {
-      formik.setFieldError("email", "");
-    }
-    if (formik.errors.phoneNumber) {
-      formik.setFieldError("phoneNumber", "");
-    }
-    if (formik.errors.motivation) {
-      formik.setFieldError("motivation", "");
+    const { name } = e.target;
+    if (errors[name as keyof typeof errors]) {
+      setFieldError(name as keyof typeof errors, "");
     }
   };
 
@@ -60,9 +95,36 @@ const ApplySection: React.FC = () => {
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <FormInput
+              id="firstName"
+              label="Ім'я"
+              name="firstName"
+              value={values.firstName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.firstName && errors.firstName}
+              required
+            />
+          </div>
+          <div className="flex-1">
+            <FormInput
+              id="lastName"
+              label="Прізвище"
+              name="lastName"
+              value={values.lastName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.lastName && errors.lastName}
+              required
+            />
+          </div>
+        </div>
+
         <FormInput
           id="email"
-          label="Email"
+          label="Пошта"
           type="email"
           placeholder="example@mail.com"
           name="email"
@@ -74,7 +136,7 @@ const ApplySection: React.FC = () => {
 
         <FormInput
           id="phoneNumber"
-          label="Phone Number"
+          label="Номер телефону"
           type="text"
           placeholder="(38)___-___-__-__"
           name="phoneNumber"
@@ -86,7 +148,7 @@ const ApplySection: React.FC = () => {
 
         <div>
           <Label htmlFor="motivation" className="block mb-1 font-medium">
-            Motivation
+            Мета
           </Label>
           <Textarea
             id="motivation"

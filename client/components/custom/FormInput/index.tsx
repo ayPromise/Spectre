@@ -34,7 +34,7 @@ const FormInput: React.FC<Props> = ({
       <Label htmlFor={id} className="font-medium">
         {label}
         {error && (
-          <p className="text-red-600 text-sm whitespace-nowrap">{error}</p>
+          <span className="text-red-600 whitespace-nowrap">{error}</span>
         )}
       </Label>
       <Input
