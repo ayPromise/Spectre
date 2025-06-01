@@ -1,8 +1,8 @@
 export type ID = string; 
 
-export type { Permission, ScheduleType, FlightType, MaterialType } from "./Enums"
+export { ScheduleType, FlightType, MaterialType, UserRole } from "./Enums"
 
-export type { User, UserRole } from "./User";
+export type { User } from "./User";
 
 export type { Schedule } from "./Schedule"
 

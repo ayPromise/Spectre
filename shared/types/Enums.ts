@@ -1,13 +1,7 @@
-export enum Permission {
-  ReadArticles = 'r:articles',
-  ReadVideo = 'r:video',
-  ReadProfile = 'r:profile',
-  ReadSchedule = 'r:schedule',
-  ReadAssignSchedule = 'ra:schedule',
-  ReadAssignProfile = 'ra:profile',
-  ReadWriteAdminDeleteArticles = 'rwad:articles',
-  ReadWriteAdminDeleteVideo = 'rwad:video',
-  ReadWriteAdminDeleteSchedule = 'rwad:schedule',
+export enum UserRole {
+  Student = "Student",
+  Instructor = "Instructor",
+  Admin = "Admin"
 }
 
 export enum ScheduleType {

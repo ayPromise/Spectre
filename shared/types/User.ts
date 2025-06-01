@@ -1,11 +1,5 @@
 import { ID } from "."
-import { Permission } from "./Enums";
-
-export interface UserRole {
-  id: ID;
-  title: string;
-  permissions: Permission[];
-}
+import { UserRole } from "./Enums";
 
 export interface User {
   id: ID;
