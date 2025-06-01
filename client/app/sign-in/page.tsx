@@ -1,16 +1,12 @@
 import React from "react";
-
+import { LoginForm } from "./components/LoginForm";
 export const dynamic = "force-dynamic";
 
 const SignInPage: React.FC = () => {
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-4">Сторінка авторизації</h1>
-      <p className="text-lg">
-        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
-        технології та бойову ефективність.
-      </p>
-    </>
+    <div className="w-full h-full flex justify-center items-center">
+      <LoginForm />
+    </div>
   );
 };
 
