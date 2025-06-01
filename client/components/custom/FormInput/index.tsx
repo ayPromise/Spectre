@@ -1,54 +1,54 @@
-"use client";
-
 import React from "react";
-import {
-  UseFormRegister,
-  FieldErrors,
-  FieldValues,
-  Path,
-} from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
 
-interface FormInputProps<T extends FieldValues> {
+// COMPONENTS
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+type Props = {
   id: string;
   label: string;
   type?: string;
   placeholder?: string;
-  register: UseFormRegister<T>;
-  name: Path<T>;
-  errors?: FieldErrors;
-  validationRules?: object;
-}
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  error?: string | false;
+  required?: boolean;
+};
 
-function FormInput<T extends FieldValues>({
+const FormInput: React.FC<Props> = ({
   id,
   label,
   type = "text",
   placeholder,
-  register,
   name,
-  errors,
-  validationRules,
-}: FormInputProps<T>) {
+  value,
+  onChange,
+  onBlur,
+  error,
+  required = false,
+}) => {
   return (
-    <div>
-      <Label htmlFor={id} className="block mb-1 font-medium">
+    <div className="flex flex-col gap-3 relative">
+      <Label htmlFor={id} className="font-medium">
         {label}
+        {error && (
+          <p className="text-red-600 text-sm whitespace-nowrap">{error}</p>
+        )}
       </Label>
       <Input
-        type={type}
         id={id}
+        name={name}
+        type={type}
         placeholder={placeholder}
-        {...register(name, validationRules)}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        required={required}
       />
-      {errors && errors[name] && (
-        <p className="text-red-600 text-sm mt-1">
-          {errors[name]?.message as string}
-        </p>
-      )}
     </div>
   );
-}
+};
 
 export default FormInput;

@@ -14,10 +14,9 @@ import signIn from "./utils/signIn";
 
 // COMPONENTS
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import FormInput from "@/components/custom/FormInput";
 
 export function SignInPage() {
   const router = useRouter();
@@ -46,13 +45,31 @@ export function SignInPage() {
       password: "strongPassword123",
     },
     validationSchema: Yup.object({
-      email: Yup.string().email("Невірний email").required("Обов'язково"),
-      password: Yup.string().required("Обов'язково"),
+      email: Yup.string()
+        .email("Невірний формат пошти")
+        .required("Це поле не може бути пустим"),
+      password: Yup.string().required("Це поле не може бути пустим"),
     }),
     onSubmit: (values) => {
       mutate(values);
     },
+    validateOnChange: false,
+    validateOnBlur: true,
   });
+
+  const { values, handleBlur, handleSubmit, errors, touched, isSubmitting } =
+    formik;
+
+  const handleChange = (e: React.ChangeEvent) => {
+    formik.handleChange(e);
+
+    if (formik.errors.email) {
+      formik.setFieldError("email", "");
+    }
+    if (formik.errors.password) {
+      formik.setFieldError("password", "");
+    }
+  };
 
   return (
     <div className="w-full h-full flex justify-center items-center">
@@ -62,23 +79,23 @@ export function SignInPage() {
             <CardTitle>Увійдіть в свій акаунт</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-3">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
+                  <FormInput
                     id="email"
+                    label="Email"
                     type="email"
-                    placeholder="example@gmail.com"
-                    required
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    placeholder="example@mail.com"
+                    name="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.email && errors.email}
                   />
                 </div>
-                <div className="grid gap-3">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                <div className="grid gap-3 relative">
+                  <div className="absolute right-0 -top-3">
                     <Link
                       href="/reset-password"
                       className="ml-auto inline-block text-sm underline-offset-4 underline"
@@ -86,21 +103,21 @@ export function SignInPage() {
                       Забули свій пароль?
                     </Link>
                   </div>
-                  <Input
+                  <FormInput
                     id="password"
                     type="password"
+                    label="Password"
+                    name="password"
+                    placeholder=""
                     required
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
+                    value={values.password}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.password && errors.password}
                   />
-
-                  <div className="text-sm min-h-[1.5rem] text-red-500">
-                    {formik.touched.password && formik.errors.password}
-                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? "Зачекайте..." : "Увійти"}
+                  {isSubmitting ? "Зачекайте..." : "Увійти"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">

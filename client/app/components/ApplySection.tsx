@@ -1,29 +1,56 @@
 "use client";
 
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import FormInput from "@/components/custom/FormInput";
 
-type Inputs = {
-  email: string;
-  phoneNumber: string;
-  motivation: string;
-};
+const validationSchema = Yup.object({
+  email: Yup.string()
+    .email("Неправильний формат адреси")
+    .required("Це поле не може бути пустим"),
+  phoneNumber: Yup.string()
+    .min(14, "Неправильний формат")
+    .required("Це поле не може бути пустим"),
+  motivation: Yup.string()
+    .min(10, "Що це за мотиваційний лист менше 10 літер?")
+    .required("Не забудьте вказати ваші мотиви"),
+});
 
 const ApplySection: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<Inputs>();
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      phoneNumber: "",
+      motivation: "",
+    },
+    validationSchema,
+    onSubmit: (values, { resetForm }) => {
+      console.log("Form Data:", values);
+      resetForm();
+    },
+    validateOnChange: false,
+    validateOnBlur: true,
+  });
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log("Form Data:", data);
-    reset();
+  const { values, handleBlur, handleSubmit, errors, touched, isSubmitting } =
+    formik;
+
+  const handleChange = (e: React.ChangeEvent) => {
+    formik.handleChange(e);
+
+    if (formik.errors.email) {
+      formik.setFieldError("email", "");
+    }
+    if (formik.errors.phoneNumber) {
+      formik.setFieldError("phoneNumber", "");
+    }
+    if (formik.errors.motivation) {
+      formik.setFieldError("motivation", "");
+    }
   };
 
   return (
@@ -32,22 +59,17 @@ const ApplySection: React.FC = () => {
         Apply
       </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-md">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
         <FormInput
           id="email"
           label="Email"
           type="email"
           placeholder="example@mail.com"
-          register={register}
           name="email"
-          errors={errors}
-          validationRules={{
-            required: "Email is required",
-            pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: "Invalid email address",
-            },
-          }}
+          value={values.email}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.email && errors.email}
         />
 
         <FormInput
@@ -55,13 +77,11 @@ const ApplySection: React.FC = () => {
           label="Phone Number"
           type="text"
           placeholder="(38)___-___-__-__"
-          register={register}
           name="phoneNumber"
-          errors={errors}
-          validationRules={{
-            required: "Phone number is required",
-            minLength: { value: 14, message: "Phone number too short" },
-          }}
+          value={values.phoneNumber}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.phoneNumber && errors.phoneNumber}
         />
 
         <div>
@@ -70,17 +90,15 @@ const ApplySection: React.FC = () => {
           </Label>
           <Textarea
             id="motivation"
-            placeholder="Яка ваша мета?"
+            name="motivation"
             rows={5}
-            {...register("motivation", {
-              required: "Please write your motivation",
-              minLength: { value: 10, message: "Too short" },
-            })}
+            placeholder="Яка ваша мета?"
+            value={values.motivation}
+            onChange={handleChange}
+            onBlur={handleBlur}
           />
-          {errors.motivation && (
-            <p className="text-red-600 text-sm mt-1">
-              {errors.motivation.message}
-            </p>
+          {touched.motivation && errors.motivation && (
+            <p className="text-red-600 text-sm mt-1">{errors.motivation}</p>
           )}
         </div>
 
