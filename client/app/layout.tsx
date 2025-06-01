@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
 
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -22,11 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`antialiased ${inter.variable}`}
-      >
+      <body className={`antialiased ${inter.variable} flex flex-col h-screen`}>
         <TopBar />
-        <main className="flex">
+        <main className="flex grow">
           <SideBar />
           <div className="px-4 sm:px-12 lg:px-16 py-4 max-w-7xl flex-grow">
             {children}

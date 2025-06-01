@@ -1,17 +1,17 @@
 import React from "react";
 
-export const dynamic = 'force-dynamic';
-
+export const dynamic = "force-dynamic";
 
 const AchievementsPage: React.FC = () => {
-    return (
-        <>
-            <h1 className="text-3xl font-bold mb-4">Achievements</h1>
-            <p className="text-lg">
-                Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
-            </p>
-        </>
-    );
-}
+  return (
+    <>
+      <h1 className="text-3xl font-bold mb-4">Мої досягнення</h1>
+      <p className="text-lg">
+        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
+        технології та бойову ефективність.
+      </p>
+    </>
+  );
+};
 
-export default AchievementsPage
+export default AchievementsPage;

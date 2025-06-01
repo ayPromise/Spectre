@@ -1,17 +1,17 @@
 import React from "react";
 
-export const dynamic = 'force-dynamic';
-
+export const dynamic = "force-dynamic";
 
 const ProfileSettingsPage: React.FC = () => {
-    return (
-        <>
-            <h1 className="text-3xl font-bold mb-4">Settings</h1>
-            <p className="text-lg">
-                Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні технології та бойову ефективність.
-            </p>
-        </>
-    );
-}
+  return (
+    <>
+      <h1 className="text-3xl font-bold mb-4">Налаштування профілю</h1>
+      <p className="text-lg">
+        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
+        технології та бойову ефективність.
+      </p>
+    </>
+  );
+};
 
-export default ProfileSettingsPage
+export default ProfileSettingsPage;
