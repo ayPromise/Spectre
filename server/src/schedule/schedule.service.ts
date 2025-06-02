@@ -22,5 +22,20 @@ export class ScheduleService {
     };
   }
 
-  // Add other methods if needed
+  async findAll(): Promise<Schedule[]> {
+    const schedules = await this.scheduleModel.find().exec();
+  
+    return schedules.map(sch => {
+      const obj = sch.toObject();
+  
+      const schedule: Schedule = {
+        ...obj,
+        id: obj._id.toString(),
+        assignedUsers: obj.assignedUsers.map((u: any) => u.toString()),
+      };
+  
+      return schedule;
+    });
+  }
+  
 }
