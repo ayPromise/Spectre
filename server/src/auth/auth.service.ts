@@ -55,7 +55,7 @@ export class AuthService {
 
   generateToken(user: UserDocument ) {
     return {
-      access_token: this.jwtService.sign({ sub: user._id, email: user.email }),
+      access_token: this.jwtService.sign({ sub: user._id, email: user.email, role:user.role }),
     };
   }
 }
