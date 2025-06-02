@@ -17,6 +17,11 @@ export class ScheduleController {
     return this.scheduleService.findAll();
   }
 
+  @Get(':id')
+async findOne(@Param('id') id: string): Promise<Schedule> {
+  return this.scheduleService.findOne(id);
+}
+
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<{ message: string }> {
     try {

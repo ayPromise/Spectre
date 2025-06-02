@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Schedule as ScheduleModel, ScheduleDocument } from './schema/schedule.schema';
@@ -36,6 +36,21 @@ export class ScheduleService {
   
       return schedule;
     });
+  }
+
+  async findOne(id: string): Promise<Schedule> {
+    const schedule = await this.scheduleModel.findById(id).exec();
+  
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with id ${id} not found`);
+    }
+  
+    const obj = schedule.toObject();
+    return {
+      ...obj,
+      id: obj._id.toString(),
+      assignedUsers: obj.assignedUsers.map((u: any) => u.toString()),
+    };
   }
 
   async delete(id: string): Promise<{ message: string }> {
