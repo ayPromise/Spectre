@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, NotFoundException } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from '@shared/types';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -15,5 +15,17 @@ export class ScheduleController {
   @Get()
   findAll(): Promise<Schedule[]> {
     return this.scheduleService.findAll();
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<{ message: string }> {
+    try {
+      return await this.scheduleService.delete(id);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        throw new NotFoundException(error.message);
+      }
+      throw error;
+    }
   }
 }

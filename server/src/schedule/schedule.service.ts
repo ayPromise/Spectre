@@ -37,5 +37,17 @@ export class ScheduleService {
       return schedule;
     });
   }
+
+  async delete(id: string): Promise<{ message: string }> {
+    const result = await this.scheduleModel.findByIdAndDelete(id).exec();
+  
+    if (!result) {
+      throw new Error(`Schedule with id ${id} not found`);
+    }
+  
+    return { message: `Schedule with id ${id} deleted successfully` };
+  }
+  
+  
   
 }
