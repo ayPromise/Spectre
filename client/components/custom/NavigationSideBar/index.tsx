@@ -13,9 +13,11 @@ import { showError, showSuccess } from "@/utils/toast";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
+import { useAccess } from "@/hooks/useAccess";
+
+const adminLinks = [{ href: "/dashboard", label: "Панель керування" }];
 
 const links = [
-  { href: "/dashboard", label: "Панель керування" },
   { href: "/", label: "Головна сторінка" },
   { href: "/schedule", label: "Розклад" },
   { href: "/materials", label: "Навчальні матеріали" },
@@ -31,6 +33,7 @@ const SideBar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const pathName = usePathname();
   const { isAuth, setIsAuth } = useAuth();
+  const { hasAdminAccess } = useAccess();
   const router = useRouter();
 
   const toggleCollapse = (): void => {
@@ -85,20 +88,38 @@ const SideBar: React.FC = () => {
 
         {/* Full nav */}
         <nav className="flex flex-col gap-2 px-2">
-          {!collapsed &&
-            links.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                  "hover:bg-muted hover:text-primary",
-                  isActive(href) && "bg-muted"
-                )}
-              >
-                {!collapsed && <span>{label}</span>}
-              </Link>
-            ))}
+          {!collapsed && (
+            <>
+              {hasAdminAccess &&
+                adminLinks.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                      "hover:bg-muted hover:text-primary",
+                      isActive(href) && "bg-muted"
+                    )}
+                  >
+                    <span>{label}</span>
+                  </Link>
+                ))}
+
+              {links.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                    "hover:bg-muted hover:text-primary",
+                    isActive(href) && "bg-muted"
+                  )}
+                >
+                  <span>{label}</span>
+                </Link>
+              ))}
+            </>
+          )}
 
           {/* Icon-only links */}
           <div className="flex flex-row gap-2 px-2 mt-4">
