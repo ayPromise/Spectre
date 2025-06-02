@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Delete, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param, NotFoundException, Put, BadRequestException } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Schedule } from '@shared/types';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
@@ -28,4 +28,20 @@ export class ScheduleController {
       throw error;
     }
   }
+
+
+  @Put(':id')
+async update(
+  @Param('id') id: string,
+  @Body() updateDto: Partial<Schedule>,
+): Promise<{ message: string }> {
+  try {
+    return await this.scheduleService.update(id, updateDto);
+  } catch (error) {
+    if (error.message.includes('not found')) {
+      throw new NotFoundException(error.message);
+    }
+    throw new BadRequestException(error.message);
+  }
+}
 }

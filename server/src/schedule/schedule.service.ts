@@ -47,7 +47,18 @@ export class ScheduleService {
   
     return { message: `Schedule with id ${id} deleted successfully` };
   }
+
+  async update(id: string, updateDto: Partial<Schedule>): Promise<{ message: string }> {
+    const updated = await this.scheduleModel.findByIdAndUpdate(id, updateDto, {
+      new: true,
+      runValidators: true,
+    });
   
+    if (!updated) {
+      throw new Error(`Schedule with id ${id} not found`);
+    }
   
+    return { message: 'Schedule updated' };
+  }  
   
 }
