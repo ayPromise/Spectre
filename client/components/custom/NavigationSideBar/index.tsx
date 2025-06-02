@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
 
 const links = [
+  { href: "/", label: "Головна сторінка" },
   { href: "/dashboard", label: "Панель керування" },
   { href: "/materials", label: "Навчальні матеріали" },
   { href: "/schedule", label: "Розклад" },
@@ -68,7 +69,7 @@ const SideBar: React.FC = () => {
       <aside
         className={cn(
           "border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
-          collapsed ? "w-16" : "min-w-52"
+          collapsed ? "w-2" : "min-w-52"
         )}
       >
         {/* Collapse button */}
