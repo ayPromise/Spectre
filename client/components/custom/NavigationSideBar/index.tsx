@@ -15,12 +15,11 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
 
 const links = [
-  { href: "/", label: "Головна сторінка" },
   { href: "/dashboard", label: "Панель керування" },
-  { href: "/materials", label: "Навчальні матеріали" },
+  { href: "/", label: "Головна сторінка" },
   { href: "/schedule", label: "Розклад" },
+  { href: "/materials", label: "Навчальні матеріали" },
   { href: "/archive", label: "Архіви польотів" },
-  { href: "/profile", label: "Мій профіль" },
 ];
 
 const iconOnlyLinks = [
