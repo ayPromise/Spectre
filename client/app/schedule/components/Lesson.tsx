@@ -1,5 +1,4 @@
 import { MeetingType, MeetingTypeNameUA } from "@shared/types/Enums";
-import Link from "next/link";
 import React from "react";
 
 interface LessonProps {
@@ -19,15 +18,13 @@ const typeHoverColors: Record<MeetingType, string> = {
 
 const Lesson: React.FC<LessonProps> = ({ title, type }) => {
   return (
-    <Link href="/schedule/10">
-      <div
-        className={`w-full h-full rounded p-1 text-xs cursor-pointer 
-      ${typeColors[type]} ${typeHoverColors[type]} transition`}
-      >
-        <div className="font-bold">{title}</div>
-        <div className="text-[10px] opacity-70">{MeetingTypeNameUA[type]}</div>
-      </div>
-    </Link>
+    <div
+      className={`w-full h-full rounded p-1 text-xs cursor-pointer 
+  ${typeColors[type]} ${typeHoverColors[type]} transition`}
+    >
+      <div className="font-bold">{title}</div>
+      <div className="text-[10px] opacity-70">{MeetingTypeNameUA[type]}</div>
+    </div>
   );
 };
 
