@@ -57,5 +57,18 @@ async update(
     }
     throw new BadRequestException(error.message);
   }
-}
+  
+  }
+  
+  @Put('sign-up/:id')
+  @Roles(UserRole.Student)
+  async signUp(
+    @Param('id') id: string,
+    @Body('newUserId') newUserId: string,
+  ): Promise<Schedule> {
+    if (!newUserId) {
+      throw new BadRequestException('Передайте ID користувача в полі newUserId');
+    }
+    return this.scheduleService.signUp(id, newUserId);
+  }
 }

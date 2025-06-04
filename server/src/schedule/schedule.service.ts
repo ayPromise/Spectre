@@ -18,7 +18,7 @@ export class ScheduleService {
       
       return {
         ...saved.toObject(),
-        id: saved._id.toString(),
+        _id: saved._id.toString(),
         assignedUsers: saved.assignedUsers.map(user => user.toString()),
       };
     } catch (error: any) {
@@ -38,7 +38,7 @@ export class ScheduleService {
   
       const schedule: Schedule = {
         ...obj,
-        id: obj._id.toString(),
+        _id: obj._id.toString(),
         assignedUsers: obj.assignedUsers.map((u: any) => u.toString()),
       };
   
@@ -46,42 +46,67 @@ export class ScheduleService {
     });
   }
 
-  async findOne(id: string): Promise<Schedule> {
-    const schedule = await this.scheduleModel.findById(id).exec();
+  async findOne(_id: string): Promise<Schedule> {
+    const schedule = await this.scheduleModel.findById(_id).exec();
   
     if (!schedule) {
-      throw new NotFoundException(`Schedule with id ${id} not found`);
+      throw new NotFoundException(`Schedule with _id ${_id} not found`);
     }
   
     const obj = schedule.toObject();
     return {
       ...obj,
-      id: obj._id.toString(),
+      _id: obj._id.toString(),
       assignedUsers: obj.assignedUsers.map((u: any) => u.toString()),
     };
   }
 
-  async delete(id: string): Promise<{ message: string }> {
-    const result = await this.scheduleModel.findByIdAndDelete(id).exec();
+  async delete(_id: string): Promise<{ message: string }> {
+    const result = await this.scheduleModel.findByIdAndDelete(_id).exec();
   
     if (!result) {
-      throw new Error(`Schedule with id ${id} not found`);
+      throw new Error(`Schedule with _id ${_id} not found`);
     }
   
-    return { message: `Schedule with id ${id} deleted successfully` };
+    return { message: `Schedule with _id ${_id} deleted successfully` };
   }
 
-  async update(id: string, updateDto: Partial<Schedule>): Promise<{ message: string }> {
-    const updated = await this.scheduleModel.findByIdAndUpdate(id, updateDto, {
+  async update(_id: string, updateDto: Partial<Schedule>): Promise<{ message: string }> {
+    const updated = await this.scheduleModel.findByIdAndUpdate(_id, updateDto, {
       new: true,
-      runValidators: true,
+      runVal_idators: true,
     });
   
     if (!updated) {
-      throw new Error(`Schedule with id ${id} not found`);
+      throw new Error(`Schedule with _id ${_id} not found`);
     }
   
     return { message: 'Schedule updated' };
   }  
+
+  async signUp(_id: string, user_id: string): Promise<Schedule> {
+  const schedule = await this.scheduleModel.findById(_id);
+
+  if (!schedule) {
+    throw new NotFoundException(`Розклад з _id ${_id} не знайдено.`);
+  }
+
+  const userAlreadySigned = schedule.assignedUsers.some(
+    (u: any) => u.toString() === user_id,
+  );
+
+  if (userAlreadySigned) {
+    throw new ConflictException('Ви вже записані на це заняття.');
+  }
+
+  schedule.assignedUsers.push(user_id);
+  const updated = await schedule.save();
+
+  return {
+    ...updated.toObject(),
+    _id: updated._id.toString(),
+    assignedUsers: updated.assignedUsers.map((u: any) => u.toString()),
+  };
+}
   
 }

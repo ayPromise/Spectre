@@ -14,6 +14,10 @@ import { Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { Separator } from "@radix-ui/react-select";
 import { useAccess } from "@/hooks/useAccess";
 import { useAuth } from "@/context/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import signUpToSchedule from "../utils/signUpToSchedule";
+import { showError, showSuccess } from "@/utils/toast";
+import { useSchedule } from "@/context/ScheduleContext";
 
 interface ScheduleSidebarProps {
   schedule: Schedule | null;
@@ -26,9 +30,26 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
 }) => {
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
   const { userData } = useAuth();
+  const { refetchSchedules } = useSchedule();
   const isUserAlreadySignedUp =
     userData && schedule?.assignedUsers.includes(userData?.sub);
-  const onSignUp = () => {};
+
+  const { mutate: signUp, isPending: isSigningUp } = useMutation({
+    mutationFn: () => signUpToSchedule(schedule!._id, userData!.sub),
+    onSuccess: () => {
+      showSuccess("Будемо вас чекати на занятті ;)");
+      refetchSchedules();
+      onClose();
+    },
+    onError: (error: Error) => {
+      showError(error.message || "Не вдалося записатися");
+    },
+  });
+
+  const onSignUp = () => {
+    if (!schedule || !userData?.sub) return;
+    signUp();
+  };
 
   const onEdit = () => {};
 
@@ -73,7 +94,11 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                 {!isUserAlreadySignedUp &&
                   !hasAdminAccess &&
                   !hasInstructorAccess && (
-                    <Button onClick={onSignUp} className="w-full">
+                    <Button
+                      onClick={onSignUp}
+                      className="w-full"
+                      disabled={isSigningUp}
+                    >
                       <PlusCircle className="w-4 h-4 mr-2" />
                       Записатися
                     </Button>
