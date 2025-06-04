@@ -1,14 +1,23 @@
 import React from "react";
-import { ScheduleType } from "@shared/types";
 import ScheduleDay from "./ScheduleDay";
 import Lesson from "../Lesson";
+import { useAccess } from "@/hooks/useAccess";
+import CreateScheduleDialog from "../CreateScheduleDialog";
+import { useScheduleDate } from "@/context/ScheduleDateContext";
+import { MeetingType } from "@shared/types/Enums";
 
-interface TableBodyProps {
-  totalDays: number;
-}
-
-const TableBody = ({ totalDays }: TableBodyProps) => {
+const TableBody = () => {
+  const { scheduleDate } = useScheduleDate();
+  const { hasAdminAccess, hasInstructorAccess } = useAccess();
+  const totalDays = new Date(
+    scheduleDate.year,
+    scheduleDate.month + 1,
+    0
+  ).getDate();
   const rows = Math.ceil(totalDays / 7);
+
+  const lessonDays = [3, 15, 17];
+  const canAddLesson = hasAdminAccess || hasInstructorAccess;
 
   return (
     <tbody>
@@ -18,12 +27,24 @@ const TableBody = ({ totalDays }: TableBodyProps) => {
             const dayIndex = rowIndex * 7 + colIndex;
             if (dayIndex >= totalDays) return <td key={colIndex} />;
 
+            const isLessonDay = lessonDays.includes(dayIndex);
+
+            const dateForSchedule = {
+              day: dayIndex + 1,
+              month: scheduleDate.month,
+              year: scheduleDate.year,
+            };
+
             return (
               <ScheduleDay key={colIndex} day={dayIndex + 1}>
-                <Lesson
-                  title={"Базові навички пілотування"}
-                  type={ScheduleType.PracticalFlight}
-                />
+                {isLessonDay ? (
+                  <Lesson
+                    title={"Базові навички пілотування"}
+                    type={MeetingType.Online}
+                  />
+                ) : canAddLesson ? (
+                  <CreateScheduleDialog date={dateForSchedule} />
+                ) : null}
               </ScheduleDay>
             );
           })}

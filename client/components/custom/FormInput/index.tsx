@@ -29,6 +29,16 @@ const FormInput: React.FC<Props> = ({
   error,
   required = false,
 }) => {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleIconClick = () => {
+    if (inputRef.current && typeof inputRef.current.showPicker === "function") {
+      inputRef.current.showPicker();
+    } else {
+      inputRef.current?.focus();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3 relative">
       <Label htmlFor={id} className="font-medium">
@@ -38,6 +48,7 @@ const FormInput: React.FC<Props> = ({
         )}
       </Label>
       <Input
+        ref={inputRef}
         id={id}
         name={name}
         type={type}
@@ -46,6 +57,7 @@ const FormInput: React.FC<Props> = ({
         onChange={onChange}
         onBlur={onBlur}
         required={required}
+        onClick={type === "time" ? handleIconClick : undefined}
       />
     </div>
   );
