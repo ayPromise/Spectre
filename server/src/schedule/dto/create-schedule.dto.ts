@@ -1,5 +1,5 @@
-import { ID, ScheduleType } from '@shared/types';
-import { IsArray, IsDateString, IsEnum, IsMongoId, IsString } from 'class-validator';
+import { ID, LessonType, MeetingType  } from '@shared/types';
+import { IsArray, IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
   @IsString()
@@ -8,8 +8,15 @@ export class CreateScheduleDto {
   @IsDateString()
   date: string;
 
-  @IsEnum(ScheduleType)
-  type: ScheduleType;
+  @IsEnum(LessonType)
+  lessonType: LessonType;
+
+  @IsEnum(MeetingType)
+  meetingType: MeetingType;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 
   @IsArray()
   @IsMongoId({ each: true })

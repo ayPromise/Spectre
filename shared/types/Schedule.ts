@@ -1,11 +1,12 @@
 import { ID } from ".";
-import { ScheduleType } from "./Enums";
+import { LessonType, MeetingType } from "./Enums";
 
 export interface Schedule {
   id: ID;
   title: string;
   date: Date;
-  type: ScheduleType;
+  lessonType: LessonType;
+  meetingType: MeetingType;
+  note?: string;
   assignedUsers: ID[];
 }
-    
