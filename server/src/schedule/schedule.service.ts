@@ -107,6 +107,33 @@ export class ScheduleService {
     _id: updated._id.toString(),
     assignedUsers: updated.assignedUsers.map((u: any) => u.toString()),
   };
-}
+  }
+  
+  async unsubscribe(_id: string, user_id: string): Promise<Schedule> {
+    const schedule = await this.scheduleModel.findById(_id);
+  
+    if (!schedule) {
+      throw new NotFoundException(`Розклад з _id ${_id} не знайдено.`);
+    }
+  
+    const userIndex = schedule.assignedUsers.findIndex(
+      (u: any) => u.toString() === user_id,
+    );
+  
+    if (userIndex === -1) {
+      throw new ConflictException('Ви не були записані на це заняття.');
+    }
+  
+    schedule.assignedUsers.splice(userIndex, 1);
+  
+    const updated = await schedule.save();
+  
+    return {
+      ...updated.toObject(),
+      _id: updated._id.toString(),
+      assignedUsers: updated.assignedUsers.map((u: any) => u.toString()),
+    };
+  }
+  
   
 }

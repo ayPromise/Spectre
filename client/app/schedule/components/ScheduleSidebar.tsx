@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import { MeetingTypeNameUA } from "@shared/types/Enums";
 import { Button } from "@/components/ui/button";
-import { Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { LogOut, Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { Separator } from "@radix-ui/react-select";
 import { useAccess } from "@/hooks/useAccess";
 import { useAuth } from "@/context/AuthContext";
@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import signUpToSchedule from "../utils/signUpToSchedule";
 import { showError, showSuccess } from "@/utils/toast";
 import { useSchedule } from "@/context/ScheduleContext";
+import unsubscribeFromSchedule from "../utils/unsubscribeFromSchedule";
 
 interface ScheduleSidebarProps {
   schedule: Schedule | null;
@@ -37,7 +38,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
   const { mutate: signUp, isPending: isSigningUp } = useMutation({
     mutationFn: () => signUpToSchedule(schedule!._id, userData!.sub),
     onSuccess: () => {
-      showSuccess("Будемо вас чекати на занятті ;)");
+      showSuccess("Будемо вас чекати на занятті 😉");
       refetchSchedules();
       onClose();
     },
@@ -45,6 +46,23 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
       showError(error.message || "Не вдалося записатися");
     },
   });
+
+  const { mutate: unsubscribe, isPending: isUnsubscribing } = useMutation({
+    mutationFn: () => unsubscribeFromSchedule(schedule!._id, userData!.sub),
+    onSuccess: () => {
+      showSuccess("З вами було б набагато краще 😢");
+      refetchSchedules();
+      onClose();
+    },
+    onError: (error: Error) => {
+      showError(error.message || "Не вдалося відписатися");
+    },
+  });
+
+  const onUnsubscribe = () => {
+    if (!schedule || !userData?.sub) return;
+    unsubscribe();
+  };
 
   const onSignUp = () => {
     if (!schedule || !userData?.sub) return;
@@ -91,9 +109,19 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
               <Separator className="my-4" />
 
               <div className="flex flex-col gap-2">
-                {!isUserAlreadySignedUp &&
-                  !hasAdminAccess &&
-                  !hasInstructorAccess && (
+                {!hasAdminAccess &&
+                  !hasInstructorAccess &&
+                  (isUserAlreadySignedUp ? (
+                    <Button
+                      onClick={onUnsubscribe}
+                      className="w-full"
+                      variant="destructive"
+                      disabled={isUnsubscribing}
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Мене не буде на занятті
+                    </Button>
+                  ) : (
                     <Button
                       onClick={onSignUp}
                       className="w-full"
@@ -102,7 +130,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                       <PlusCircle className="w-4 h-4 mr-2" />
                       Записатися
                     </Button>
-                  )}
+                  ))}
 
                 {(hasAdminAccess || hasInstructorAccess) && (
                   <>

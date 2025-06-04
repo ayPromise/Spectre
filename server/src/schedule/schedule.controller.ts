@@ -71,4 +71,16 @@ async update(
     }
     return this.scheduleService.signUp(id, newUserId);
   }
+
+  @Put('unsubscribe/:id')
+  @Roles(UserRole.Student)
+  async unsubscribe(
+    @Param('id') id: string,
+    @Body('userId') userId: string,
+  ): Promise<Schedule> {
+    if (!userId) {
+      throw new BadRequestException('Передайте ID користувача в полі userId');
+    }
+    return this.scheduleService.unsubscribe(id, userId);
+  }
 }
