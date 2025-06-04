@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
@@ -27,20 +27,28 @@ export class AuthService {
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
         
-    const user = await new this.userModel({
-      email: email,
-      password: hashedPassword,
-      role: UserRole.Student,
-      avatarURL:"",
-      completedArticles: [],
-      completedVideos: [],
-      certificates: [],
-      achievements: [],
-      lastLogin: new Date(),
-      ...rest
-    }).save();
+    try {
+      const user = await new this.userModel({
+        email,
+        password: hashedPassword,
+        role: UserRole.Student,
+        avatarURL: '',
+        completedArticles: [],
+        completedVideos: [],
+        certificates: [],
+        achievements: [],
+        lastLogin: new Date(),
+        ...rest,
+      }).save();
   
-    return this.generateToken(user);
+      return this.generateToken(user);
+    } catch (err) {
+      if (err.code === 11000) {
+        const duplicateField = Object.keys(err.keyPattern)[0];
+        throw new ConflictException(`${duplicateField} already in use`);
+      }
+        throw new InternalServerErrorException('Something went wrong ;( (Unexpected error)');
+    }
   }
 
   async signIn(email: string, password: string) {
