@@ -9,7 +9,7 @@ export class Schedule {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique:true })
   date: Date;
 
   @Prop({ required: true, enum: LessonType })

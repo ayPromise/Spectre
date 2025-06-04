@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Schedule as ScheduleModel, ScheduleDocument } from './schema/schedule.schema';
@@ -12,14 +12,22 @@ export class ScheduleService {
   ) {}
 
   async create(createDto: CreateScheduleDto): Promise<Schedule> {
-    const created = new this.scheduleModel(createDto);
-    const saved = await created.save();
-    return {
-      ...saved,
-      id: saved._id.toString(),
-      assignedUsers: saved.assignedUsers.map(user => user.toString()),
-
-    };
+    try {
+      const created = new this.scheduleModel(createDto);
+      const saved = await created.save();
+      
+      return {
+        ...saved.toObject(),
+        id: saved._id.toString(),
+        assignedUsers: saved.assignedUsers.map(user => user.toString()),
+      };
+    } catch (error: any) {
+      if (error.code === 11000 && error.keyPattern?.date) {
+        throw new ConflictException('Розклад на цю дату вже існує.');
+      }
+  
+      throw new InternalServerErrorException('Не вдалося створити розклад.');
+    }
   }
 
   async findAll(): Promise<Schedule[]> {
