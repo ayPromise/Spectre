@@ -3,12 +3,12 @@ import ScheduleDay from "./ScheduleDay";
 import Lesson from "../Lesson";
 import { useAccess } from "@/hooks/useAccess";
 import CreateScheduleDialog from "../CreateScheduleDialog";
-import { useScheduleDate } from "@/context/ScheduleDateContext";
-import { MeetingType } from "@shared/types/Enums";
+import { useSchedule } from "@/context/ScheduleContext";
 
 const TableBody = () => {
-  const { scheduleDate } = useScheduleDate();
+  const { scheduleDate, schedules } = useSchedule();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
+
   const totalDays = new Date(
     scheduleDate.year,
     scheduleDate.month + 1,
@@ -16,7 +16,6 @@ const TableBody = () => {
   ).getDate();
   const rows = Math.ceil(totalDays / 7);
 
-  const lessonDays = [3, 15, 17];
   const canAddLesson = hasAdminAccess || hasInstructorAccess;
 
   return (
@@ -27,21 +26,35 @@ const TableBody = () => {
             const dayIndex = rowIndex * 7 + colIndex;
             if (dayIndex >= totalDays) return <td key={colIndex} />;
 
-            const isLessonDay = lessonDays.includes(dayIndex);
+            const currentDay = dayIndex + 1;
+
+            // Фільтруємо розклади для цього дня
+            const schedulesForDay = schedules.filter((schedule) => {
+              const scheduleDateObj = new Date(schedule.date);
+              return (
+                scheduleDateObj.getFullYear() === scheduleDate.year &&
+                scheduleDateObj.getMonth() === scheduleDate.month &&
+                scheduleDateObj.getDate() === currentDay
+              );
+            });
 
             const dateForSchedule = {
-              day: dayIndex + 1,
+              day: currentDay,
               month: scheduleDate.month,
               year: scheduleDate.year,
             };
 
             return (
-              <ScheduleDay key={colIndex} day={dayIndex + 1}>
-                {isLessonDay ? (
-                  <Lesson
-                    title={"Базові навички пілотування"}
-                    type={MeetingType.Online}
-                  />
+              <ScheduleDay key={colIndex} day={currentDay}>
+                {schedulesForDay.length > 0 ? (
+                  schedulesForDay.map((schedule) => (
+                    <Lesson
+                      key={schedule._id}
+                      title={schedule.title}
+                      type={schedule.meetingType}
+                      // Передай інші пропси, якщо потрібно
+                    />
+                  ))
                 ) : canAddLesson ? (
                   <CreateScheduleDialog date={dateForSchedule} />
                 ) : null}

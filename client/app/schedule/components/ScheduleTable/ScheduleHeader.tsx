@@ -3,10 +3,10 @@
 import React from "react";
 import { MonthEnum } from "@/types/client/Schedule";
 import MonthSelector from "../MonthSelector";
-import { useScheduleDate } from "@/context/ScheduleDateContext";
+import { useSchedule } from "@/context/ScheduleContext";
 
 const ScheduleHeader = () => {
-  const { scheduleDate } = useScheduleDate();
+  const { scheduleDate } = useSchedule();
 
   return (
     <div className="flex justify-between items-center mb-3">

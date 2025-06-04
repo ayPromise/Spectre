@@ -2,16 +2,16 @@
 
 import React from "react";
 import ScheduleTable from "./components/ScheduleTable/ScheduleTable";
-import { ScheduleDateProvider } from "@/context/ScheduleDateContext";
+import { ScheduleProvider } from "@/context/ScheduleContext";
 
 export const dynamic = "force-dynamic";
 
 const SchedulePage: React.FC = () => {
   return (
     <div>
-      <ScheduleDateProvider>
+      <ScheduleProvider>
         <ScheduleTable />
-      </ScheduleDateProvider>
+      </ScheduleProvider>
     </div>
   );
 };

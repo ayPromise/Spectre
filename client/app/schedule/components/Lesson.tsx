@@ -19,7 +19,7 @@ const typeHoverColors: Record<MeetingType, string> = {
 const Lesson: React.FC<LessonProps> = ({ title, type }) => {
   return (
     <div
-      className={`w-full h-full rounded p-1 text-xs cursor-pointer 
+      className={`w-full h-full p-1 text-xs cursor-pointer 
   ${typeColors[type]} ${typeHoverColors[type]} transition`}
     >
       <div className="font-bold">{title}</div>

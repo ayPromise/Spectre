@@ -32,6 +32,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useSchedule } from "@/context/ScheduleContext";
 
 interface CreateScheduleDialogProps {
   date: {
@@ -42,12 +43,14 @@ interface CreateScheduleDialogProps {
 }
 
 const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
+  const { refetchSchedules } = useSchedule();
   const { mutate, isPending } = useMutation({
     mutationFn: createSchedule,
     onSuccess: () => {
       showSuccess("Заняття було успішно додано в розклад");
+      refetchSchedules();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showError(error.message || "Помилка при створенні розкладу");
     },
   });
@@ -70,12 +73,13 @@ const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
     onSubmit: (values) => {
       const fullDate = new Date(
         date.year,
-        date.month - 1,
+        date.month,
         date.day,
         parseInt(values.time.split(":")[0], 10),
         parseInt(values.time.split(":")[1], 10)
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { time, ...rest } = values;
       mutate({ ...rest, date: fullDate });
     },

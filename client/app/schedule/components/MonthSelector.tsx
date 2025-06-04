@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { MonthEnum } from "@/types/client/Schedule";
 import React from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import { useScheduleDate } from "@/context/ScheduleDateContext";
+import { useSchedule } from "@/context/ScheduleContext";
 
 const MonthSelector = () => {
-  const { scheduleDate, setNextMonth, setPreviousMonth } = useScheduleDate();
+  const { scheduleDate, setNextMonth, setPreviousMonth } = useSchedule();
 
   return (
     <div className="flex items-center space-x-4">
