@@ -1,9 +1,10 @@
+import { Schedule } from "@shared/types";
 import { MeetingType, MeetingTypeNameUA } from "@shared/types/Enums";
 import React from "react";
 
 interface LessonProps {
-  title: string;
-  type: MeetingType;
+  schedule: Schedule;
+  handleOnClick: () => void;
 }
 
 const typeColors: Record<MeetingType, string> = {
@@ -16,14 +17,18 @@ const typeHoverColors: Record<MeetingType, string> = {
   [MeetingType.Online]: "hover:bg-green-200 hover:text-green-900",
 };
 
-const Lesson: React.FC<LessonProps> = ({ title, type }) => {
+const Lesson: React.FC<LessonProps> = ({ schedule, handleOnClick }) => {
+  const { title, meetingType } = schedule;
   return (
     <div
       className={`w-full h-full p-1 text-xs cursor-pointer 
-  ${typeColors[type]} ${typeHoverColors[type]} transition`}
+  ${typeColors[meetingType]} ${typeHoverColors[meetingType]} transition`}
+      onClick={handleOnClick}
     >
       <div className="font-bold">{title}</div>
-      <div className="text-[10px] opacity-70">{MeetingTypeNameUA[type]}</div>
+      <div className="text-[10px] opacity-70">
+        {MeetingTypeNameUA[meetingType]}
+      </div>
     </div>
   );
 };
