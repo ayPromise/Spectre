@@ -9,6 +9,7 @@ interface CreateSchedulePayload {
 }
 
 interface UpdateSchedulePayload {
+  _id?: string;
   title?: string;
   date?: Date;
   lessonType?: LessonType;

@@ -21,7 +21,6 @@ import { Label } from "@/components/ui/label";
 
 // UTILS
 import { showSuccess, showError } from "@/utils/toast";
-import createSchedule from "../utils/createSchedule";
 
 // TYPES
 import { LessonType, MeetingType } from "@shared/types/Enums";
@@ -33,36 +32,75 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useSchedule } from "@/context/ScheduleContext";
+import createSchedule from "../utils/createSchedule";
+import updateSchedule from "../utils/updateSchedule";
+import { Schedule } from "@shared/types";
 
-interface CreateScheduleDialogProps {
-  date: {
+interface ScheduleDialogProps {
+  date?: {
     year: number;
     month: number;
     day: number;
   };
+  initialValues?: {
+    _id: string;
+    title: string;
+    time: string;
+    lessonType: LessonType;
+    meetingType: MeetingType;
+    note?: string;
+    date: Date;
+  };
+  isEditing?: boolean;
 }
 
-const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
+const ScheduleDialog = ({
+  date,
+  initialValues,
+  isEditing = false,
+}: ScheduleDialogProps) => {
   const { refetchSchedules } = useSchedule();
-  const { mutate, isPending } = useMutation({
-    mutationFn: createSchedule,
-    onSuccess: () => {
-      showSuccess("Заняття було успішно додано в розклад");
-      refetchSchedules();
-    },
-    onError: (error: Error) => {
-      showError(error.message || "Помилка при створенні розкладу");
-    },
-  });
+  const { mutate: createScheduleMutate, isPending: isScheduleCreating } =
+    useMutation({
+      mutationFn: createSchedule,
+      onSuccess: () => {
+        showSuccess("Заняття було успішно додано в розклад");
+        refetchSchedules();
+      },
+      onError: (error: Error) => {
+        showError(error.message || "Помилка при створенні розкладу");
+      },
+    });
+
+  const { mutate: updateScheduleMutate, isPending: isScheduleUpdating } =
+    useMutation({
+      mutationFn: ({ id, data }: { id: string; data: Partial<Schedule> }) =>
+        updateSchedule(id, data),
+      onSuccess: () => {
+        showSuccess("Заняття було успішно оновлено");
+        refetchSchedules();
+      },
+      onError: (error: Error) => {
+        showError(error.message || "Помилка при оновленні розкладу");
+      },
+    });
 
   const formik = useFormik({
-    initialValues: {
-      title: "",
-      time: "10:00",
-      lessonType: LessonType.Lecture,
-      meetingType: MeetingType.Offline,
-      note: "",
-    },
+    initialValues: initialValues
+      ? {
+          title: initialValues.title,
+          time: initialValues.time,
+          lessonType: initialValues.lessonType,
+          meetingType: initialValues.meetingType,
+          note: initialValues.note,
+        }
+      : {
+          title: "",
+          time: "10:00",
+          lessonType: LessonType.Lecture,
+          meetingType: MeetingType.Offline,
+          note: "",
+        },
     validationSchema: Yup.object({
       title: Yup.string().required("Введіть назву"),
       time: Yup.string().required("Оберіть час"),
@@ -71,17 +109,21 @@ const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
       note: Yup.string().max(500, "Занадто довга нотатка"),
     }),
     onSubmit: (values) => {
-      const fullDate = new Date(
-        date.year,
-        date.month,
-        date.day,
-        parseInt(values.time.split(":")[0], 10),
-        parseInt(values.time.split(":")[1], 10)
-      );
+      if (isEditing && initialValues) {
+        const { time, ...rest } = values;
+        updateScheduleMutate({ id: initialValues._id, data: rest });
+      } else if (date) {
+        const fullDate = new Date(
+          date.year,
+          date.month,
+          date.day,
+          parseInt(values.time.split(":")[0], 10),
+          parseInt(values.time.split(":")[1], 10)
+        );
 
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { time, ...rest } = values;
-      mutate({ ...rest, date: fullDate });
+        const { time, ...rest } = values;
+        createScheduleMutate({ ...rest, date: fullDate });
+      }
     },
     validateOnBlur: true,
     validateOnChange: false,
@@ -109,14 +151,22 @@ const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-center h-full w-full group transition hover:bg-gray-100 cursor-pointer">
-        <Plus
-          className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors"
-          strokeWidth={2}
-        />
+        {isEditing ? (
+          <Button variant="outline" className="w-full">
+            Редагувати заняття
+          </Button>
+        ) : (
+          <Plus
+            className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors"
+            strokeWidth={2}
+          />
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Створення заняття</DialogTitle>
+          <DialogTitle>
+            {isEditing ? "Редагування заняття" : "Створення заняття"}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <FormInput
@@ -218,8 +268,11 @@ const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
             )}
           </div>
 
-          <Button type="submit" disabled={isPending}>
-            Створити розклад
+          <Button
+            type="submit"
+            disabled={isScheduleCreating || isScheduleUpdating}
+          >
+            {isEditing ? "Зберегти зміни" : "Повідомити про заняття"}
           </Button>
         </form>
       </DialogContent>
@@ -227,4 +280,4 @@ const CreateScheduleDialog = ({ date }: CreateScheduleDialogProps) => {
   );
 };
 
-export default CreateScheduleDialog;
+export default ScheduleDialog;

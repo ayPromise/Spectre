@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import { MeetingTypeNameUA } from "@shared/types/Enums";
 import { Button } from "@/components/ui/button";
-import { LogOut, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { LogOut, PlusCircle, Trash2 } from "lucide-react";
 import { Separator } from "@radix-ui/react-select";
 import { useAccess } from "@/hooks/useAccess";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +19,9 @@ import signUpToSchedule from "../utils/signUpToSchedule";
 import { showError, showSuccess } from "@/utils/toast";
 import { useSchedule } from "@/context/ScheduleContext";
 import unsubscribeFromSchedule from "../utils/unsubscribeFromSchedule";
+import deleteSchedule from "../utils/deleteSchedule";
+import ScheduleDialog from "./ScheduleDialog";
+import getKyivTimeString from "../utils/getKyivTimeString";
 
 interface ScheduleSidebarProps {
   schedule: Schedule | null;
@@ -59,19 +62,18 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
     },
   });
 
-  const onUnsubscribe = () => {
-    if (!schedule || !userData?.sub) return;
-    unsubscribe();
-  };
+  const { mutate: removeSchedule, isPending: isRemoving } = useMutation({
+    mutationFn: () => deleteSchedule(schedule!._id),
+    onSuccess: () => {
+      showSuccess("Заняття в розкладі більше немає");
+      refetchSchedules();
+      onClose();
+    },
+    onError: (error: Error) => {
+      showError(error.message || "Не вдалося видалити заняття");
+    },
+  });
 
-  const onSignUp = () => {
-    if (!schedule || !userData?.sub) return;
-    signUp();
-  };
-
-  const onEdit = () => {};
-
-  const onDelete = () => {};
   return (
     <Sheet open={!!schedule} onOpenChange={(open) => !open && onClose()}>
       <SheetContent side="right" className="w-96 flex flex-col py-6 px-8">
@@ -113,7 +115,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                   !hasInstructorAccess &&
                   (isUserAlreadySignedUp ? (
                     <Button
-                      onClick={onUnsubscribe}
+                      onClick={() => unsubscribe()}
                       className="w-full"
                       variant="destructive"
                       disabled={isUnsubscribing}
@@ -123,7 +125,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                     </Button>
                   ) : (
                     <Button
-                      onClick={onSignUp}
+                      onClick={() => signUp()}
                       className="w-full"
                       disabled={isSigningUp}
                     >
@@ -134,19 +136,19 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
 
                 {(hasAdminAccess || hasInstructorAccess) && (
                   <>
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={onEdit}
-                    >
-                      <Pencil className="w-4 h-4 mr-2" />
-                      Редагувати
-                    </Button>
+                    <ScheduleDialog
+                      isEditing={true}
+                      initialValues={{
+                        ...schedule,
+                        time: getKyivTimeString(schedule.date),
+                      }}
+                    />
 
                     <Button
                       variant="destructive"
                       className="w-full"
-                      onClick={onDelete}
+                      onClick={() => removeSchedule()}
+                      disabled={isRemoving}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Видалити

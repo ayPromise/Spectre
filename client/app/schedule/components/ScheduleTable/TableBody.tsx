@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ScheduleDay from "./ScheduleDay";
 import Lesson from "../Lesson";
 import { useAccess } from "@/hooks/useAccess";
-import CreateScheduleDialog from "../CreateScheduleDialog";
+import ScheduleDialog from "../ScheduleDialog";
 import { useSchedule } from "@/context/ScheduleContext";
 import ScheduleSidebar from "../ScheduleSidebar";
 import { Schedule } from "@shared/types";
@@ -61,7 +61,7 @@ const TableBody = () => {
                       />
                     ))
                   ) : canAddLesson ? (
-                    <CreateScheduleDialog date={dateForSchedule} />
+                    <ScheduleDialog date={dateForSchedule} />
                   ) : null}
                 </ScheduleDay>
               );
