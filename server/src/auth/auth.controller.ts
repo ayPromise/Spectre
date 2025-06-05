@@ -34,4 +34,11 @@ export class AuthController {
   
     return { message: 'Ласкаво просимо!' };
   }
+
+  @Post('get-users-by-ids')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor)
+  async getUsersByIds(@Body() body: { ids: string[] }) {
+    return this.authService.getUsersByIds(body.ids);
+  }
 }

@@ -61,6 +61,10 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  async getUsersByIds(ids: string[]) {
+    return this.userModel.find({ _id: { $in: ids } }).select('_id firstName phoneNumber').exec();
+  }
+
   generateToken(user: UserDocument ) {
     return {
       access_token: this.jwtService.sign({ sub: user._id, email: user.email, role:user.role }),

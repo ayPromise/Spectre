@@ -73,7 +73,7 @@ async update(
   }
 
   @Put('unsubscribe/:id')
-  @Roles(UserRole.Student)
+  @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
   async unsubscribe(
     @Param('id') id: string,
     @Body('userId') userId: string,

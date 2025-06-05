@@ -2,7 +2,7 @@ import { ID } from "."
 import { UserRole } from "./Enums";
 
 export interface User {
-  id: ID;
+  _id: ID;
   email: string;
   avatarURL: string;
   phoneNumber: string;

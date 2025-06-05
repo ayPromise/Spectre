@@ -150,17 +150,19 @@ const ScheduleDialog = ({
 
   return (
     <Dialog>
-      <DialogTrigger className="flex items-center justify-center h-full w-full group transition hover:bg-gray-100 cursor-pointer">
-        {isEditing ? (
-          <Button variant="outline" className="w-full">
-            Редагувати заняття
-          </Button>
-        ) : (
-          <Plus
-            className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors"
-            strokeWidth={2}
-          />
-        )}
+      <DialogTrigger asChild>
+        <div className="flex items-center justify-center h-full w-full group transition hover:bg-gray-100 cursor-pointer">
+          {isEditing ? (
+            <Button variant="outline" className="w-full">
+              Редагувати заняття
+            </Button>
+          ) : (
+            <Plus
+              className="w-5 h-5 text-gray-600 group-hover:text-black transition-colors"
+              strokeWidth={2}
+            />
+          )}
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

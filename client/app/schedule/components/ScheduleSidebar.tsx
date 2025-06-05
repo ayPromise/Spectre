@@ -22,6 +22,7 @@ import unsubscribeFromSchedule from "../utils/unsubscribeFromSchedule";
 import deleteSchedule from "../utils/deleteSchedule";
 import ScheduleDialog from "./ScheduleDialog";
 import getKyivTimeString from "../utils/getKyivTimeString";
+import UserListTable from "./UserListTable";
 
 interface ScheduleSidebarProps {
   schedule: Schedule | null;
@@ -93,14 +94,12 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                   {MeetingTypeNameUA[schedule.meetingType]}
                 </p>
               </div>
-
               <div>
                 <p className="text-muted-foreground">Дата</p>
                 <p className="font-medium">
                   {new Date(schedule.date).toLocaleString()}
                 </p>
               </div>
-
               <div>
                 <p className="text-muted-foreground">Нотатки</p>
                 <p className="font-medium">
@@ -108,8 +107,11 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                 </p>
               </div>
 
-              <Separator className="my-4" />
+              {schedule && (hasAdminAccess || hasInstructorAccess) && (
+                <UserListTable schedule={schedule} />
+              )}
 
+              <Separator className="my-4" />
               <div className="flex flex-col gap-2">
                 {!hasAdminAccess &&
                   !hasInstructorAccess &&
