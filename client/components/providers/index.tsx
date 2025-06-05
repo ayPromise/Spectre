@@ -5,13 +5,14 @@ import QueryProvider from "./QueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AuthStatus from "@/types/client/AuthStatus";
 
 const Providers = ({
   children,
-  isAuth,
+  user,
 }: {
   children: React.ReactNode;
-  isAuth: boolean;
+  user: AuthStatus | null;
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -21,7 +22,7 @@ const Providers = ({
 
   return (
     <QueryProvider>
-      <AuthProvider initialAuth={isAuth}>{children}</AuthProvider>
+      <AuthProvider user={user}>{children}</AuthProvider>
       {hasMounted && (
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       )}

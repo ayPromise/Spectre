@@ -20,12 +20,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isAuth = await getServerUser();
+  const userFromServer = await getServerUser();
 
   return (
     <html lang="uk">
       <body className={`antialiased ${inter.variable} flex flex-col h-screen`}>
-        <Providers isAuth={!!isAuth}>
+        <Providers user={userFromServer}>
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />

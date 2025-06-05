@@ -17,14 +17,14 @@ const AuthContext = createContext<{
 
 export function AuthProvider({
   children,
-  initialAuth = false,
+  user = null,
 }: {
   children: React.ReactNode;
-  initialAuth?: boolean;
+  user: AuthStatus | null;
 }) {
   const { data, isError, refetch } = useAuthStatus();
-  const [isAuth, setIsAuth] = useState<boolean>(initialAuth);
-  const [userData, setUserData] = useState<AuthStatus | null>(null);
+  const [isAuth, setIsAuth] = useState<boolean>(!!user);
+  const [userData, setUserData] = useState<AuthStatus | null>(user);
 
   useEffect(() => {
     if (data) {
