@@ -1,18 +1,17 @@
-import { MaterialType } from "@shared/types";
+import { Specification } from "@shared/types";
 
 interface CreateVideoPayload {
   title: string;
   description: string;
   videoURL: string;
-  type: MaterialType;
+  type: Specification;
 }
 
 interface UpdateVideoPayload {
   title?: string;
   description?: string;
   videoURL?: string;
-  type?: MaterialType;
+  type?: Specification;
 }
-  
-export type { CreateVideoPayload, UpdateVideoPayload }
-  
+
+export type { CreateVideoPayload, UpdateVideoPayload };

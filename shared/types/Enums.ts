@@ -1,7 +1,7 @@
 export enum UserRole {
   Student = "Student",
   Instructor = "Instructor",
-  Admin = "Admin"
+  Admin = "Admin",
 }
 
 export enum LessonType {
@@ -17,30 +17,47 @@ export const LessonTypeNameUA: Record<LessonType, string> = {
 };
 
 export enum MeetingType {
-  Offline = 'Offline',
-  Online = 'Online',
+  Offline = "Offline",
+  Online = "Online",
 }
 
 export const MeetingTypeNameUA: Record<MeetingType, string> = {
   [MeetingType.Offline]: "Офлайн",
   [MeetingType.Online]: "Онлайн",
 };
-  
+
 export enum FlightType {
-  Recon = 'Recon',
-  Assault = 'Assault',
-  Mixed = 'Mixed',
+  Recon = "Recon",
+  Assault = "Assault",
+  Mixed = "Mixed",
 }
 
-export const FlightTypeNameUA = [
-  { value: FlightType.Recon, label: "Розвідка" },
-  { value: FlightType.Assault, label: "Атака" },
-  { value: FlightType.Mixed, label: "Змішаний" },
-];
+export const FlightTypeNameUA: Record<FlightType, string> = {
+  [FlightType.Recon]: "Розвідка",
+  [FlightType.Assault]: "Атака",
+  [FlightType.Mixed]: "Змішаний",
+};
+
+export enum Specification {
+  Tech = "Tech",
+  UsageExperience = "Usage experience",
+  Engineering = "Engineering",
+}
+
+export const SpecificationeNameUA: Record<Specification, string> = {
+  [Specification.Tech]: "Технологія",
+  [Specification.UsageExperience]: "Досвід використання",
+  [Specification.Engineering]: "Розробка",
+};
 
 export enum MaterialType {
-  Tech = 'Tech',
-  UsageExperience = 'Usage experience',
-  Engineering = 'Engineering',
+  Article = "Article",
+  Lecture = "Lecture",
+  Video = "Video",
 }
-  
+
+export const MaterialTypeNameUA: Record<MaterialType, string> = {
+  [MaterialType.Article]: "Стаття",
+  [MaterialType.Lecture]: "Лекція",
+  [MaterialType.Video]: "Відео",
+};

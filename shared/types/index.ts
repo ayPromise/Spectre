@@ -1,13 +1,22 @@
-export type ID = string; 
+export type ID = string;
 
-export { MeetingType, LessonType, FlightType, MaterialType, UserRole } from "./Enums"
+export {
+  MeetingType,
+  LessonType,
+  FlightType,
+  MaterialType,
+  UserRole,
+  Specification,
+} from "./Enums";
 
 export type { User } from "./User";
 
-export type { Schedule } from "./Schedule"
+export type { Schedule } from "./Schedule";
 
-export type { ArchiveLog, MapPoint } from "./ArchiveLog"
+export type { ArchiveLog, MapPoint } from "./ArchiveLog";
 
-export type { Video } from "./Video"
+export type { Video } from "./Video";
 
-export type { Article, Test, Question, Option } from "./Article"
+export type { Article } from "./Article";
+
+export type { Test, Question, Option } from "./Test";

@@ -1,13 +1,14 @@
-import { ID, Test } from ".";
+import { ID } from ".";
 import { Specification } from "./Enums";
 
-export interface Article {
+export interface Lecture {
   id: ID;
   title: string;
-  content: string;
-  timeToRead: number;
+  description: string;
+  videoURL: string;
+  time: number;
   type: Specification;
-  test: Test;
+  note?: string;
   createdAt: Date;
   updatedAt: Date;
 }

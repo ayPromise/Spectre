@@ -1,17 +1,17 @@
-import { MaterialType, Test } from "@shared/types";
+import { Specification, Test } from "@shared/types";
 
 interface CreateArticlePayload {
   title: string;
   content: string;
-  type: MaterialType;
+  type: Specification;
   test: Test;
 }
 
 interface UpdateArticlePayload {
   title?: string;
   content?: string;
-  type?: MaterialType;
+  type?: Specification;
   test?: Test;
 }
 
-export type { CreateArticlePayload, UpdateArticlePayload }
+export type { CreateArticlePayload, UpdateArticlePayload };
