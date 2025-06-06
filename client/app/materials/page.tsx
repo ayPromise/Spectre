@@ -1,17 +1,30 @@
+"use client";
+
 import React from "react";
+import { Loader2 } from "lucide-react";
+import { useMaterials } from "@/context/MaterialsContext";
+import MaterialsList from "./components/MaterialsList";
 
-export const dynamic = "force-dynamic";
+const MaterialsPage = () => {
+  const { materials, isLoading, isError, error } = useMaterials();
 
-const MaterialsPage: React.FC = () => {
-  return (
-    <>
-      <h1 className="text-3xl font-bold mb-4">Навчальні матеріали</h1>
-      <p className="text-lg">
-        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
-        технології та бойову ефективність.
-      </p>
-    </>
-  );
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center py-20 text-red-600">
+        Помилка: {(error as Error).message}
+      </div>
+    );
+  }
+
+  return <MaterialsList materials={materials || []} />;
 };
 
 export default MaterialsPage;

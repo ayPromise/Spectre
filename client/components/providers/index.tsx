@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AuthStatus from "@/types/client/AuthStatus";
+import { MaterialsProvider } from "@/context/MaterialsContext";
 
 const Providers = ({
   children,
@@ -22,7 +23,9 @@ const Providers = ({
 
   return (
     <QueryProvider>
-      <AuthProvider user={user}>{children}</AuthProvider>
+      <AuthProvider user={user}>
+        <MaterialsProvider>{children}</MaterialsProvider>
+      </AuthProvider>
       {hasMounted && (
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
       )}

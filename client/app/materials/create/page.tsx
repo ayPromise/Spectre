@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { MaterialType } from "@shared/types/Enums";
 import ArticleForm from "./components/ArticleForm";
+import LectureForm from "./components/LectureForm";
 
 const CreateMaterialPage = () => {
   const [type, setType] = useState<MaterialType>(MaterialType.Article);
@@ -38,8 +39,8 @@ const CreateMaterialPage = () => {
       </div>
 
       {type === MaterialType.Article && <ArticleForm />}
-      {/* {type === MaterialType.Lecture && <LectureForm />}
-      {type === MaterialType.Video && <VideoForm />} */}
+      {type === MaterialType.Lecture && <LectureForm />}
+      {/* {type === MaterialType.Video && <VideoForm />} */}
     </div>
   );
 };
