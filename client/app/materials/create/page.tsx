@@ -1,19 +1,47 @@
-import React from "react";
+"use client";
 
-export const dynamic = "force-dynamic";
+import React, { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MaterialType } from "@shared/types/Enums";
+import ArticleForm from "./components/ArticleForm";
 
-const MaterialCreatePage: React.FC = () => {
+const CreateMaterialPage = () => {
+  const [type, setType] = useState<MaterialType>(MaterialType.Article);
+
   return (
-    <>
-      <h1 className="text-3xl font-bold mb-4">
+    <div className="max-w-3xl">
+      <h1 className="text-2xl font-semibold mb-6">
         Створення навчального матеріалу
       </h1>
-      <p className="text-lg">
-        Ми є провідною школою підготовки операторів БПЛА, з фокусом на сучасні
-        технології та бойову ефективність.
-      </p>
-    </>
+
+      <div className="mb-6">
+        <label className="block mb-2 text-sm font-medium">Тип матеріалу</label>
+        <Select
+          onValueChange={(val: MaterialType) => setType(val)}
+          defaultValue={MaterialType.Article}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Оберіть тип матеріалу" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={MaterialType.Article}>Стаття</SelectItem>
+            <SelectItem value={MaterialType.Lecture}>Лекція</SelectItem>
+            <SelectItem value={MaterialType.Video}>Відео</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {type === MaterialType.Article && <ArticleForm />}
+      {/* {type === MaterialType.Lecture && <LectureForm />}
+      {type === MaterialType.Video && <VideoForm />} */}
+    </div>
   );
 };
 
-export default MaterialCreatePage;
+export default CreateMaterialPage;

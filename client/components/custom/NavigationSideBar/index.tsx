@@ -70,7 +70,7 @@ const SideBar: React.FC = () => {
     isAuth && (
       <aside
         className={cn(
-          "border-r border-border bg-background text-primary transition-all duration-300 ease-in-out relative pt-4",
+          "sticky top-0 h-screen border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
           collapsed ? "w-2" : "min-w-52"
         )}
       >
@@ -143,7 +143,7 @@ const SideBar: React.FC = () => {
             <Button
               className={cn(
                 "px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                "mt-20 cursor-pointer"
+                "mt-10 cursor-pointer"
               )}
               onClick={handleLogout}
             >

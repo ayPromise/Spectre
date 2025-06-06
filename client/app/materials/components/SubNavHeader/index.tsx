@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 const tabs = [
-  { href: "/materials", label: "Все" },
+  { href: "/materials", label: "Всі" },
   { href: "/materials/lecture", label: "Лекції" },
   { href: "/materials/article", label: "Статті" },
   { href: "/materials/video", label: "Відео" },
@@ -19,7 +20,7 @@ const SubNavHeader: React.FC = () => {
   };
 
   return (
-    <div className="w-full border-b border-border bg-background mb-8">
+    <div className="relative w-full border-b border-border bg-background mb-8">
       <div className="max-w-7xl flex overflow-x-auto gap-8">
         {tabs.map(({ href, label }) => (
           <Link
@@ -35,6 +36,11 @@ const SubNavHeader: React.FC = () => {
             {label}
           </Link>
         ))}
+        <Link href={`/materials/create`}>
+          <Button className="absolute right-0">
+            Створити <Plus className="w-5 h-5" strokeWidth={2} />
+          </Button>
+        </Link>
       </div>
     </div>
   );
