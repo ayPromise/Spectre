@@ -27,6 +27,7 @@ import TestForm from "./TestForm";
 import { Input } from "@/components/ui/input";
 import createMaterial from "../utils/createMaterial";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
+import { useMaterials } from "@/context/MaterialsContext";
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
@@ -66,15 +67,16 @@ const LectureForm: React.FC = () => {
     setQuestions(newQuestions);
   };
 
+  const { refetch } = useMaterials();
   const { mutate: createMaterialMutation, isPending } = useMutation({
     mutationFn: (data: CreateLecturePayload) => createMaterial(data),
     onSuccess: (lecture) => {
       const kind = lecture.kind.toLocaleLowerCase();
       const id = lecture._id;
-      console.log(lecture);
       showSuccess(
         `${MaterialTypeNameUA[MaterialType.Lecture]} була успішно створена 🎉`
       );
+      refetch();
       router.push(`/materials/${kind}/${id}`);
     },
     onError: (err: Error) => {

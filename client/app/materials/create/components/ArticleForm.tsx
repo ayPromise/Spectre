@@ -26,6 +26,7 @@ import { useMutation } from "@tanstack/react-query";
 import createMaterial from "../utils/createMaterial";
 import { useRouter } from "next/navigation";
 import { CreateArticlePayload } from "@/types/CreateMaterialPayload";
+import { useMaterials } from "@/context/MaterialsContext";
 
 type ArticleFormData = {
   title: string;
@@ -71,16 +72,17 @@ const ArticleForm: React.FC = () => {
     setQuestions(newQuestions);
   };
   const [isValid, setIsValid] = useState(false);
+  const { refetch } = useMaterials();
   const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
     {
       mutationFn: (data: CreateArticlePayload) => createMaterial(data),
       onSuccess: (article) => {
         const kind = article.kind.toLocaleLowerCase();
         const id = article._id;
-        console.log(article);
         showSuccess(
           `${MaterialTypeNameUA[MaterialType.Article]} була успішно створена 🎉`
         );
+        refetch();
         router.push(`/materials/${kind}/${id}`);
       },
       onError: (error: Error) => {
