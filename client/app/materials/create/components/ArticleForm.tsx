@@ -15,7 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Question, Specification } from "@shared/types";
-import { MaterialType, SpecificationeNameUA } from "@shared/types/Enums";
+import {
+  MaterialType,
+  MaterialTypeNameUA,
+  SpecificationeNameUA,
+} from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { showError, showSuccess } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
@@ -70,9 +74,14 @@ const ArticleForm: React.FC = () => {
   const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
     {
       mutationFn: (data: CreateArticlePayload) => createMaterial(data),
-      onSuccess: () => {
-        showSuccess("Матеріал створено 🎉");
-        router.push("/materials");
+      onSuccess: (article) => {
+        const kind = article.kind.toLocaleLowerCase();
+        const id = article._id;
+        console.log(article);
+        showSuccess(
+          `${MaterialTypeNameUA[MaterialType.Article]} була успішно створена 🎉`
+        );
+        router.push(`/materials/${kind}/${id}`);
       },
       onError: (error: Error) => {
         showError(error.message || "Не вдалося створити матеріал");

@@ -1,9 +1,14 @@
 import server_endpoints from "@/app/api/server_endpoints";
-import { CreateMaterialPayload } from "@/types/CreateMaterialPayload";
+import {
+  CreateArticlePayload,
+  CreateLecturePayload,
+} from "@/types/CreateMaterialPayload";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-const createMaterial = async (data: CreateMaterialPayload) => {
+const createMaterial = async (
+  data: CreateArticlePayload | CreateLecturePayload
+) => {
   const response = await fetch(`${SERVER_URL}${server_endpoints.materials}`, {
     method: "POST",
     headers: {

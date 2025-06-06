@@ -21,6 +21,7 @@ interface CreateLecturePayload {
   title: string;
   description: string;
   videoURL: string;
+  time: number;
   type: Specification;
   test: Test;
 }
@@ -30,6 +31,7 @@ interface UpdateLecturePayload {
   title?: string;
   description?: string;
   videoUrl?: string;
+  time: number;
   type?: Specification;
   test?: Test;
 }
@@ -38,7 +40,7 @@ interface CreateVideoPayload {
   kind: MaterialType.Video;
   title: string;
   videoUrl: string;
-  duration: number;
+  time: number;
   type: Specification;
   test: Test;
 }
@@ -47,7 +49,7 @@ interface UpdateVideoPayload {
   kind: MaterialType.Video;
   title?: string;
   videoUrl?: string;
-  duration?: number;
+  time?: number;
   type?: Specification;
   test?: Test;
 }
