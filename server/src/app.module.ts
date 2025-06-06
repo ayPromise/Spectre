@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { MaterialModule } from './materials/material.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -15,6 +16,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     }),
     AuthModule,
     ScheduleModule,
+    MaterialModule,
   ],
 })
 export class AppModule {}
