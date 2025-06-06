@@ -17,6 +17,7 @@ import {
 import { Question, Specification } from "@shared/types";
 import { SpecificationeNameUA } from "@shared/types/Enums";
 import TestForm from "./TestForm";
+import { showError, showSuccess } from "@/utils/toast";
 
 type ArticleFormData = {
   title: string;
@@ -41,8 +42,7 @@ const ArticleForm: React.FC = () => {
   const handleQuestionsChange = (newQuestions: Question[]) => {
     setQuestions(newQuestions);
   };
-  const [showValidation, setShowValidation] = useState(false);
-
+  const [isValid, setIsValid] = useState(false);
   const formik = useFormik<ArticleFormData>({
     initialValues: {
       title: "",
@@ -52,18 +52,26 @@ const ArticleForm: React.FC = () => {
     validationSchema,
     onSubmit: (values) => {
       //! FIX
-      setShowValidation(true);
-      if (!showValidation) {
+      if (!questions.length) {
+        showError("Обов'зяково додайте тест по навчальному матеріалу");
+        return;
+      }
+
+      if (isValid) {
+        showSuccess("Навчальний матеріал було успішно створено");
         console.log("📝 Submit:", { ...values, questions });
       }
     },
   });
+
+  console.log(isValid);
 
   const {
     handleSubmit,
     handleChange,
     handleBlur,
     setFieldValue,
+    isSubmitting,
     values,
     errors,
     touched,
@@ -141,15 +149,15 @@ const ArticleForm: React.FC = () => {
       <TestForm
         questions={questions}
         onQuestionsChange={handleQuestionsChange}
-        showValidationErrors={showValidation}
-        setValidationPassed={() => setShowValidation(false)}
+        setValidationPassed={() => setIsValid(true)}
+        isSubmitting={isSubmitting}
       />
 
       <Button
         type="submit"
         form="articleForm"
         className="w-full mt-5 font-bold text-lg"
-        disabled={showValidation}
+        disabled={isSubmitting && !isValid}
       >
         Створити
       </Button>

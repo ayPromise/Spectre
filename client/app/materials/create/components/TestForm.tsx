@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Option, Question } from "@shared/types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -15,16 +15,17 @@ import {
 interface TestFormProps {
   questions: Question[];
   onQuestionsChange: (newQuestions: Question[]) => void;
-  showValidationErrors?: boolean;
   setValidationPassed?: () => void;
+  isSubmitting: boolean;
 }
 
 const TestForm: React.FC<TestFormProps> = ({
   questions,
   onQuestionsChange,
-  showValidationErrors,
   setValidationPassed,
+  isSubmitting,
 }) => {
+  const [showError, setShowError] = useState<boolean>(false);
   const addQuestion = () => {
     const newOptions: Option[] = [
       { text: "", isCorrect: false },
@@ -126,6 +127,14 @@ const TestForm: React.FC<TestFormProps> = ({
   useEffect(() => {
     if (!setValidationPassed) return;
 
+    if (!questions.length) {
+      return;
+    }
+
+    if (!isSubmitting) {
+      return;
+    }
+
     const allValid = questions.every((question) => {
       if (isInputInvalid(question.text)) return false;
       if (isPointsInvalid(question.points)) return false;
@@ -144,7 +153,7 @@ const TestForm: React.FC<TestFormProps> = ({
 
     if (allValid) {
       setValidationPassed();
-    }
+    } else setShowError(true);
   }, [questions, setValidationPassed]);
 
   return (
@@ -182,7 +191,7 @@ const TestForm: React.FC<TestFormProps> = ({
               onChange={(e) => updateQuestionText(qIndex, e.target.value)}
               placeholder="Текст питання"
               className={`flex-grow ${
-                showValidationErrors && isInputInvalid(question.text)
+                showError && isInputInvalid(question.text)
                   ? "border border-red-500"
                   : ""
               }`}
@@ -203,7 +212,7 @@ const TestForm: React.FC<TestFormProps> = ({
                   updateQuestionPoints(qIndex, Number(e.target.value))
                 }
                 className={
-                  showValidationErrors && isPointsInvalid(question.points)
+                  showError && isPointsInvalid(question.points)
                     ? "border border-red-500"
                     : ""
                 }
@@ -265,7 +274,7 @@ const TestForm: React.FC<TestFormProps> = ({
                   }
                   placeholder="Текст варіанту відповіді"
                   className={`flex-grow ${
-                    showValidationErrors && isInputInvalid(option.text)
+                    showError && isInputInvalid(option.text)
                       ? "border border-red-500"
                       : ""
                   }`}
@@ -280,8 +289,7 @@ const TestForm: React.FC<TestFormProps> = ({
                       }
                       id={`check-${qIndex}-${oIndex}`}
                       className={`flex items-center space-x-2 ${
-                        showValidationErrors &&
-                        isCorrectAnswerMissing(question.options)
+                        showError && isCorrectAnswerMissing(question.options)
                           ? "border border-red-500 p-1 rounded"
                           : ""
                       }`}
@@ -302,8 +310,7 @@ const TestForm: React.FC<TestFormProps> = ({
                       toggleOptionCorrect(qIndex, Number(val))
                     }
                     className={`${
-                      showValidationErrors &&
-                      isCorrectAnswerMissing(question.options)
+                      showError && isCorrectAnswerMissing(question.options)
                         ? "border border-red-500 p-1 rounded"
                         : ""
                     }`}
@@ -313,8 +320,7 @@ const TestForm: React.FC<TestFormProps> = ({
                         value={oIndex.toString()}
                         id={`radio-${qIndex}-${oIndex}`}
                         className={`${
-                          showValidationErrors &&
-                          isCorrectAnswerMissing(question.options)
+                          showError && isCorrectAnswerMissing(question.options)
                             ? "border border-red-500 p-1 rounded"
                             : ""
                         }`}
