@@ -42,6 +42,9 @@ export class CreateMaterialDto {
   @IsString()
   type: string;
 
+  @IsString()
+  variant: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => QuestionDto)

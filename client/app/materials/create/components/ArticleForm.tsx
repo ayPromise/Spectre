@@ -18,6 +18,10 @@ import { Question, Specification } from "@shared/types";
 import { SpecificationeNameUA } from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { showError, showSuccess } from "@/utils/toast";
+import { CreateMaterialPayload } from "@/types/CreateMaterialPayload";
+import { useMutation } from "@tanstack/react-query";
+import createMaterial from "../utils/createMaterial";
+import { useRouter } from "next/navigation";
 
 type ArticleFormData = {
   title: string;
@@ -38,11 +42,41 @@ const validationSchema = Yup.object({
 const specificationOptions = Object.values(Specification);
 
 const ArticleForm: React.FC = () => {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const router = useRouter();
+  const defaultTest = [
+    {
+      text: "",
+      options: [
+        {
+          text: "",
+          isCorrect: false,
+        },
+        {
+          text: "",
+          isCorrect: false,
+        },
+      ],
+      points: 1,
+      multipleAnswers: false,
+    },
+  ];
+  const [questions, setQuestions] = useState<Question[]>(defaultTest);
   const handleQuestionsChange = (newQuestions: Question[]) => {
     setQuestions(newQuestions);
   };
   const [isValid, setIsValid] = useState(false);
+  const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
+    {
+      mutationFn: (data: CreateMaterialPayload) => createMaterial(data),
+      onSuccess: () => {
+        showSuccess("Матеріал створено 🎉");
+        router.push("/materials");
+      },
+      onError: (error: Error) => {
+        showError(error.message || "Не вдалося створити матеріал");
+      },
+    }
+  );
   const formik = useFormik<ArticleFormData>({
     initialValues: {
       title: "",
@@ -51,20 +85,16 @@ const ArticleForm: React.FC = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      //! FIX
       if (!questions.length) {
         showError("Обов'зяково додайте тест по навчальному матеріалу");
         return;
       }
 
       if (isValid) {
-        showSuccess("Навчальний матеріал було успішно створено");
-        console.log("📝 Submit:", { ...values, questions });
+        createMaterialMutation({ ...values, questions });
       }
     },
   });
-
-  console.log(isValid);
 
   const {
     handleSubmit,
@@ -157,7 +187,7 @@ const ArticleForm: React.FC = () => {
         type="submit"
         form="articleForm"
         className="w-full mt-5 font-bold text-lg"
-        disabled={isSubmitting && !isValid}
+        disabled={(isSubmitting && !isValid) || isCreating}
       >
         Створити
       </Button>

@@ -36,7 +36,10 @@ export class Material {
   content: string;
 
   @Prop({ required: true })
-  type: string; // e.g., "Tech", "Tactic"
+  type: string;
+
+  @Prop({ required: true })
+  variant: string;
 
   @Prop({ type: [Question], default: [] })
   questions: Question[];

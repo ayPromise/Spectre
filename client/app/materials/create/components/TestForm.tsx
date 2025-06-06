@@ -110,7 +110,7 @@ const TestForm: React.FC<TestFormProps> = ({
 
   const removeOption = (qIndex: number, oIndex: number) => {
     const options = questions[qIndex].options || [];
-    if (options.length <= 2) return; // не дозволяємо менше 2
+    if (options.length <= 2) return;
     const updated = [...questions];
     const newOptions = [...options];
     newOptions.splice(oIndex, 1);

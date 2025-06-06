@@ -1,5 +1,5 @@
 import { ID, Test } from ".";
-import { Specification } from "./Enums";
+import { MaterialType, Specification } from "./Enums";
 
 export interface Article {
   id: ID;
@@ -7,6 +7,7 @@ export interface Article {
   content: string;
   timeToRead: number;
   type: Specification;
+  variant: MaterialType;
   test: Test;
   createdAt: Date;
   updatedAt: Date;
