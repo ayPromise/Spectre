@@ -48,13 +48,14 @@ const ArticleForm: React.FC = () => {
       title: "",
       content: "",
       type: specificationOptions[0],
-      testId: "",
     },
     validationSchema,
     onSubmit: (values) => {
       //! FIX
       setShowValidation(true);
-      console.log("📝 Submit:", values);
+      if (!showValidation) {
+        console.log("📝 Submit:", { ...values, questions });
+      }
     },
   });
 
@@ -66,7 +67,6 @@ const ArticleForm: React.FC = () => {
     values,
     errors,
     touched,
-    isSubmitting,
   } = formik;
 
   return (
@@ -142,13 +142,14 @@ const ArticleForm: React.FC = () => {
         questions={questions}
         onQuestionsChange={handleQuestionsChange}
         showValidationErrors={showValidation}
+        setValidationPassed={() => setShowValidation(false)}
       />
 
       <Button
         type="submit"
-        disabled={isSubmitting}
         form="articleForm"
         className="w-full mt-5 font-bold text-lg"
+        disabled={showValidation}
       >
         Створити
       </Button>

@@ -6,11 +6,12 @@ export const isQuestionInvalid = (q: Question) =>
   !q.options.some((opt) => opt.isCorrect) ||
   q.options.some((opt) => !opt.text.trim());
 
-export const isInputInvalid = (text: string, show?: boolean) =>
-  show && !text.trim();
+export const isInputInvalid = (text: string) => !text.trim();
 
-export const isPointsInvalid = (points: number, show?: boolean) =>
-  show && (!points || points < 1);
+export const isPointsInvalid = (points: number) => !points || points < 1;
 
-export const isCorrectAnswerMissing = (options: Option[], show?: boolean) =>
-  show && !options.some((opt) => opt.isCorrect);
+export const isCorrectAnswerMissing = (options: Option[]) =>
+  !options.some((opt) => opt.isCorrect);
+
+export const isOptionsInvalid = (options: Option[]) =>
+  !options.some((opt) => !opt.text.trim());

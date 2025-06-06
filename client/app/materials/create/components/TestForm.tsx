@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Option, Question } from "@shared/types";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -16,12 +16,14 @@ interface TestFormProps {
   questions: Question[];
   onQuestionsChange: (newQuestions: Question[]) => void;
   showValidationErrors?: boolean;
+  setValidationPassed?: () => void;
 }
 
 const TestForm: React.FC<TestFormProps> = ({
   questions,
   onQuestionsChange,
   showValidationErrors,
+  setValidationPassed,
 }) => {
   const addQuestion = () => {
     const newOptions: Option[] = [
@@ -121,6 +123,30 @@ const TestForm: React.FC<TestFormProps> = ({
     onQuestionsChange(updated);
   };
 
+  useEffect(() => {
+    if (!setValidationPassed) return;
+
+    const allValid = questions.every((question) => {
+      if (isInputInvalid(question.text)) return false;
+      if (isPointsInvalid(question.points)) return false;
+
+      question.options.some((option) => {
+        if (isInputInvalid(option.text)) return false;
+      });
+
+      if (question.options?.some((opt) => isInputInvalid(opt.text)))
+        return false;
+
+      if (isCorrectAnswerMissing(question.options)) return false;
+
+      return true;
+    });
+
+    if (allValid) {
+      setValidationPassed();
+    }
+  }, [questions, setValidationPassed]);
+
   return (
     <div className="mt-[40px]">
       <div className="mb-4 flex justify-between items-center">
@@ -156,7 +182,7 @@ const TestForm: React.FC<TestFormProps> = ({
               onChange={(e) => updateQuestionText(qIndex, e.target.value)}
               placeholder="Текст питання"
               className={`flex-grow ${
-                isInputInvalid(question.text, showValidationErrors)
+                showValidationErrors && isInputInvalid(question.text)
                   ? "border border-red-500"
                   : ""
               }`}
@@ -177,7 +203,7 @@ const TestForm: React.FC<TestFormProps> = ({
                   updateQuestionPoints(qIndex, Number(e.target.value))
                 }
                 className={
-                  isPointsInvalid(question.points, showValidationErrors)
+                  showValidationErrors && isPointsInvalid(question.points)
                     ? "border border-red-500"
                     : ""
                 }
@@ -239,7 +265,7 @@ const TestForm: React.FC<TestFormProps> = ({
                   }
                   placeholder="Текст варіанту відповіді"
                   className={`flex-grow ${
-                    isInputInvalid(option.text, showValidationErrors)
+                    showValidationErrors && isInputInvalid(option.text)
                       ? "border border-red-500"
                       : ""
                   }`}
@@ -254,10 +280,8 @@ const TestForm: React.FC<TestFormProps> = ({
                       }
                       id={`check-${qIndex}-${oIndex}`}
                       className={`flex items-center space-x-2 ${
-                        isCorrectAnswerMissing(
-                          question.options,
-                          showValidationErrors
-                        )
+                        showValidationErrors &&
+                        isCorrectAnswerMissing(question.options)
                           ? "border border-red-500 p-1 rounded"
                           : ""
                       }`}
@@ -278,10 +302,8 @@ const TestForm: React.FC<TestFormProps> = ({
                       toggleOptionCorrect(qIndex, Number(val))
                     }
                     className={`${
-                      isCorrectAnswerMissing(
-                        question.options,
-                        showValidationErrors
-                      )
+                      showValidationErrors &&
+                      isCorrectAnswerMissing(question.options)
                         ? "border border-red-500 p-1 rounded"
                         : ""
                     }`}
@@ -291,10 +313,8 @@ const TestForm: React.FC<TestFormProps> = ({
                         value={oIndex.toString()}
                         id={`radio-${qIndex}-${oIndex}`}
                         className={`${
-                          isCorrectAnswerMissing(
-                            question.options,
-                            showValidationErrors
-                          )
+                          showValidationErrors &&
+                          isCorrectAnswerMissing(question.options)
                             ? "border border-red-500 p-1 rounded"
                             : ""
                         }`}
