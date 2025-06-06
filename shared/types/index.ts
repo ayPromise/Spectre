@@ -20,3 +20,5 @@ export type { Video } from "./Video";
 export type { Article } from "./Article";
 
 export type { Test, Question, Option } from "./Test";
+
+export type { MaterialUnion } from "./MaterialUnion";

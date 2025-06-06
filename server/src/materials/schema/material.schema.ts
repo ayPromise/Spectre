@@ -27,22 +27,22 @@ export class Question {
   points: number;
 }
 
-@Schema({ timestamps: true })
+@Schema()
+export class Test {
+  @Prop({ type: [Question], default: [] })
+  questions: Question[];
+
+  @Prop({ required: true })
+  summaryScore: number;
+}
+
+@Schema({ discriminatorKey: 'kind', timestamps: true })
 export class Material {
   @Prop({ required: true })
   title: string;
 
   @Prop({ required: true })
-  content: string;
-
-  @Prop({ required: true })
   type: string;
-
-  @Prop({ required: true })
-  variant: string;
-
-  @Prop({ type: [Question], default: [] })
-  questions: Question[];
 }
 
 export const MaterialSchema = SchemaFactory.createForClass(Material);

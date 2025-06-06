@@ -1,5 +1,5 @@
 import { ID } from ".";
-import { Specification } from "./Enums";
+import { MaterialType, Specification } from "./Enums";
 
 export interface Lecture {
   id: ID;
@@ -8,7 +8,7 @@ export interface Lecture {
   videoURL: string;
   time: number;
   type: Specification;
-  note?: string;
+  kind: MaterialType.Lecture;
   createdAt: Date;
   updatedAt: Date;
 }

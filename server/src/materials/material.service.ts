@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Material, MaterialDocument } from './schema/material.schema';
 import { Model } from 'mongoose';
 import { CreateMaterialDto } from './dto/create-material.dto';
+import { MaterialType } from '@shared/types';
 
 @Injectable()
 export class MaterialService {
@@ -12,8 +17,16 @@ export class MaterialService {
   ) {}
 
   async create(dto: CreateMaterialDto): Promise<Material> {
-    const created = new this.materialModel(dto);
-    return await created.save();
+    switch (dto.kind) {
+      case MaterialType.Article:
+        return this.materialModel.discriminators[dto.kind].create(dto);
+      case MaterialType.Lecture:
+        return this.materialModel.discriminators[dto.kind].create(dto);
+      case MaterialType.Video:
+        return this.materialModel.discriminators[dto.kind].create(dto);
+      default:
+        throw new BadRequestException('Invalid material kind');
+    }
   }
 
   async findAll(): Promise<Material[]> {

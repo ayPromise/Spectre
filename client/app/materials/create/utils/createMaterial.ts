@@ -1,6 +1,5 @@
 import server_endpoints from "@/app/api/server_endpoints";
 import { CreateMaterialPayload } from "@/types/CreateMaterialPayload";
-import { MaterialType } from "@shared/types/Enums";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
@@ -11,7 +10,7 @@ const createMaterial = async (data: CreateMaterialPayload) => {
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify({ ...data, variant: MaterialType.Article }),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) {

@@ -1,52 +1,8 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsInt,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { CreateArticleDto } from './create-article.dto';
+import { CreateLectureDto } from './create-lecture.dto';
+import { CreateVideoDto } from './create-video.dto';
 
-class OptionDto {
-  @IsString()
-  text: string;
-
-  @IsBoolean()
-  isCorrect: boolean;
-}
-
-class QuestionDto {
-  @IsString()
-  text: string;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => OptionDto)
-  options: OptionDto[];
-
-  @IsBoolean()
-  multipleAnswers: boolean;
-
-  @IsInt()
-  points: number;
-}
-
-export class CreateMaterialDto {
-  @IsString()
-  title: string;
-
-  @IsString()
-  content: string;
-
-  @IsString()
-  type: string;
-
-  @IsString()
-  variant: string;
-
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => QuestionDto)
-  questions: QuestionDto[];
-}
+export type CreateMaterialDto =
+  | CreateArticleDto
+  | CreateLectureDto
+  | CreateVideoDto;

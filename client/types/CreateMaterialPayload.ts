@@ -1,8 +1,62 @@
-import { Question } from "@shared/types";
+import { MaterialType, Specification, Test } from "@shared/types";
 
-export interface CreateMaterialPayload {
+interface CreateArticlePayload {
+  kind: MaterialType.Article;
   title: string;
-  description?: string;
   content: string;
-  questions: Question[];
+  type: Specification;
+  test: Test;
 }
+
+interface UpdateArticlePayload {
+  kind: MaterialType.Article;
+  title?: string;
+  content?: string;
+  type?: Specification;
+  test?: Test;
+}
+
+interface CreateLecturePayload {
+  kind: MaterialType.Lecture;
+  title: string;
+  description: string;
+  videoURL: string;
+  type: Specification;
+  test: Test;
+}
+
+interface UpdateLecturePayload {
+  kind: MaterialType.Lecture;
+  title?: string;
+  description?: string;
+  videoUrl?: string;
+  type?: Specification;
+  test?: Test;
+}
+
+interface CreateVideoPayload {
+  kind: MaterialType.Video;
+  title: string;
+  videoUrl: string;
+  duration: number;
+  type: Specification;
+  test: Test;
+}
+
+interface UpdateVideoPayload {
+  kind: MaterialType.Video;
+  title?: string;
+  videoUrl?: string;
+  duration?: number;
+  type?: Specification;
+  test?: Test;
+}
+
+export type {
+  CreateArticlePayload,
+  UpdateArticlePayload,
+  CreateLecturePayload,
+  UpdateLecturePayload,
+  CreateVideoPayload,
+  UpdateVideoPayload,
+};

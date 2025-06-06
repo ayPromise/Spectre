@@ -7,7 +7,7 @@ export interface Article {
   content: string;
   timeToRead: number;
   type: Specification;
-  variant: MaterialType;
+  kind: MaterialType.Article;
   test: Test;
   createdAt: Date;
   updatedAt: Date;

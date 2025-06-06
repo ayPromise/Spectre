@@ -15,13 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Question, Specification } from "@shared/types";
-import { SpecificationeNameUA } from "@shared/types/Enums";
+import { MaterialType, SpecificationeNameUA } from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { showError, showSuccess } from "@/utils/toast";
-import { CreateMaterialPayload } from "@/types/CreateMaterialPayload";
 import { useMutation } from "@tanstack/react-query";
 import createMaterial from "../utils/createMaterial";
 import { useRouter } from "next/navigation";
+import { CreateArticlePayload } from "@/types/CreateMaterialPayload";
 
 type ArticleFormData = {
   title: string;
@@ -41,25 +41,27 @@ const validationSchema = Yup.object({
 
 const specificationOptions = Object.values(Specification);
 
+const defaultTest = [
+  {
+    text: "",
+    options: [
+      {
+        text: "",
+        isCorrect: false,
+      },
+      {
+        text: "",
+        isCorrect: false,
+      },
+    ],
+    points: 1,
+    multipleAnswers: false,
+  },
+];
+
 const ArticleForm: React.FC = () => {
   const router = useRouter();
-  const defaultTest = [
-    {
-      text: "",
-      options: [
-        {
-          text: "",
-          isCorrect: false,
-        },
-        {
-          text: "",
-          isCorrect: false,
-        },
-      ],
-      points: 1,
-      multipleAnswers: false,
-    },
-  ];
+
   const [questions, setQuestions] = useState<Question[]>(defaultTest);
   const handleQuestionsChange = (newQuestions: Question[]) => {
     setQuestions(newQuestions);
@@ -67,7 +69,7 @@ const ArticleForm: React.FC = () => {
   const [isValid, setIsValid] = useState(false);
   const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
     {
-      mutationFn: (data: CreateMaterialPayload) => createMaterial(data),
+      mutationFn: (data: CreateArticlePayload) => createMaterial(data),
       onSuccess: () => {
         showSuccess("Матеріал створено 🎉");
         router.push("/materials");
@@ -91,7 +93,14 @@ const ArticleForm: React.FC = () => {
       }
 
       if (isValid) {
-        createMaterialMutation({ ...values, questions });
+        createMaterialMutation({
+          ...values,
+          test: {
+            questions,
+            summaryScore: 999,
+          },
+          kind: MaterialType.Article,
+        });
       }
     },
   });

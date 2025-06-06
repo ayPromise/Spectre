@@ -11,7 +11,6 @@ export interface Question {
 }
 
 export interface Test {
-  title: string;
   questions: Question[];
   summaryScore: number;
 }
