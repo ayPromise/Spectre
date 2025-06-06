@@ -1,4 +1,4 @@
-import { ID } from "."
+import { ID } from ".";
 import { FlightType } from "./Enums";
 
 export interface MapPoint {
@@ -9,7 +9,7 @@ export interface MapPoint {
 }
 
 export interface ArchiveLog {
-  id: ID;
+  _id: ID;
   title: string;
   description: string;
   userId: ID;

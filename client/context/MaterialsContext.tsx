@@ -3,18 +3,10 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getMaterials from "@/app/materials/create/utils/getAllMaterials";
-
-interface Material {
-  _id: string;
-  kind: string;
-  title: string;
-  type: string;
-  description?: string;
-  content?: string;
-}
+import { MaterialUnion } from "@shared/types";
 
 interface MaterialsContextValue {
-  materials: Material[] | undefined;
+  materials: MaterialUnion[] | undefined;
   isLoading: boolean;
   isError: boolean;
   error: unknown;
@@ -32,7 +24,7 @@ export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
     isError,
     error,
     refetch,
-  } = useQuery<Material[]>({
+  } = useQuery<MaterialUnion[]>({
     queryKey: ["materials"],
     queryFn: getMaterials,
     staleTime: 1000 * 60 * 5, // кеш 5 хвилин

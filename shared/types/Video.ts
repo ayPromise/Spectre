@@ -2,7 +2,7 @@ import { ID } from ".";
 import { MaterialType, Specification } from "./Enums";
 
 export interface Video {
-  id: ID;
+  _id: ID;
   title: string;
   description: string;
   videoURL: string;

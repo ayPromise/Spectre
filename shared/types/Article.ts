@@ -2,7 +2,7 @@ import { ID, Test } from ".";
 import { MaterialType, Specification } from "./Enums";
 
 export interface Article {
-  id: ID;
+  _id: ID;
   title: string;
   content: string;
   timeToRead: number;
