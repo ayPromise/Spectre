@@ -29,6 +29,7 @@ import createMaterial from "../utils/createMaterial";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
 import { UploadCloud } from "lucide-react";
+import client_endpoints from "@/app/api/client_endpoints";
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
@@ -115,7 +116,7 @@ const LectureForm: React.FC = () => {
 
         let uploadedVideoUrl = "";
         try {
-          const res = await fetch("/api/upload", {
+          const res = await fetch(client_endpoints.upload, {
             method: "POST",
             body: formData,
           });

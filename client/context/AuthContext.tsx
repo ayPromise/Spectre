@@ -36,7 +36,12 @@ export function AuthProvider({
 
   return (
     <AuthContext.Provider
-      value={{ isAuth, setIsAuth, userData, refetchUser: () => refetch() }}
+      value={{
+        isAuth,
+        setIsAuth,
+        userData,
+        refetchUser: () => refetch(),
+      }}
     >
       {children}
     </AuthContext.Provider>

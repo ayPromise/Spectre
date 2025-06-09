@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { Response } from "express";
-import { Roles } from 'src/guards/roles.decorator';
+import { Response } from 'express';
+import { Roles } from 'src/decorators/roles.decorator';
 import { UserRole } from '@shared/types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles.guard';
@@ -11,7 +11,7 @@ import { NotAuthenticatedGuard } from 'src/guards/not-authenticated.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-  
+
   @Post('create-user')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.Admin)
@@ -21,8 +21,10 @@ export class AuthController {
 
   @Post('sign-in')
   @UseGuards(NotAuthenticatedGuard)
-  async signIn(@Res({ passthrough: true }) res: Response, @Body() body: { email: string; password: string }) {
-
+  async signIn(
+    @Res({ passthrough: true }) res: Response,
+    @Body() body: { email: string; password: string },
+  ) {
     const token = await this.authService.signIn(body.email, body.password);
 
     res.cookie('token', token.access_token, {
@@ -31,7 +33,7 @@ export class AuthController {
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-  
+
     return { message: 'Ласкаво просимо!' };
   }
 
@@ -40,5 +42,26 @@ export class AuthController {
   @Roles(UserRole.Admin, UserRole.Instructor)
   async getUsersByIds(@Body() body: { ids: string[] }) {
     return this.authService.getUsersByIds(body.ids);
+  }
+
+  @Post('complete-article')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
+  async completeArticle(@Body() body: { articleId: string; userId: string }) {
+    return this.authService.completeArticle(body.userId, body.articleId);
+  }
+
+  @Post('complete-lecture')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
+  async completeLecture(@Body() body: { lectureId: string; userId: string }) {
+    return this.authService.completeLecture(body.userId, body.lectureId);
+  }
+
+  @Post('complete-video')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
+  async completeVideo(@Body() body: { videoId: string; userId: string }) {
+    return this.authService.completeVideo(body.userId, body.videoId);
   }
 }

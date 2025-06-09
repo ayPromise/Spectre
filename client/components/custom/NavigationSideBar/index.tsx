@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft, Trophy, FileText } from "lucide-react";
 import { useAccess } from "@/hooks/useAccess";
+import client_endpoints from "@/app/api/client_endpoints";
 
 const adminLinks = [{ href: "/dashboard", label: "Панель керування" }];
 
@@ -48,7 +49,7 @@ const SideBar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("/api/sign-out", {
+      const res = await fetch(client_endpoints.signOut, {
         method: "GET",
         credentials: "include",
       });
