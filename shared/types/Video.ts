@@ -1,4 +1,4 @@
-import { ID } from ".";
+import { ID, Test } from ".";
 import { MaterialType, Specification } from "./Enums";
 
 export interface Video {
@@ -9,6 +9,7 @@ export interface Video {
   kind: MaterialType.Video;
   time: number;
   type: Specification;
+  test: Test;
   createdAt: Date;
   updatedAt: Date;
 }

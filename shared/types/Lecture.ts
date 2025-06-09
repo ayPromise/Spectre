@@ -1,4 +1,4 @@
-import { ID } from ".";
+import { ID, Test } from ".";
 import { MaterialType, Specification } from "./Enums";
 
 export interface Lecture {
@@ -9,6 +9,7 @@ export interface Lecture {
   time: number;
   type: Specification;
   kind: MaterialType.Lecture;
+  test: Test;
   createdAt: Date;
   updatedAt: Date;
 }
