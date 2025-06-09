@@ -1,4 +1,4 @@
-import { ID } from "."
+import { ID } from ".";
 import { UserRole } from "./Enums";
 
 export interface User {
@@ -11,6 +11,7 @@ export interface User {
   role: UserRole;
   completedArticles: ID[];
   completedVideos: ID[];
+  completedLectures: ID[];
   certificates: ID[];
   achievements: ID[];
   createdAt: Date;

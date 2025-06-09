@@ -9,7 +9,6 @@ export interface Video {
   kind: MaterialType.Video;
   time: number;
   type: Specification;
-  test: Test;
   createdAt: Date;
   updatedAt: Date;
 }
