@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import createMaterial from "../utils/createMaterial";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
+import { UploadCloud } from "lucide-react";
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
@@ -123,8 +124,8 @@ const LectureForm: React.FC = () => {
           if (!res.ok) throw new Error(data.error || "Upload failed");
 
           uploadedVideoUrl = data.url;
-        } catch (err: any) {
-          showError(err.message);
+        } catch (error: any) {
+          showError(error.message);
           return;
         }
         createMaterialMutation({
@@ -228,6 +229,14 @@ const LectureForm: React.FC = () => {
           <Label htmlFor="video" className="block mb-3 font-medium">
             Відео
           </Label>
+          <Label
+            htmlFor="video"
+            className={`flex items-center justify-between px-4 py-2 rounded-md border cursor-pointer transition `}
+          >
+            <span>{values.video?.name || "Оберіть відео файл"}</span>
+            <UploadCloud className="w-5 h-5 ml-2" />
+          </Label>
+
           <Input
             id="video"
             name="video"
@@ -237,11 +246,7 @@ const LectureForm: React.FC = () => {
               const file = e.currentTarget.files?.[0];
               setFieldValue("video", file);
             }}
-            className={`block w-full p-2 rounded-md border ${
-              touched.video && errors.video
-                ? "border-red-600"
-                : "border-gray-300"
-            }`}
+            className="hidden"
           />
           {touched.video && errors.video && (
             <p className="text-red-600 text-sm mt-1">{errors.video}</p>
