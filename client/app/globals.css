@@ -1,7 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import '../styles/_keyframe-animations.scss';
+@import '../styles/_variables.scss';
 
 @custom-variant dark (&:is(.dark *));
+
+body{
+  overflow: auto !important;
+}
+
+.content-wrapper{
+  @apply border-[1px] border-primary;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

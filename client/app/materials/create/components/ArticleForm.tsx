@@ -4,7 +4,6 @@ import * as Yup from "yup";
 
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 import {
@@ -27,6 +26,7 @@ import createMaterial from "../utils/createMaterial";
 import { useRouter } from "next/navigation";
 import { CreateArticlePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 type ArticleFormData = {
   title: string;
@@ -93,7 +93,23 @@ const ArticleForm: React.FC = () => {
   const formik = useFormik<ArticleFormData>({
     initialValues: {
       title: "",
-      content: "",
+      content: `<h1>Початок роботи з дроном:</h1>
+                    <p></p>
+                    <h2>Мета розділу:</h2>
+                    <p></p>
+                    <h2>Основні поняття:</h2>
+                    <p></p>
+                    <h2>Огляд компонентів дрона:</h2>
+                    <p></p>
+                    <h2>Практичні можливості:</h2>
+                    <p></p>
+                    <h2>Завдання для студентів:</h2>
+                    <p></p>
+                    <h2>Висновки:</h2>
+                    <p></p>
+                    <h2>Джерела та додаткові матеріали:</h2>
+                    <p></p>
+        `,
       type: specificationOptions[0],
     },
     validationSchema,
@@ -175,20 +191,9 @@ const ArticleForm: React.FC = () => {
           <Label htmlFor="content" className="block mb-3 font-medium">
             Контент
           </Label>
-          <Textarea
-            id="content"
-            name="content"
-            rows={8}
-            placeholder="Напишіть текст статті..."
+          <SimpleEditor
             value={values.content}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            className={`block w-full rounded-md border p-2 ${
-              touched.content && errors.content
-                ? "border-red-600"
-                : "border-gray-300"
-            }`}
+            onChange={(html: string) => setFieldValue("content", html)}
           />
           {touched.content && errors.content && (
             <p className="text-red-600 text-sm mt-1">{errors.content}</p>
