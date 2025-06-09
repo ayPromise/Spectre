@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import {UserRole, ID} from "@shared/types"
+import { UserRole, ID } from '@shared/types';
 
 @Schema({ timestamps: true })
 export class User {
@@ -10,10 +10,10 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type: String, default: "placeholder"})
+  @Prop({ type: String, default: 'placeholder' })
   avatarURL: string;
 
-  @Prop({ unique: true})
+  @Prop({ unique: true })
   phoneNumber: string;
 
   @Prop({ required: true })
@@ -30,6 +30,9 @@ export class User {
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Video' })
   completedVideos: ID[];
+
+  @Prop({ type: [Types.ObjectId], default: [], ref: 'Lecture' })
+  completedLectures: ID[];
 
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Certificate' })
   certificates: ID[];
