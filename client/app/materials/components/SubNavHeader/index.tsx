@@ -18,7 +18,10 @@ const SubNavHeader: React.FC = () => {
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
 
   const isActive = (href: string) => {
-    return pathName === href;
+    if (href === "/materials") {
+      return pathName === "/materials";
+    }
+    return pathName.startsWith(href);
   };
 
   return (
