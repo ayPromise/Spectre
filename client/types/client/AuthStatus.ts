@@ -1,11 +1,11 @@
 import { ID, UserRole } from "@shared/types";
 
 interface AuthStatus {
-    sub: ID,
-    email: string,
-    role: UserRole,
-    iat: 1748896948,
-    exp: 1748983348
+  sub: ID;
+  email: string;
+  role: UserRole;
+  iat: number;
+  exp: number;
 }
 
-export default AuthStatus
+export default AuthStatus;
