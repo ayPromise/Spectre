@@ -108,14 +108,36 @@ const LectureForm: React.FC = () => {
 
       if (isValid) {
         const { video, ...restValues } = values;
+
+        const formData = new FormData();
+        formData.append("video", video as File);
+
+        let uploadedVideoUrl = "";
+        try {
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Upload failed");
+
+          uploadedVideoUrl = data.url;
+        } catch (err: any) {
+          showError(err.message);
+          return;
+        }
         createMaterialMutation({
           ...restValues,
           test: {
             questions,
-            summaryScore: 999,
+            summaryScore: questions.reduce(
+              (total, question) => total + question.points,
+              0
+            ),
           },
           kind: MaterialType.Lecture,
-          videoURL: "asd",
+          videoURL: uploadedVideoUrl,
           time: 100,
         });
       }
