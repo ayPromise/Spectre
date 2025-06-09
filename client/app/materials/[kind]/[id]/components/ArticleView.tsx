@@ -7,9 +7,9 @@ type Props = {
 
 const ArticleView = ({ article }: Props) => {
   return (
-    <div className="space-y-6 tiptap ProseMirror">
+    <div className="space-y-6">
       <div
-        className="prose dark:prose-invert max-w-none"
+        className="prose dark:prose-invert max-w-none tiptap ProseMirror"
         dangerouslySetInnerHTML={{ __html: article.content }}
       />
 

@@ -1,13 +1,13 @@
 import { ID } from ".";
 
 export interface Option {
-  _id: ID;
+  _id?: ID;
   text: string;
   isCorrect: boolean;
 }
 
 export interface Question {
-  _id: ID;
+  _id?: ID;
   text: string;
   options: Option[];
   points: number;
@@ -15,7 +15,7 @@ export interface Question {
 }
 
 export interface Test {
-  _id: ID;
+  _id?: ID;
   questions: Question[];
   summaryScore: number;
 }
