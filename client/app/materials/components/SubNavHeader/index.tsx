@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useAccess } from "@/hooks/useAccess";
 const tabs = [
   { href: "/materials", label: "Всі" },
   { href: "/materials/lecture", label: "Лекції" },
@@ -14,6 +15,7 @@ const tabs = [
 
 const SubNavHeader: React.FC = () => {
   const pathName = usePathname();
+  const { hasAdminAccess, hasInstructorAccess } = useAccess();
 
   const isActive = (href: string) => {
     return pathName === href;
@@ -36,11 +38,13 @@ const SubNavHeader: React.FC = () => {
             {label}
           </Link>
         ))}
-        <Link href={`/materials/create`}>
-          <Button className="absolute right-0">
-            Створити <Plus className="w-5 h-5" strokeWidth={2} />
-          </Button>
-        </Link>
+        {(hasAdminAccess || hasInstructorAccess) && (
+          <Link href={`/materials/create`}>
+            <Button className="absolute right-0">
+              Створити <Plus className="w-5 h-5" strokeWidth={2} />
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

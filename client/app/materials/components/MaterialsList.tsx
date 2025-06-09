@@ -4,11 +4,12 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, FileText, Video } from "lucide-react";
 import Link from "next/link";
+import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 
-const iconByKind = {
-  article: <FileText />,
-  video: <Video />,
-  lecture: <BookOpen />,
+const iconByKind: Record<MaterialType, React.ReactNode> = {
+  [MaterialType.Article]: <FileText />,
+  [MaterialType.Video]: <Video />,
+  [MaterialType.Lecture]: <BookOpen />,
 };
 
 interface Material {
@@ -39,7 +40,9 @@ const MaterialsList: React.FC<MaterialsListProps> = ({ materials }) => {
                 </span>
                 <div>
                   <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.type}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {MaterialTypeNameUA[item.kind]}
+                  </p>
                 </div>
               </div>
 

@@ -1,8 +1,9 @@
 import server_endpoints from "@/app/api/server_endpoints";
+import { MaterialUnion } from "@shared/types";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-const getMaterials = async (): Promise<any[]> => {
+const getMaterials = async (): Promise<MaterialUnion[]> => {
   const response = await fetch(`${SERVER_URL}${server_endpoints.materials}`, {
     method: "GET",
     headers: {

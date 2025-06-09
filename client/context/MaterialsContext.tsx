@@ -6,16 +6,20 @@ import getMaterials from "@/app/materials/create/utils/getAllMaterials";
 import { MaterialUnion } from "@shared/types";
 
 interface MaterialsContextValue {
-  materials: MaterialUnion[] | undefined;
+  materials: MaterialUnion[] | [];
   isLoading: boolean;
   isError: boolean;
   error: unknown;
   refetch: () => void;
 }
 
-const MaterialsContext = createContext<MaterialsContextValue | undefined>(
-  undefined
-);
+const MaterialsContext = createContext<MaterialsContextValue>({
+  materials: [],
+  isLoading: false,
+  isError: false,
+  error: null,
+  refetch: () => {},
+});
 
 export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
   const {
@@ -32,7 +36,7 @@ export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <MaterialsContext.Provider
-      value={{ materials, isLoading, isError, error, refetch }}
+      value={{ materials: materials || [], isLoading, isError, error, refetch }}
     >
       {children}
     </MaterialsContext.Provider>

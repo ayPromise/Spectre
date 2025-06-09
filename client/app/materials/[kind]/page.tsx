@@ -1,34 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useMaterials } from "@/context/MaterialsContext";
-import { Loader2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { MaterialType } from "@shared/types/Enums";
+import { showError } from "@/utils/toast";
+import Loader from "@/components/custom/Loader";
+import ErrorMessage from "@/components/custom/ErrorMessage";
 import MaterialsList from "../components/MaterialsList";
+import NotFoundMessage from "@/components/custom/NotFoundMessage";
 
-interface MaterialsTypePageProps {
-  params: {
-    kind: string;
-  };
-}
-
-const MaterialsTypePage: React.FC<MaterialsTypePageProps> = ({ params }) => {
-  const { kind } = params;
+const MaterialsTypePage = () => {
+  const params = useParams();
+  const kind = String(params.kind);
+  const router = useRouter();
   const { materials, isLoading, isError, error } = useMaterials();
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
-      </div>
+  useEffect(() => {
+    const normalizeKind = (k: string): string =>
+      k.charAt(0).toUpperCase() + k.slice(1).toLowerCase();
+
+    const isValidKind = Object.values(MaterialType).includes(
+      normalizeKind(kind) as MaterialType
     );
+
+    if (!isValidKind) {
+      router.push("/materials");
+      showError(`Invalid kind: ${kind}`);
+    }
+  }, [kind, router]);
+
+  if (isLoading) {
+    return <Loader />;
   }
 
   if (isError) {
-    return (
-      <div className="text-center py-20 text-red-600">
-        Помилка: {(error as Error).message}
-      </div>
-    );
+    return <ErrorMessage>Помилка: {(error as Error).message}</ErrorMessage>;
   }
 
   const filteredMaterials = materials?.filter(
@@ -36,11 +43,7 @@ const MaterialsTypePage: React.FC<MaterialsTypePageProps> = ({ params }) => {
   );
 
   if (!filteredMaterials || filteredMaterials.length === 0) {
-    return (
-      <div className="text-center py-20 text-muted-foreground">
-        Немає матеріалів типу {kind}
-      </div>
-    );
+    return <NotFoundMessage>Немає матеріалів типу {kind}</NotFoundMessage>;
   }
 
   return <MaterialsList materials={filteredMaterials} />;

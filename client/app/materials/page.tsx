@@ -1,30 +1,28 @@
 "use client";
 
 import React from "react";
-import { Loader2 } from "lucide-react";
 import { useMaterials } from "@/context/MaterialsContext";
 import MaterialsList from "./components/MaterialsList";
+import NotFoundMessage from "@/components/custom/NotFoundMessage";
+import ErrorMessage from "@/components/custom/ErrorMessage";
+import Loader from "@/components/custom/Loader";
 
 const MaterialsPage = () => {
   const { materials, isLoading, isError, error } = useMaterials();
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <Loader2 className="h-10 w-10 animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <Loader />;
   }
 
   if (isError) {
-    return (
-      <div className="text-center py-20 text-red-600">
-        Помилка: {(error as Error).message}
-      </div>
-    );
+    return <ErrorMessage>Помилка: {(error as Error).message}</ErrorMessage>;
   }
 
-  return <MaterialsList materials={materials || []} />;
+  if (!materials || materials.length === 0) {
+    return <NotFoundMessage>Немає матеріалів</NotFoundMessage>;
+  }
+
+  return <MaterialsList materials={materials} />;
 };
 
 export default MaterialsPage;
