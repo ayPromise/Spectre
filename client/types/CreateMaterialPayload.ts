@@ -30,7 +30,7 @@ interface UpdateLecturePayload {
   kind: MaterialType.Lecture;
   title?: string;
   description?: string;
-  videoUrl?: string;
+  videoURL?: string;
   time: number;
   type?: Specification;
   test?: Test;
@@ -39,19 +39,17 @@ interface UpdateLecturePayload {
 interface CreateVideoPayload {
   kind: MaterialType.Video;
   title: string;
-  videoUrl: string;
+  videoURL: string;
   time: number;
   type: Specification;
-  test: Test;
 }
 
 interface UpdateVideoPayload {
   kind: MaterialType.Video;
   title?: string;
-  videoUrl?: string;
+  videoURL?: string;
   time?: number;
   type?: Specification;
-  test?: Test;
 }
 
 export type {
