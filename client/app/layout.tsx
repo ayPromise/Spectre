@@ -29,7 +29,7 @@ export default async function RootLayout({
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />
-            <div className="px-4 sm:px-12 lg:px-16 py-4 max-w-7xl flex-grow">
+            <div className="px-4 sm:px-12 lg:px-16 py-4 max-w-7xl flex-grow flex flex-col">
               {children}
             </div>
           </main>

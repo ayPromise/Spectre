@@ -6,9 +6,9 @@ export default function MaterialsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col">
+    <>
       <SubNavHeader />
       {children}
-    </div>
+    </>
   );
 }
