@@ -14,6 +14,7 @@ import ArticleView from "./components/ArticleView";
 import LectureView from "./components/LectureView";
 import VideoView from "./components/VideoView";
 import { useAccess } from "@/hooks/useAccess";
+import TestView from "./components/TestView";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -91,6 +92,10 @@ const MaterialPage = () => {
       )}
       {materialById.kind === MaterialType.Video && (
         <VideoView video={materialById} />
+      )}
+
+      {materialById.test?.questions?.length > 0 && (
+        <TestView test={materialById.test} />
       )}
     </div>
   );

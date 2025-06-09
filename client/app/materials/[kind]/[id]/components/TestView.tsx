@@ -83,7 +83,7 @@ const TestView: React.FC<Props> = ({ test }) => {
 
   const totalCorrect = correctAnswers.length;
   const totalPoints = correctAnswers.reduce((sum, q) => sum + q.points, 0);
-  const maxPoints = test.questions.reduce((sum, q) => sum + q.points, 0);
+  const maxPoints = test.summaryScore;
   const percentage = Math.round((totalPoints / maxPoints) * 100);
   const passed = percentage > 50;
 

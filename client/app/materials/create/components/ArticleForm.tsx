@@ -124,7 +124,10 @@ const ArticleForm: React.FC = () => {
           ...values,
           test: {
             questions,
-            summaryScore: 999,
+            summaryScore: questions.reduce(
+              (total, question) => total + question.points,
+              0
+            ),
           },
           kind: MaterialType.Article,
         });

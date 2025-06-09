@@ -1,5 +1,4 @@
 import { Article } from "@shared/types/Article";
-import TestView from "./TestView";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
@@ -17,8 +16,6 @@ const ArticleView = ({ article }: Props) => {
         className="prose dark:prose-invert max-w-none tiptap ProseMirror"
         dangerouslySetInnerHTML={{ __html: article.content }}
       />
-
-      {article.test?.questions?.length > 0 && <TestView test={article.test} />}
     </div>
   );
 };
