@@ -1,5 +1,10 @@
 import { Article } from "@shared/types/Article";
 import TestView from "./TestView";
+import "@/components/tiptap-templates/simple/simple-editor.scss";
+import "@/components/tiptap-node/code-block-node/code-block-node.scss";
+import "@/components/tiptap-node/list-node/list-node.scss";
+import "@/components/tiptap-node/image-node/image-node.scss";
+import "@/components/tiptap-node/paragraph-node/paragraph-node.scss";
 
 type Props = {
   article: Article;
