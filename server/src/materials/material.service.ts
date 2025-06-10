@@ -44,20 +44,32 @@ export class MaterialService {
 
   async update(id: string, dto: Partial<CreateMaterialDto>): Promise<Material> {
     const updatedMaterial = await this.materialModel.findById(id).exec();
-    if (
-      dto.test !== undefined &&
-      ((updatedMaterial as any).kind === MaterialType.Article ||
-        (updatedMaterial as any).kind === MaterialType.Lecture)
-    ) {
-      (updatedMaterial as any).test = dto.test;
 
-      if (!updatedMaterial) {
-        throw new NotFoundException(`Матеріал з id ${id} не знайдено.`);
-      }
-
-      await updatedMaterial.save();
-      return updatedMaterial;
+    if (!updatedMaterial) {
+      throw new NotFoundException(`Матеріал з id ${id} не знайдено.`);
     }
+
+    const dtoAny = dto as any;
+    const updatedMaterialAny = updatedMaterial as any;
+
+    if ('title' in dtoAny) updatedMaterialAny.title = dtoAny.title;
+    if ('description' in dtoAny)
+      updatedMaterialAny.description = dtoAny.description;
+    if ('videoURL' in dtoAny) updatedMaterialAny.videoURL = dtoAny.videoURL;
+    if ('type' in dtoAny) updatedMaterialAny.type = dtoAny.type;
+    if ('kind' in dtoAny) updatedMaterialAny.kind = dtoAny.kind;
+    if ('time' in dtoAny) updatedMaterialAny.time = dtoAny.time;
+
+    if (
+      'test' in dtoAny &&
+      (updatedMaterialAny.kind === MaterialType.Article ||
+        updatedMaterialAny.kind === MaterialType.Lecture)
+    ) {
+      updatedMaterialAny.test = dtoAny.test;
+    }
+
+    await updatedMaterial.save();
+    return updatedMaterial;
   }
 
   async delete(id: string): Promise<{ message: string }> {

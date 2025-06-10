@@ -111,7 +111,11 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
       title: initialData?.title ?? "",
       description: initialData?.description ?? "",
       video: initialData?.videoURL
-        ? ({ name: initialData.videoURL, type: "video/mp4" } as File)
+        ? ({
+            name: initialData.videoURL,
+            type: "video/mp4",
+            mocked: true,
+          } as any)
         : null,
       type: initialData?.type ?? specificationOptions[0],
       context: { initialData },
@@ -131,13 +135,15 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
       }
 
       if (isValid) {
-        const { video, ...restValues } = values;
+        const { video, context, ...restValues } = values;
 
         const formData = new FormData();
         formData.append("video", video as File);
+        const isNewVideoFile = video && !(video as any).mocked;
 
         let uploadedVideoUrl = initialData?.videoURL || "";
-        if (!uploadedVideoUrl) {
+
+        if (isNewVideoFile) {
           try {
             const res = await fetch(client_endpoints.upload, {
               method: "POST",
@@ -153,6 +159,20 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
             return;
           }
         }
+
+        console.log({
+          ...restValues,
+          test: {
+            questions,
+            summaryScore: questions.reduce(
+              (total, question) => total + question.points,
+              0
+            ),
+          },
+          kind: MaterialType.Lecture,
+          videoURL: uploadedVideoUrl,
+          time: 100,
+        });
 
         createMaterialMutation({
           ...restValues,
