@@ -10,6 +10,7 @@ import ArticleForm from "@/app/materials/components/ArticleForm";
 import Loader from "@/components/custom/Loader";
 import ErrorMessage from "@/components/custom/ErrorMessage";
 import LectureForm from "@/app/materials/components/LectureForm";
+import VideoForm from "@/app/materials/components/VideoForm";
 
 const MaterialEditPage = () => {
   const params = useParams();
@@ -44,6 +45,10 @@ const MaterialEditPage = () => {
 
   if (materialType === MaterialType.Lecture) {
     return <LectureForm initialData={materialById} />;
+  }
+
+  if (materialType === MaterialType.Video) {
+    return <VideoForm initialData={materialById} />;
   }
 
   return <div>Непідтримуваний тип</div>;

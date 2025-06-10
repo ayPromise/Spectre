@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 
 import { showError, showSuccess } from "@/utils/toast";
-import { Specification } from "@shared/types";
+import { Specification, Video } from "@shared/types";
 import {
   MaterialType,
   MaterialTypeNameUA,
@@ -25,7 +25,7 @@ import {
 } from "@shared/types/Enums";
 import { useMaterials } from "@/context/MaterialsContext";
 import { CreateVideoPayload } from "@/types/CreateMaterialPayload";
-import createMaterial from "../utils/createMaterial";
+import saveMaterial from "../utils/saveMaterial";
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
@@ -43,31 +43,42 @@ const validationSchema = Yup.object({
 
 const specificationOptions = Object.values(Specification);
 
-const VideoForm: React.FC = () => {
+type VideoFormProps = {
+  initialData?: Video;
+};
+
+const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
+  const isEditingMode = !!initialData;
+
   const router = useRouter();
 
   const { refetch } = useMaterials();
   const { mutate: createVideoMutation, isPending } = useMutation({
-    mutationFn: (data: CreateVideoPayload) => createMaterial(data),
+    mutationFn: (data: CreateVideoPayload) =>
+      saveMaterial(data, isEditingMode ? initialData._id : undefined),
     onSuccess: (video) => {
       showSuccess(
-        `${MaterialTypeNameUA[MaterialType.Video]} успішно створено 🎉`
+        `${MaterialTypeNameUA[MaterialType.Video]} була успішно ${
+          isEditingMode ? "оновлено" : "створено"
+        } 🎉`
       );
       refetch();
       router.push(`/materials/video/${video._id}`);
     },
-    onError: (err: Error) => {
-      console.error(err);
-      showError(err.message || "Не вдалося створити відео");
+    onError: (error: Error) => {
+      showError(
+        error.message ||
+          `Не вдалося ${isEditingMode ? "оновити" : "створити"} матеріал`
+      );
     },
   });
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      description: "",
-      videoURL: "",
-      type: specificationOptions[0],
+      title: initialData?.title ?? "",
+      description: initialData?.description ?? "",
+      videoURL: initialData?.videoURL ?? "",
+      type: initialData?.type ?? specificationOptions[0],
     },
     validationSchema,
     onSubmit: (values) => {
@@ -177,7 +188,7 @@ const VideoForm: React.FC = () => {
         className="w-full mt-5 font-bold text-lg"
         disabled={isSubmitting || isPending}
       >
-        Створити відео
+        {isEditingMode ? "Оновити" : "Створити"}
       </Button>
     </>
   );

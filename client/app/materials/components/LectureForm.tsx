@@ -299,7 +299,9 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
             className="hidden"
           />
           {touched.video && errors.video && (
-            <p className="text-red-600 text-sm mt-1">{errors.video}</p>
+            <p className="text-red-600 text-sm mt-1">
+              {errors.video.toLocaleString()}
+            </p>
           )}
         </div>
       </form>
