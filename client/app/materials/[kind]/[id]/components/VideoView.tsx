@@ -26,7 +26,7 @@ const VideoView = ({ video }: Props) => {
           allowFullScreen
         />
         <div className="mt-[20px] flex w-full flex-row-reverse">
-          <CompleteButton videoId={video._id} />
+          <CompleteButton type={video.kind} videoId={video._id} />
         </div>
       </div>
     </div>

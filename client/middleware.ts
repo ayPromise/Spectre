@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
 import { UserRole } from "@shared/types";
+import getUserFromToken from "./lib/getUserFromToken";
 
 const protectedPatterns = [
   /^\/dashboard/,
@@ -19,19 +19,6 @@ const adminOnlyPatterns = [
 ];
 
 const publicOnlyPaths = ["/sign-in"];
-
-const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
-
-const getUserFromToken = async (token: string | undefined) => {
-  if (!token) return null;
-
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    return payload;
-  } catch (error: any) {
-    return null;
-  }
-};
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;

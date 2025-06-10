@@ -10,6 +10,7 @@ import { MaterialUnion } from "@shared/types";
 import useDebounce from "@/hooks/useDebounce";
 import NotFoundMessage from "@/components/custom/NotFoundMessage";
 import { useAuth } from "@/context/AuthContext";
+import isMaterialFinished from "../[kind]/[id]/utils/isMaterialFinished";
 
 const iconByKind: Record<MaterialType, React.ReactNode> = {
   [MaterialType.Article]: <FileText />,
@@ -50,13 +51,11 @@ const MaterialsList: React.FC<MaterialsListProps> = ({ materials }) => {
             const kind = item.kind.toLowerCase();
             const id = item._id;
 
-            const isFinished =
-              (item.kind === MaterialType.Article &&
-                userData?.completedArticles.includes(item._id)) ||
-              (item.kind === MaterialType.Lecture &&
-                userData?.completedLectures.includes(item._id)) ||
-              (item.kind === MaterialType.Video &&
-                userData?.completedVideos.includes(item._id));
+            const isFinished = isMaterialFinished(
+              userData,
+              item.kind,
+              item._id
+            );
 
             return (
               <Link href={`/materials/${kind}/${id}`} key={id || index}>

@@ -7,11 +7,13 @@ const AuthContext = createContext<{
   isAuth: boolean;
   setIsAuth: (v: boolean) => void;
   userData: AuthStatus | null;
+  setUserData: (v: AuthStatus) => void;
   refetchUser: () => void;
 }>({
   isAuth: false,
   userData: null,
   setIsAuth: () => {},
+  setUserData: () => {},
   refetchUser: () => {},
 });
 
@@ -40,6 +42,7 @@ export function AuthProvider({
         isAuth,
         setIsAuth,
         userData,
+        setUserData,
         refetchUser: () => refetch(),
       }}
     >

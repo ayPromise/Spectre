@@ -15,8 +15,6 @@ const completeLecture = async (
     credentials: "include",
   });
 
-  console.log(response);
-
   if (!response.ok) {
     throw new Error("Failed to complete video");
   }

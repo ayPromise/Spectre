@@ -4,25 +4,29 @@ import { useState } from "react";
 import { Check, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import completeVideo from "../utils/completeVideo";
 import { useAuth } from "@/context/AuthContext";
 import { showError, showSuccess } from "@/utils/toast";
 import updateToken from "@/lib/update-token";
+import completeMaterial from "../utils/completeMaterial";
+import { MaterialType } from "@shared/types";
+import isMaterialFinished from "../utils/isMaterialFinished";
 
 type Props = {
   videoId: string;
+  type: MaterialType;
 };
 
-const CompleteButton = ({ videoId }: Props) => {
-  const { userData } = useAuth();
-  const isFinished = userData?.completedVideos.includes(videoId);
+const CompleteButton = ({ type, videoId }: Props) => {
+  const { userData, setUserData } = useAuth();
+  const isFinished = isMaterialFinished(userData, type, videoId);
   const [isChecked, setIsChecked] = useState(isFinished);
   const mutation = useMutation({
-    mutationFn: () => completeVideo(videoId, userData?.sub),
+    mutationFn: () => completeMaterial(type, videoId, userData?.sub),
     onSuccess: async (data) => {
       setIsChecked(true);
       const token = data.access_token;
-      await updateToken(token);
+      const { user } = await updateToken(token);
+      setUserData(user);
       showSuccess("Гарна робота!");
     },
     onError: (error) => {

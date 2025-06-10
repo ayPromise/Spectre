@@ -25,6 +25,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useMaterials } from "@/context/MaterialsContext";
+import isMaterialFinished from "./utils/isMaterialFinished";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -76,13 +77,12 @@ const MaterialPage = () => {
 
   if (!materialById) return null;
 
-  const isFinished =
-    (materialById.kind === MaterialType.Article &&
-      userData?.completedArticles.includes(materialById._id)) ||
-    (materialById.kind === MaterialType.Lecture &&
-      userData?.completedLectures.includes(materialById._id)) ||
-    (materialById.kind === MaterialType.Video &&
-      userData?.completedVideos.includes(materialById._id));
+  const isFinished = isMaterialFinished(
+    userData,
+    materialById.kind,
+    materialById._id
+  );
+
   return (
     <div className="container space-y-8">
       <div className="space-y-2">

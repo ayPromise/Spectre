@@ -1,14 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MaterialType, MaterialUnion, Test } from "@shared/types";
+
+// COMPONENTS
 import QuestionDisplay from "./QuestionDisplay";
 import NavigationControls from "./NavigationControls";
 import ResultDialog from "./ResultDialog";
-import { useMutation } from "@tanstack/react-query";
-import completeArticle from "../utils/completeArticle";
-import updateToken from "@/lib/update-token";
+
+// UTILS
+import completeMaterial from "../utils/completeMaterial";
 import { showError, showSuccess } from "@/utils/toast";
+import updateToken from "@/lib/update-token";
+
+// TYPES
+import { MaterialType, MaterialUnion, Test } from "@shared/types";
+
+// HOOKS
+import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import completeLecture from "../utils/completeLecture";
 
 interface Props {
   test: Test;
@@ -24,6 +31,7 @@ const TestView: React.FC<Props> = ({ material, test }) => {
   const [showResult, setShowResult] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [didMount, setDidMount] = useState(false);
+  const { userData, setUserData } = useAuth();
 
   const currentQuestion = test.questions[currentQuestionIndex];
   const isMultiple =
@@ -51,20 +59,13 @@ const TestView: React.FC<Props> = ({ material, test }) => {
     });
   };
 
-  const { userData } = useAuth();
-
   const mutation = useMutation({
-    mutationFn: () => {
-      if (material.kind === MaterialType.Article) {
-        return completeArticle(material._id, userData?.sub);
-      } else {
-        return completeLecture(material._id, userData?.sub);
-      }
-    },
+    mutationFn: () =>
+      completeMaterial(material.kind, material._id, userData?.sub),
     onSuccess: async (data) => {
-      console.log("data", data);
       const token = data.access_token;
-      await updateToken(token);
+      const { user } = await updateToken(token);
+      setUserData(user);
       showSuccess("Гарна робота!");
     },
     onError: (error) => {
@@ -77,9 +78,7 @@ const TestView: React.FC<Props> = ({ material, test }) => {
     setShowResult(true);
 
     if (passed) {
-      if (material.kind === MaterialType.Article) {
-        mutation.mutate();
-      }
+      mutation.mutate();
     }
   };
 
