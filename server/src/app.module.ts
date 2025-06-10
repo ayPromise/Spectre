@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { MaterialModule } from './materials/material.module';
+import { AchievementModule } from './achievement/achievement.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -17,6 +18,7 @@ import { MaterialModule } from './materials/material.module';
     AuthModule,
     ScheduleModule,
     MaterialModule,
+    AchievementModule,
   ],
 })
 export class AppModule {}
