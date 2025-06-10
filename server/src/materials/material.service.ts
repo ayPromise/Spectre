@@ -7,7 +7,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Material, MaterialDocument } from './schema/material.schema';
 import { Model } from 'mongoose';
 import { CreateMaterialDto } from './dto/create-material.dto';
-import { MaterialType } from '@shared/types';
+import { MaterialType, Test } from '@shared/types';
+import { TestDto } from './dto/test.dto';
 
 @Injectable()
 export class MaterialService {
@@ -42,18 +43,21 @@ export class MaterialService {
   }
 
   async update(id: string, dto: Partial<CreateMaterialDto>): Promise<Material> {
-    const updated = await this.materialModel
-      .findByIdAndUpdate(id, dto, {
-        new: true,
-        runValidators: true,
-      })
-      .exec();
+    const updatedMaterial = await this.materialModel.findById(id).exec();
+    if (
+      dto.test !== undefined &&
+      ((updatedMaterial as any).kind === MaterialType.Article ||
+        (updatedMaterial as any).kind === MaterialType.Lecture)
+    ) {
+      (updatedMaterial as any).test = dto.test;
 
-    if (!updated) {
-      throw new NotFoundException(`Матеріал з id ${id} не знайдено.`);
+      if (!updatedMaterial) {
+        throw new NotFoundException(`Матеріал з id ${id} не знайдено.`);
+      }
+
+      await updatedMaterial.save();
+      return updatedMaterial;
     }
-
-    return updated;
   }
 
   async delete(id: string): Promise<{ message: string }> {

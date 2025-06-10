@@ -8,6 +8,7 @@ import {
   Put,
   NotFoundException,
   UseGuards,
+  Patch,
 } from '@nestjs/common';
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
@@ -40,7 +41,7 @@ export class MaterialController {
     return this.materialService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles(UserRole.Instructor, UserRole.Admin)
   update(
     @Param('id') id: string,

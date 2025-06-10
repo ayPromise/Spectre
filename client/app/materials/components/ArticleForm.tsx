@@ -22,11 +22,11 @@ import {
 import TestForm from "./TestForm";
 import { showError, showSuccess } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
-import createMaterial from "../utils/createMaterial";
 import { useRouter } from "next/navigation";
 import { CreateArticlePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
 import { SimpleEditor } from "@/components/tiptap/tiptap-templates/simple/simple-editor";
+import saveMaterial from "../utils/saveMaterial";
 
 type ArticleFormData = {
   title: string;
@@ -69,6 +69,8 @@ type ArticleFormProps = {
 };
 
 const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
+  const isEditingMode = !!initialData;
+
   const router = useRouter();
 
   const [questions, setQuestions] = useState<Question[]>(
@@ -81,18 +83,24 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
   const { refetch } = useMaterials();
   const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
     {
-      mutationFn: (data: CreateArticlePayload) => createMaterial(data),
+      mutationFn: (data: CreateArticlePayload) =>
+        saveMaterial(data, isEditingMode ? initialData!._id : undefined),
       onSuccess: (article) => {
         const kind = article.kind.toLocaleLowerCase();
         const id = article._id;
         showSuccess(
-          `${MaterialTypeNameUA[MaterialType.Article]} була успішно створена 🎉`
+          `${MaterialTypeNameUA[MaterialType.Article]} була успішно ${
+            isEditingMode ? "оновлена" : "створена"
+          } 🎉`
         );
         refetch();
         router.push(`/materials/${kind}/${id}`);
       },
       onError: (error: Error) => {
-        showError(error.message || "Не вдалося створити матеріал");
+        showError(
+          error.message ||
+            `Не вдалося ${isEditingMode ? "оновити" : "створити"} матеріал`
+        );
       },
     }
   );
@@ -225,7 +233,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
         className="w-full mt-5 font-bold text-lg"
         disabled={(isSubmitting && !isValid) || isCreating}
       >
-        Створити
+        {isEditingMode ? "Оновити" : "Створити"}
       </Button>
     </>
   );
