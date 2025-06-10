@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import ArticleForm from "@/app/materials/components/ArticleForm";
 import Loader from "@/components/custom/Loader";
 import ErrorMessage from "@/components/custom/ErrorMessage";
+import LectureForm from "@/app/materials/components/LectureForm";
 
 const MaterialEditPage = () => {
   const params = useParams();
@@ -39,6 +40,10 @@ const MaterialEditPage = () => {
 
   if (materialType === MaterialType.Article) {
     return <ArticleForm initialData={materialById} />;
+  }
+
+  if (materialType === MaterialType.Lecture) {
+    return <LectureForm initialData={materialById} />;
   }
 
   return <div>Непідтримуваний тип</div>;

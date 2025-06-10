@@ -25,26 +25,12 @@ import {
 } from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { Input } from "@/components/ui/input";
-import createMaterial from "../utils/createMaterial";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
 import { UploadCloud } from "lucide-react";
 import client_endpoints from "@/app/api/client_endpoints";
-
-const validationSchema = Yup.object({
-  title: Yup.string().trim().required("Заголовок обовʼязковий"),
-  description: Yup.string().trim().required("Опис обовʼязковий"),
-  video: Yup.mixed()
-    .required("Відео обов'язкове")
-    .test(
-      "fileType",
-      "Потрібно відео",
-      (value) => value && value.type.startsWith("video/")
-    ),
-  type: Yup.mixed<Specification>()
-    .oneOf(Object.values(Specification), "Невірний тип")
-    .required("Тип обовʼязковий"),
-});
+import { Lecture } from "@shared/types/Lecture";
+import saveMaterial from "../utils/saveMaterial";
 
 const defaultTest = [
   {
@@ -60,9 +46,37 @@ const defaultTest = [
 
 const specificationOptions = Object.values(Specification);
 
-const LectureForm: React.FC = () => {
+const validationSchema = Yup.object({
+  title: Yup.string().trim().required("Заголовок обовʼязковий"),
+  description: Yup.string().trim().required("Опис обовʼязковий"),
+  video: Yup.mixed()
+    .test("required-video", "Відео обов'язкове", function (value) {
+      if (this.options?.context?.initialData?.videoURL) {
+        return true;
+      }
+      return value != null;
+    })
+    .test(
+      "fileType",
+      "Потрібно відео",
+      (value) => !value || (value && value.type.startsWith("video/"))
+    ),
+  type: Yup.mixed<Specification>()
+    .oneOf(Object.values(Specification), "Невірний тип")
+    .required("Тип обовʼязковий"),
+});
+
+type LectureFormProps = {
+  initialData?: Lecture;
+};
+
+const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
+  const isEditingMode = !!initialData;
+
   const router = useRouter();
-  const [questions, setQuestions] = useState<Question[]>(defaultTest);
+  const [questions, setQuestions] = useState<Question[]>(
+    initialData?.test.questions ?? defaultTest
+  );
   const [isValid, setIsValid] = useState(false);
 
   const handleQuestionsChange = (newQuestions: Question[]) => {
@@ -71,28 +85,36 @@ const LectureForm: React.FC = () => {
 
   const { refetch } = useMaterials();
   const { mutate: createMaterialMutation, isPending } = useMutation({
-    mutationFn: (data: CreateLecturePayload) => createMaterial(data),
+    mutationFn: (data: CreateLecturePayload) =>
+      saveMaterial(data, isEditingMode ? initialData._id : undefined),
     onSuccess: (lecture) => {
       const kind = lecture.kind.toLocaleLowerCase();
       const id = lecture._id;
       showSuccess(
-        `${MaterialTypeNameUA[MaterialType.Lecture]} була успішно створена 🎉`
+        `${MaterialTypeNameUA[MaterialType.Lecture]} була успішно ${
+          isEditingMode ? "оновлена" : "створена"
+        } 🎉`
       );
       refetch();
       router.push(`/materials/${kind}/${id}`);
     },
-    onError: (err: Error) => {
-      console.log(err);
-      showError(err.message || "Не вдалося створити матеріал");
+    onError: (error: Error) => {
+      showError(
+        error.message ||
+          `Не вдалося ${isEditingMode ? "оновити" : "створити"} матеріал`
+      );
     },
   });
 
   const formik = useFormik({
     initialValues: {
-      title: "",
-      description: "",
-      video: null as File | null,
-      type: specificationOptions[0],
+      title: initialData?.title ?? "",
+      description: initialData?.description ?? "",
+      video: initialData?.videoURL
+        ? ({ name: initialData.videoURL, type: "video/mp4" } as File)
+        : null,
+      type: initialData?.type ?? specificationOptions[0],
+      context: { initialData },
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -114,21 +136,24 @@ const LectureForm: React.FC = () => {
         const formData = new FormData();
         formData.append("video", video as File);
 
-        let uploadedVideoUrl = "";
-        try {
-          const res = await fetch(client_endpoints.upload, {
-            method: "POST",
-            body: formData,
-          });
+        let uploadedVideoUrl = initialData?.videoURL || "";
+        if (!uploadedVideoUrl) {
+          try {
+            const res = await fetch(client_endpoints.upload, {
+              method: "POST",
+              body: formData,
+            });
 
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Upload failed");
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Upload failed");
 
-          uploadedVideoUrl = data.url;
-        } catch (error: any) {
-          showError(error.message);
-          return;
+            uploadedVideoUrl = data.url;
+          } catch (error: any) {
+            showError(error.message);
+            return;
+          }
         }
+
         createMaterialMutation({
           ...restValues,
           test: {
@@ -234,7 +259,11 @@ const LectureForm: React.FC = () => {
             htmlFor="video"
             className={`flex items-center justify-between px-4 py-2 rounded-md border cursor-pointer transition `}
           >
-            <span>{values.video?.name || "Оберіть відео файл"}</span>
+            <span>
+              {values.video?.name ||
+                initialData?.videoURL ||
+                "Оберіть відео файл"}
+            </span>
             <UploadCloud className="w-5 h-5 ml-2" />
           </Label>
 
@@ -268,7 +297,7 @@ const LectureForm: React.FC = () => {
         className="w-full mt-5 font-bold text-lg"
         disabled={(isSubmitting && !isValid) || isPending}
       >
-        Створити лекцію
+        {isEditingMode ? "Оновити" : "Створити"}
       </Button>
     </>
   );
