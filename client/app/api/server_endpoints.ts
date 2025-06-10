@@ -5,6 +5,7 @@ const server_endpoints = {
   completeVideo: "/auth/complete-video",
   completeArticle: "/auth/complete-article",
   completeLecture: "/auth/complete-lecture",
+  achievements: "/achievements",
 };
 
 export default server_endpoints;
