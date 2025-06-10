@@ -40,8 +40,6 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({
     ? userData.achievements.includes(achievement._id)
     : false;
 
-  console.log(isEditOpen);
-
   return (
     <>
       <Dialog open={!!achievement} onOpenChange={onClose}>
@@ -79,7 +77,7 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({
             <p className="font-medium text-sm">
               Щоб отримати досягнення, пройди такі матеріали:
             </p>
-            <ul className="list-inside text-sm text-muted-foreground">
+            <ul className="list-inside text-sm text-muted-foreground flex flex-col gap-4">
               {requiredMaterials.map((materialRef) => {
                 const material = materials.find(
                   (m) => m._id === materialRef.id
@@ -111,6 +109,7 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({
           initialData={achievement}
           open={isEditOpen}
           onClose={() => setIsEditOpen(false)}
+          onSubmit={onClose}
         />
       )}
     </>

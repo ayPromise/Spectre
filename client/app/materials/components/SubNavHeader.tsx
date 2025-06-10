@@ -3,9 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { useAccess } from "@/hooks/useAccess";
+import CreateButton from "@/components/custom/CreateButton";
 const tabs = [
   { href: "/materials", label: "Всі" },
   { href: "/materials/lecture", label: "Лекції" },
@@ -43,9 +42,7 @@ const SubNavHeader: React.FC = () => {
         ))}
         {(hasAdminAccess || hasInstructorAccess) && (
           <Link href={`/materials/create`}>
-            <Button className="absolute right-0">
-              Створити <Plus className="w-5 h-5" strokeWidth={2} />
-            </Button>
+            <CreateButton className="absolute right-0" />
           </Link>
         )}
       </div>

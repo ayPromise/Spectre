@@ -11,6 +11,8 @@ import { useMaterials } from "@/context/MaterialsContext";
 import Loader from "@/components/custom/Loader";
 import AchievementList from "./components/AchievementList";
 import AchievementDialog from "./components/AchievementDialog";
+import { useAccess } from "@/hooks/useAccess";
+import CreateButton from "@/components/custom/CreateButton";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,7 @@ const AchievementsPage: React.FC = () => {
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);
   const { materials } = useMaterials();
+  const { hasAdminAccess, hasInstructorAccess } = useAccess();
 
   const {
     data: achievements,
@@ -27,14 +30,17 @@ const AchievementsPage: React.FC = () => {
   } = useQuery({
     queryKey: ["achievements"],
     queryFn: getAchievements,
-    staleTime: 1000 * 60 * 10,
+    staleTime: 0,
   });
 
   const grouped = achievements ? groupByCategory(achievements) : {};
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <h1 className="text-3xl font-bold mb-2">Мої досягнення</h1>
+      <div className="flex justify-between">
+        <h1 className="text-3xl font-bold mb-2">Мої досягнення</h1>
+        {(hasAdminAccess || hasInstructorAccess) && <CreateButton />}
+      </div>
       <p className="text-muted-foreground mb-6">
         Досягнення відкриваються за активну участь у навчанні, перегляді лекцій,
         читанні статей та перегляді відео.

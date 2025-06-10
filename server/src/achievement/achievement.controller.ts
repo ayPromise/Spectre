@@ -2,13 +2,13 @@ import {
   Controller,
   Post,
   Get,
-  Put,
   Delete,
   Param,
   Body,
   NotFoundException,
   UseGuards,
   BadRequestException,
+  Patch,
 } from '@nestjs/common';
 import { AchievementService } from './achievement.service';
 import { CreateAchievementDto } from './dto/achievement.dto';
@@ -46,7 +46,7 @@ export class AchievementController {
     return this.achievementService.delete(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @Roles(UserRole.Admin, UserRole.Instructor)
   update(
     @Param('id') id: string,

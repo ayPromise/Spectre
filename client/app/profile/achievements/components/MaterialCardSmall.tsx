@@ -4,7 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, FileText, Video } from "lucide-react";
 import { MaterialType, MaterialUnion } from "@shared/types";
-import { MaterialTypeNameUA } from "@shared/types/Enums";
 import isMaterialFinished from "@/app/materials/[kind]/[id]/utils/isMaterialFinished";
 import { useAuth } from "@/context/AuthContext";
 
@@ -38,7 +37,7 @@ const MaterialCardSmall: React.FC<MaterialCardSmallProps> = ({ material }) => {
       >
         <div
           className={`
-            flex h-10 w-10 items-center justify-center rounded-md
+            flex h-5 w-5 items-center justify-center rounded-md
             ${
               isFinished
                 ? "bg-green-100 text-green-600"
@@ -57,9 +56,6 @@ const MaterialCardSmall: React.FC<MaterialCardSmallProps> = ({ material }) => {
           >
             {material.title}
           </h4>
-          <p className="text-xs text-muted-foreground">
-            {MaterialTypeNameUA[material.kind]}
-          </p>
         </div>
 
         <ArrowRight

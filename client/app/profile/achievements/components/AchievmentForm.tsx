@@ -26,6 +26,7 @@ interface AchievementFormProps {
   initialData?: Achievement;
   open: boolean;
   onClose: () => void;
+  onSubmit: () => void;
 }
 
 const validationSchema = Yup.object({
@@ -46,18 +47,19 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
   initialData,
   open,
   onClose,
+  onSubmit,
 }) => {
   const isEditing = !!initialData;
-  const { materials, refetch } = useMaterials();
+  const { materials } = useMaterials();
 
   const mutation = useMutation({
-    mutationFn: (data: Partial<Achievement>) => {
-      console.log(data, initialData?._id);
-      return saveAchievement(data, initialData?._id);
-    },
+    mutationFn: (data: Partial<Achievement>) =>
+      saveAchievement(data, initialData?._id),
     onSuccess: () => {
       showSuccess(`Досягнення ${isEditing ? "оновлено" : "створено"}!`);
-      refetch();
+      onClose();
+      onSubmit();
+      window.location.reload();
     },
     onError: (err: Error) => showError(err.message),
   });

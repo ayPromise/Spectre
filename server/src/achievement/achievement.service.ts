@@ -43,16 +43,26 @@ export class AchievementService {
   async update(
     id: string,
     updateDto: Partial<CreateAchievementDto>,
-  ): Promise<{ message: string }> {
-    const updated = await this.achievementModel.findByIdAndUpdate(
-      id,
-      updateDto,
-      {
-        new: true,
-      },
-    );
-    if (!updated) throw new NotFoundException('Досягнення не знайдено.');
-    return { message: 'Досягнення оновлено' };
+  ): Promise<Achievement> {
+    const achievement = await this.achievementModel.findById(id).exec();
+
+    if (!achievement) {
+      throw new NotFoundException('Досягнення не знайдено.');
+    }
+
+    const dtoAny = updateDto as any;
+    const achievementAny = achievement as any;
+
+    if ('title' in dtoAny) achievementAny.title = dtoAny.title;
+    if ('description' in dtoAny)
+      achievementAny.description = dtoAny.description;
+    if ('category' in dtoAny) achievementAny.category = dtoAny.category;
+    if ('requiredMaterials' in dtoAny)
+      achievementAny.requiredMaterials = dtoAny.requiredMaterials;
+
+    await achievement.save();
+
+    return achievement;
   }
 
   async findGroupedByCategory() {
