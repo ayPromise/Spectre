@@ -58,7 +58,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
       saveMaterial(data, isEditingMode ? initialData._id : undefined),
     onSuccess: (video) => {
       showSuccess(
-        `${MaterialTypeNameUA[MaterialType.Video]} була успішно ${
+        `${MaterialTypeNameUA[MaterialType.Video]} було успішно ${
           isEditingMode ? "оновлено" : "створено"
         } 🎉`
       );
