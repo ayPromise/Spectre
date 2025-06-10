@@ -15,6 +15,8 @@ import LectureView from "./components/LectureView";
 import VideoView from "./components/VideoView";
 import { useAccess } from "@/hooks/useAccess";
 import TestView from "./components/TestView";
+import { useAuth } from "@/context/AuthContext";
+import FinishedLabel from "@/components/custom/FinishedLabel";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -24,6 +26,7 @@ const MaterialPage = () => {
   const { materials, isLoading, isError, error, refetch } = useMaterials();
   const materialById = materials.find((m) => m._id === id);
   const router = useRouter();
+  const { userData } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !materialById) {
@@ -65,10 +68,20 @@ const MaterialPage = () => {
 
   if (!materialById) return null;
 
+  const isFinished =
+    (materialById.kind === MaterialType.Article &&
+      userData?.completedArticles.includes(materialById._id)) ||
+    (materialById.kind === MaterialType.Lecture &&
+      userData?.completedLectures.includes(materialById._id)) ||
+    (materialById.kind === MaterialType.Video &&
+      userData?.completedVideos.includes(materialById._id));
   return (
     <div className="container space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">{materialById.title}</h1>
+        <div className="flex items-center justify-between gap-2">
+          <h1 className="text-3xl font-bold">{materialById.title}</h1>
+          {isFinished && <FinishedLabel />}
+        </div>
         <p className="text-sm text-muted-foreground">
           Створено: {new Date(materialById.createdAt).toLocaleDateString()}
         </p>
@@ -95,7 +108,7 @@ const MaterialPage = () => {
       )}
 
       {materialById.test?.questions?.length > 0 && (
-        <TestView test={materialById.test} />
+        <TestView test={materialById.test} material={materialById} />
       )}
     </div>
   );

@@ -2,13 +2,16 @@ import server_endpoints from "@/app/api/server_endpoints";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-const completeVideo = async (videoId: string, userId: string | undefined) => {
+const completeArticle = async (
+  articleId: string,
+  userId: string | undefined
+) => {
   if (!userId) return;
 
-  const response = await fetch(SERVER_URL + server_endpoints.completeVideo, {
+  const response = await fetch(SERVER_URL + server_endpoints.completeArticle, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ videoId, userId }),
+    body: JSON.stringify({ articleId, userId }),
     credentials: "include",
   });
 
@@ -18,4 +21,4 @@ const completeVideo = async (videoId: string, userId: string | undefined) => {
   return response.json();
 };
 
-export default completeVideo;
+export default completeArticle;

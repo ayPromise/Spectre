@@ -1,14 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Test } from "@shared/types";
+import { MaterialType, MaterialUnion, Test } from "@shared/types";
 import QuestionDisplay from "./QuestionDisplay";
 import NavigationControls from "./NavigationControls";
 import ResultDialog from "./ResultDialog";
+import { useMutation } from "@tanstack/react-query";
+import completeArticle from "../utils/completeArticle";
+import updateToken from "@/lib/update-token";
+import { showError, showSuccess } from "@/utils/toast";
+import { useAuth } from "@/context/AuthContext";
+import completeLecture from "../utils/completeLecture";
 
 interface Props {
   test: Test;
+  material: MaterialUnion;
 }
 
-const TestView: React.FC<Props> = ({ test }) => {
+const TestView: React.FC<Props> = ({ material, test }) => {
   const [answers, setAnswers] = useState<{
     [questionId: string]: string[] | string;
   }>({});
@@ -44,9 +51,36 @@ const TestView: React.FC<Props> = ({ test }) => {
     });
   };
 
+  const { userData } = useAuth();
+
+  const mutation = useMutation({
+    mutationFn: () => {
+      if (material.kind === MaterialType.Article) {
+        return completeArticle(material._id, userData?.sub);
+      } else {
+        return completeLecture(material._id, userData?.sub);
+      }
+    },
+    onSuccess: async (data) => {
+      console.log("data", data);
+      const token = data.access_token;
+      await updateToken(token);
+      showSuccess("Гарна робота!");
+    },
+    onError: (error) => {
+      showError(error.message);
+    },
+  });
+
   const handleSubmit = () => {
     setSubmitted(true);
     setShowResult(true);
+
+    if (passed) {
+      if (material.kind === MaterialType.Article) {
+        mutation.mutate();
+      }
+    }
   };
 
   const isAnsweredAll = test.questions.every((q) => {
