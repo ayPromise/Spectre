@@ -26,7 +26,7 @@ interface AchievementFormProps {
   initialData?: Achievement;
   open: boolean;
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
 }
 
 const validationSchema = Yup.object({
@@ -58,7 +58,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
     onSuccess: () => {
       showSuccess(`Досягнення ${isEditing ? "оновлено" : "створено"}!`);
       onClose();
-      onSubmit();
+      if (onSubmit) onSubmit();
       window.location.reload();
     },
     onError: (err: Error) => showError(err.message),

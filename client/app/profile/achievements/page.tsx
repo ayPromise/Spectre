@@ -13,6 +13,7 @@ import AchievementList from "./components/AchievementList";
 import AchievementDialog from "./components/AchievementDialog";
 import { useAccess } from "@/hooks/useAccess";
 import CreateButton from "@/components/custom/CreateButton";
+import AchievementForm from "./components/AchievmentForm";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,7 @@ const AchievementsPage: React.FC = () => {
     useState<Achievement | null>(null);
   const { materials } = useMaterials();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
+  const [isOpenCreationForm, setIsOpenCreationForm] = useState<boolean>(false);
 
   const {
     data: achievements,
@@ -39,7 +41,9 @@ const AchievementsPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 py-6">
       <div className="flex justify-between">
         <h1 className="text-3xl font-bold mb-2">Мої досягнення</h1>
-        {(hasAdminAccess || hasInstructorAccess) && <CreateButton />}
+        {(hasAdminAccess || hasInstructorAccess) && (
+          <CreateButton onClick={() => setIsOpenCreationForm(true)} />
+        )}
       </div>
       <p className="text-muted-foreground mb-6">
         Досягнення відкриваються за активну участь у навчанні, перегляді лекцій,
@@ -70,6 +74,11 @@ const AchievementsPage: React.FC = () => {
         achievement={selectedAchievement}
         onClose={() => setSelectedAchievement(null)}
         materials={materials}
+      />
+
+      <AchievementForm
+        open={isOpenCreationForm}
+        onClose={() => setIsOpenCreationForm(false)}
       />
     </div>
   );

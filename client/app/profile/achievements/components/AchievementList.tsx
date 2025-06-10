@@ -32,17 +32,17 @@ const AchievementList: React.FC<AchievementListProps> = ({
                 <div
                   key={_id}
                   onClick={() => onSelect(achievement)}
-                  className={`cursor-pointer flex items-start gap-4 p-4 border rounded-xl max-w-[260px] transition hover:bg-muted
+                  className={`cursor-pointer flex items-start gap-4 p-4 border rounded-xl w-[260px] max-w-[260px] min-h-[85px] transition hover:bg-muted
                     ${
                       isGottenAchievement
                         ? "ring-2 ring-blue-500 shadow-blue-500/40 shadow-md"
                         : ""
                     }`}
                 >
-                  <div className="min-w-[33px] h-full">
+                  <div className="min-w-[33px] w-[33px] h-full">
                     {getAchievementIcon(category, isGottenAchievement)}
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col flex-grow">
                     <h3
                       className={`font-medium text-sm truncate ${
                         isGottenAchievement
