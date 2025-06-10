@@ -19,7 +19,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
   return (
     <>
       {Object.entries(groupedAchievements).map(([category, items]) => (
-        <div key={category} className="mb-6">
+        <div key={category} className="mb-12">
           <h2 className="text-xl font-semibold mb-2">{category}</h2>
           <div className="flex flex-wrap gap-4">
             {items.map((achievement) => {
@@ -32,7 +32,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
                 <div
                   key={_id}
                   onClick={() => onSelect(achievement)}
-                  className={`cursor-pointer flex items-start gap-4 p-4 border rounded-xl w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.5rem)] transition hover:bg-muted
+                  className={`cursor-pointer flex items-start gap-4 p-4 border rounded-xl max-w-[260px] transition hover:bg-muted
                     ${
                       isGottenAchievement
                         ? "ring-2 ring-blue-500 shadow-blue-500/40 shadow-md"
