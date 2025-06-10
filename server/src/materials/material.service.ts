@@ -53,6 +53,7 @@ export class MaterialService {
     const updatedMaterialAny = updatedMaterial as any;
 
     if ('title' in dtoAny) updatedMaterialAny.title = dtoAny.title;
+    if ('content' in dtoAny) updatedMaterialAny.content = dtoAny.content;
     if ('description' in dtoAny)
       updatedMaterialAny.description = dtoAny.description;
     if ('videoURL' in dtoAny) updatedMaterialAny.videoURL = dtoAny.videoURL;
