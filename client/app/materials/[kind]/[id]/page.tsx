@@ -26,6 +26,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useMaterials } from "@/context/MaterialsContext";
 import isMaterialFinished from "./utils/isMaterialFinished";
+import Link from "next/link";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -85,25 +86,38 @@ const MaterialPage = () => {
 
   return (
     <div className="container space-y-8">
-      <div className="space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <h1 className="text-3xl font-bold">{materialById.title}</h1>
-          {isFinished && <FinishedLabel />}
+      <div className="flex justify-between">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-3xl font-bold">{materialById.title}</h1>
+            {isFinished && <FinishedLabel />}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Створено: {new Date(materialById.createdAt).toLocaleDateString()}
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Створено: {new Date(materialById.createdAt).toLocaleDateString()}
-        </p>
-      </div>
 
-      {(hasInstructorAccess || hasAdminAccess) && (
-        <Button
-          variant="destructive"
-          onClick={handleDelete}
-          disabled={isRemoving}
-        >
-          Видалити матеріал
-        </Button>
-      )}
+        {(hasInstructorAccess || hasAdminAccess) && (
+          <div className="flex gap-3">
+            <Link
+              href={`/materials/${materialById.kind.toLocaleLowerCase()}/${
+                materialById._id
+              }/edit`}
+            >
+              <Button variant="default" onClick={() => {}}>
+                Редагувати
+              </Button>
+            </Link>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isRemoving}
+            >
+              Видалити матеріал
+            </Button>
+          </div>
+        )}
+      </div>
 
       {materialById.kind === MaterialType.Article && (
         <ArticleView article={materialById} />
