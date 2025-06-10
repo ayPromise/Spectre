@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Question, Specification } from "@shared/types";
+import { Article, Question, Specification } from "@shared/types";
 import {
   MaterialType,
   MaterialTypeNameUA,
@@ -64,10 +64,16 @@ const defaultTest = [
   },
 ];
 
-const ArticleForm: React.FC = () => {
+type ArticleFormProps = {
+  initialData?: Article;
+};
+
+const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
   const router = useRouter();
 
-  const [questions, setQuestions] = useState<Question[]>(defaultTest);
+  const [questions, setQuestions] = useState<Question[]>(
+    initialData?.test.questions ?? defaultTest
+  );
   const handleQuestionsChange = (newQuestions: Question[]) => {
     setQuestions(newQuestions);
   };
@@ -92,8 +98,10 @@ const ArticleForm: React.FC = () => {
   );
   const formik = useFormik<ArticleFormData>({
     initialValues: {
-      title: "",
-      content: `<h1>Початок роботи з дроном:</h1>
+      title: initialData?.title ?? "",
+      content:
+        initialData?.content ??
+        `<h1>Початок роботи з дроном:</h1>
                     <p></p>
                     <h2>Мета розділу:</h2>
                     <p></p>
@@ -110,7 +118,7 @@ const ArticleForm: React.FC = () => {
                     <h2>Джерела та додаткові матеріали:</h2>
                     <p></p>
         `,
-      type: specificationOptions[0],
+      type: initialData?.type ?? specificationOptions[0],
     },
     validationSchema,
     onSubmit: (values) => {

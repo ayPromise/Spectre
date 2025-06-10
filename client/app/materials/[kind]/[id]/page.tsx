@@ -5,7 +5,7 @@ import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 
 // UTILS
 import { showError, showSuccess } from "@/utils/toast";
-import deleteMaterial from "../../create/utils/deleteMaterial";
+import deleteMaterial from "../../utils/deleteMaterial";
 
 // TYPES
 

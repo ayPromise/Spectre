@@ -9,15 +9,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MaterialType } from "@shared/types/Enums";
-import ArticleForm from "./components/ArticleForm";
-import LectureForm from "./components/LectureForm";
-import VideoForm from "./components/VideoForm";
+import ArticleForm from "../components/ArticleForm";
+import LectureForm from "../components/LectureForm";
+import VideoForm from "../components/VideoForm";
 
 const CreateMaterialPage = () => {
   const [type, setType] = useState<MaterialType>(MaterialType.Article);
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <h1 className="text-2xl font-semibold mb-6">
         Створення навчального матеріалу
       </h1>

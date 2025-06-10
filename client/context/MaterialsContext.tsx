@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
-import getMaterials from "@/app/materials/create/utils/getAllMaterials";
+import getMaterials from "@/app/materials/utils/getAllMaterials";
 import { MaterialUnion } from "@shared/types";
 
 interface MaterialsContextValue {
