@@ -1,22 +1,30 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useMaterials } from "@/context/MaterialsContext";
-import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
-import { useMutation } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import deleteMaterial from "../../create/utils/deleteMaterial";
-import { showError, showSuccess } from "@/utils/toast";
 import { useEffect } from "react";
+import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
+
+// UTILS
+import { showError, showSuccess } from "@/utils/toast";
+import deleteMaterial from "../../create/utils/deleteMaterial";
+
+// TYPES
+
+// COMPONENTS
+import { Button } from "@/components/ui/button";
 import Loader from "@/components/custom/Loader";
 import ErrorMessage from "@/components/custom/ErrorMessage";
 import ArticleView from "./components/ArticleView";
 import LectureView from "./components/LectureView";
-import VideoView from "./components/VideoView";
-import { useAccess } from "@/hooks/useAccess";
 import TestView from "./components/TestView";
-import { useAuth } from "@/context/AuthContext";
 import FinishedLabel from "@/components/custom/FinishedLabel";
+import VideoView from "./components/VideoView";
+
+// HOOKS
+import { useAccess } from "@/hooks/useAccess";
+import { useAuth } from "@/context/AuthContext";
+import { useParams, useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { useMaterials } from "@/context/MaterialsContext";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -107,7 +115,8 @@ const MaterialPage = () => {
         <VideoView video={materialById} />
       )}
 
-      {materialById.test?.questions?.length > 0 && (
+      {(materialById.kind === MaterialType.Article ||
+        materialById.kind === MaterialType.Lecture) && (
         <TestView test={materialById.test} material={materialById} />
       )}
     </div>
