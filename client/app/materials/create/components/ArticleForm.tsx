@@ -26,7 +26,7 @@ import createMaterial from "../utils/createMaterial";
 import { useRouter } from "next/navigation";
 import { CreateArticlePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { SimpleEditor } from "@/components/tiptap/tiptap-templates/simple/simple-editor";
 
 type ArticleFormData = {
   title: string;

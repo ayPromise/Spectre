@@ -1,10 +1,21 @@
-import { Controller, Post, Body, Get, Delete, Param, NotFoundException, Put, BadRequestException, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Delete,
+  Param,
+  NotFoundException,
+  Put,
+  BadRequestException,
+  UseGuards,
+} from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { Schedule, UserRole } from '@shared/types';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { Roles } from 'src/guards/roles.decorator';
+import { Roles } from 'src/decorators/roles.decorator';
 
 @Controller('schedule')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -25,9 +36,9 @@ export class ScheduleController {
 
   @Get(':id')
   @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
-async findOne(@Param('id') id: string): Promise<Schedule> {
-  return this.scheduleService.findOne(id);
-}
+  async findOne(@Param('id') id: string): Promise<Schedule> {
+    return this.scheduleService.findOne(id);
+  }
 
   @Delete(':id')
   @Roles(UserRole.Admin, UserRole.Instructor)
@@ -42,24 +53,22 @@ async findOne(@Param('id') id: string): Promise<Schedule> {
     }
   }
 
-
   @Put(':id')
   @Roles(UserRole.Admin, UserRole.Instructor)
-async update(
-  @Param('id') id: string,
-  @Body() updateDto: Partial<Schedule>,
-): Promise<{ message: string }> {
-  try {
-    return await this.scheduleService.update(id, updateDto);
-  } catch (error) {
-    if (error.message.includes('not found')) {
-      throw new NotFoundException(error.message);
+  async update(
+    @Param('id') id: string,
+    @Body() updateDto: Partial<Schedule>,
+  ): Promise<{ message: string }> {
+    try {
+      return await this.scheduleService.update(id, updateDto);
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        throw new NotFoundException(error.message);
+      }
+      throw new BadRequestException(error.message);
     }
-    throw new BadRequestException(error.message);
   }
-  
-  }
-  
+
   @Put('sign-up/:id')
   @Roles(UserRole.Student)
   async signUp(
@@ -67,7 +76,9 @@ async update(
     @Body('newUserId') newUserId: string,
   ): Promise<Schedule> {
     if (!newUserId) {
-      throw new BadRequestException('Передайте ID користувача в полі newUserId');
+      throw new BadRequestException(
+        'Передайте ID користувача в полі newUserId',
+      );
     }
     return this.scheduleService.signUp(id, newUserId);
   }
