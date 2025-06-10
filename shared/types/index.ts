@@ -21,4 +21,6 @@ export type { Article } from "./Article";
 
 export type { Test, Question, Option } from "./Test";
 
+export type { Achievement } from "./Achievement";
+
 export type { MaterialUnion } from "./MaterialUnion";
