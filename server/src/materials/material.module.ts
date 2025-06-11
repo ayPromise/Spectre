@@ -7,6 +7,7 @@ import { ArticleMaterialSchema } from './schema/article.schema';
 import { LectureMaterialSchema } from './schema/lecture.schema';
 import { VideoMaterialSchema } from './schema/video.schema';
 import { MaterialType } from '@shared/types';
+import { NotificationGateway } from 'src/gateways/notification.gateway';
 
 @Module({
   imports: [
@@ -24,6 +25,6 @@ import { MaterialType } from '@shared/types';
     ]),
   ],
   controllers: [MaterialController],
-  providers: [MaterialService],
+  providers: [MaterialService, NotificationGateway],
 })
 export class MaterialModule {}

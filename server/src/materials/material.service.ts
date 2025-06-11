@@ -7,27 +7,34 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Material, MaterialDocument } from './schema/material.schema';
 import { Model } from 'mongoose';
 import { CreateMaterialDto } from './dto/create-material.dto';
-import { MaterialType, Test } from '@shared/types';
+import { MaterialType, MaterialUnion, Test } from '@shared/types';
 import { TestDto } from './dto/test.dto';
+import { NotificationGateway } from 'src/gateways/notification.gateway';
 
 @Injectable()
 export class MaterialService {
   constructor(
     @InjectModel(Material.name)
     private readonly materialModel: Model<MaterialDocument>,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   async create(dto: CreateMaterialDto): Promise<Material> {
+    let createdMaterial: MaterialUnion;
+
     switch (dto.kind) {
       case MaterialType.Article:
-        return this.materialModel.discriminators[dto.kind].create(dto);
       case MaterialType.Lecture:
-        return this.materialModel.discriminators[dto.kind].create(dto);
       case MaterialType.Video:
-        return this.materialModel.discriminators[dto.kind].create(dto);
+        createdMaterial =
+          await this.materialModel.discriminators[dto.kind].create(dto);
+        break;
       default:
         throw new BadRequestException('Invalid material kind');
     }
+    this.notificationGateway.sendNewMaterialNotification(createdMaterial);
+
+    return createdMaterial;
   }
 
   async findAll(): Promise<Material[]> {
