@@ -19,8 +19,6 @@ const completeMaterial = async (
   const bodyKey = `${type.toLocaleLowerCase()}Id`;
   const endpoint = endpointMap[type];
 
-  console.log(SERVER_URL + endpoint, { [bodyKey]: materialId, userId });
-
   const response = await fetch(SERVER_URL + endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

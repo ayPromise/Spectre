@@ -29,8 +29,13 @@ export const tryAssignAchievements = async (
       const { user } = await updateToken(token);
       setUserData(user);
 
-      newAchievements.forEach((a) =>
-        showSuccess(`🎉 Ви отримали досягнення "${a.title}"!`)
+      if (newAchievements.length > 0) {
+        localStorage.setItem("hasNewAchievements", "true");
+        window.dispatchEvent(new Event("achievement-change"));
+      }
+
+      newAchievements.forEach((ach) =>
+        showSuccess(`🎉 Ви отримали досягнення "${ach.title}"!`)
       );
     }
 

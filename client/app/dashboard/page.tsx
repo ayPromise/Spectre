@@ -1,7 +1,5 @@
 import React from "react";
 
-export const dynamic = "force-dynamic";
-
 const DashboardPage: React.FC = () => {
   return (
     <>

@@ -51,6 +51,11 @@ const AchievementsPage: React.FC = () => {
     updateAchievements();
   }, [userData, setUserData]);
 
+  useEffect(() => {
+    localStorage.removeItem("hasNewAchievements");
+    window.dispatchEvent(new Event("achievement-change"));
+  }, []);
+
   const grouped = achievements ? groupByCategory(achievements) : {};
 
   return (

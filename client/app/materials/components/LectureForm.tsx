@@ -160,20 +160,6 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
           }
         }
 
-        console.log({
-          ...restValues,
-          test: {
-            questions,
-            summaryScore: questions.reduce(
-              (total, question) => total + question.points,
-              0
-            ),
-          },
-          kind: MaterialType.Lecture,
-          videoURL: uploadedVideoUrl,
-          time: 100,
-        });
-
         createMaterialMutation({
           ...restValues,
           test: {

@@ -1,7 +1,7 @@
 "use client";
 
 // HOOKS
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
@@ -32,6 +32,7 @@ const iconOnlyLinks = [
 
 const SideBar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [hasNewAchievements, setHasNewAchievements] = useState<boolean>(false);
   const pathName = usePathname();
   const { isAuth, setIsAuth } = useAuth();
   const { hasAdminAccess } = useAccess();
@@ -67,11 +68,38 @@ const SideBar: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const checkAchievements = () => {
+      const hasNew = localStorage.getItem("hasNewAchievements") === "true";
+      setHasNewAchievements(hasNew);
+    };
+
+    checkAchievements();
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "hasNewAchievements") {
+        checkAchievements();
+      }
+    };
+
+    const handleCustomEvent = () => {
+      checkAchievements();
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("achievement-change", handleCustomEvent);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("achievement-change", handleCustomEvent);
+    };
+  }, []);
+
   return (
     isAuth && (
       <aside
         className={cn(
-          "sticky top-0 h-screen border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
+          "sticky top-0 max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
           collapsed ? "w-2" : "min-w-52"
         )}
       >
@@ -125,19 +153,25 @@ const SideBar: React.FC = () => {
           {/* Icon-only links */}
           <div className="flex flex-row gap-2 px-2 mt-4">
             {!collapsed &&
-              iconOnlyLinks.map(({ href, icon: Icon, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={cn(
-                    "p-2 rounded-md hover:bg-muted transition-colors",
-                    isActive(href) && "bg-muted"
-                  )}
-                  title={label}
-                >
-                  <Icon className="w-5 h-5 text-primary" />
-                </Link>
-              ))}
+              iconOnlyLinks.map(({ href, icon: Icon, label }) => {
+                const isAchievement = href === "/profile/achievements";
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "relative p-2 rounded-md hover:bg-muted transition-colors",
+                      isActive(href) && "bg-muted"
+                    )}
+                    title={label}
+                  >
+                    <Icon className="w-5 h-5 text-primary" />
+                    {isAchievement && hasNewAchievements && (
+                      <span className="absolute z-0 top-[3px] right-[3px] w-2 h-2 bg-indigo-600 rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
           </div>
 
           {!collapsed && (
