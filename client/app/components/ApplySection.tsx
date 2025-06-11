@@ -3,16 +3,15 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import FormInput from "@/components/custom/FormInput";
 import emailjs from "@emailjs/browser";
 import { showError, showSuccess } from "@/utils/toast";
+import FormTextarea from "@/components/custom/FormTextarea";
 
 const validationSchema = Yup.object({
-  firstName: Yup.string().required("Ім'я не може бути порожнім"),
-  lastName: Yup.string().required("Прізвище не може бути порожнім"),
+  firstName: Yup.string().required("Обов'язкове поле"),
+  lastName: Yup.string().required("Обов'язкове поле"),
   email: Yup.string()
     .email("Неправильний формат адреси")
     .required("Це поле не може бути пустим"),
@@ -132,6 +131,7 @@ const ApplySection: React.FC = () => {
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.email && errors.email}
+          required
         />
 
         <FormInput
@@ -144,25 +144,20 @@ const ApplySection: React.FC = () => {
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.phoneNumber && errors.phoneNumber}
+          required
         />
 
-        <div>
-          <Label htmlFor="motivation" className="block mb-1 font-medium">
-            Мета
-          </Label>
-          <Textarea
-            id="motivation"
-            name="motivation"
-            rows={5}
-            placeholder="Яка ваша мета?"
-            value={values.motivation}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          {touched.motivation && errors.motivation && (
-            <p className="text-red-600 text-sm mt-1">{errors.motivation}</p>
-          )}
-        </div>
+        <FormTextarea
+          id="motivation"
+          label="Мета"
+          placeholder="Яка ваша мета?"
+          name="motivation"
+          value={values.motivation}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.motivation && errors.motivation}
+          required
+        />
 
         <Button type="submit" disabled={isSubmitting} className="w-full">
           Send

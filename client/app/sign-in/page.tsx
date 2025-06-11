@@ -92,6 +92,7 @@ export function SignInPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={touched.email && errors.email}
+                    required
                   />
                 </div>
                 <div className="grid gap-3 relative">
