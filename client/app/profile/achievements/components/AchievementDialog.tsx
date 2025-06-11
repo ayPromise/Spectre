@@ -110,7 +110,11 @@ const AchievementDialog: React.FC<AchievementDialogProps> = ({
 
           {(hasAdminAccess || hasInstructorAccess) && (
             <div className="flex gap-1 mt-2">
-              <Button className="flex-grow" onClick={() => setIsEditOpen(true)}>
+              <Button
+                className="flex-grow"
+                onClick={() => setIsEditOpen(true)}
+                disabled={isRemoving}
+              >
                 Редагувати
               </Button>
               <Button

@@ -15,6 +15,7 @@ type Props = {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   error?: string | false;
   required?: boolean;
+  disabled?: boolean;
 };
 
 const FormInput: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const FormInput: React.FC<Props> = ({
   onBlur,
   error,
   required = false,
+  disabled = false,
 }) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -64,6 +66,7 @@ const FormInput: React.FC<Props> = ({
         required={required}
         onClick={type === "time" ? handleIconClick : undefined}
         isError={!!error}
+        disabled={disabled}
       />
     </div>
   );

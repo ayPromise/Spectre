@@ -94,6 +94,7 @@ const UserCreationForm = () => {
         onBlur={handleBlur}
         error={touched.email && errors.email ? errors.email : undefined}
         required
+        disabled={isSubmitting || isPending}
       />
 
       <FormInput
@@ -107,6 +108,7 @@ const UserCreationForm = () => {
           touched.firstName && errors.firstName ? errors.firstName : undefined
         }
         required
+        disabled={isSubmitting || isPending}
       />
 
       <FormInput
@@ -120,6 +122,7 @@ const UserCreationForm = () => {
           touched.lastName && errors.lastName ? errors.lastName : undefined
         }
         required
+        disabled={isSubmitting || isPending}
       />
 
       <FormInput
@@ -135,6 +138,7 @@ const UserCreationForm = () => {
             : undefined
         }
         required
+        disabled={isSubmitting || isPending}
       />
 
       <div className="flex items-end gap-2">
@@ -150,12 +154,14 @@ const UserCreationForm = () => {
               touched.password && errors.password ? errors.password : undefined
             }
             required
+            disabled={isSubmitting || isPending}
           />
         </div>
         <Button
           type="button"
           onClick={() => setFieldValue("password", generatePassword())}
           className="align-bottom"
+          disabled={isSubmitting || isPending}
         >
           Згенерувати
         </Button>

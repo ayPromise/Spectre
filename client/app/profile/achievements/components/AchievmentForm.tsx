@@ -19,8 +19,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Achievement } from "@shared/types";
 import saveAchievement from "../utils/saveAchievement";
 import MultiSelect from "@/components/custom/MultiSelect";
-import { Textarea } from "@/components/ui/textarea";
 import { MaterialTypeNameUA } from "@shared/types/Enums";
+import FormTextarea from "@/components/custom/FormTextarea";
 
 interface AchievementFormProps {
   initialData?: Achievement;
@@ -52,7 +52,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
   const isEditing = !!initialData;
   const { materials } = useMaterials();
 
-  const mutation = useMutation({
+  const { mutate: saveAchievementMutation, isPending } = useMutation({
     mutationFn: (data: Partial<Achievement>) =>
       saveAchievement(data, initialData?._id),
     onSuccess: () => {
@@ -77,7 +77,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
     },
     validationSchema,
     onSubmit: (values) => {
-      mutation.mutate({
+      saveAchievementMutation({
         title: values.title,
         description: values.description,
         category: values.category,
@@ -90,6 +90,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
     handleSubmit,
     values,
     handleChange,
+    isSubmitting,
     touched,
     errors,
     setFieldValue,
@@ -115,6 +116,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
             onBlur={handleBlur}
             error={touched.title && errors.title ? errors.title : undefined}
             required
+            disabled={isSubmitting || isPending}
           />
           <FormInput
             id="category"
@@ -127,23 +129,19 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
               touched.category && errors.category ? errors.category : undefined
             }
             required
+            disabled={isSubmitting || isPending}
           />
-          <div>
-            <Label htmlFor="description" className="mb-2">
-              Опис
-            </Label>
-            <Textarea
-              id="description"
-              name="description"
-              value={values.description}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-            />
-            {touched.description && errors.description && (
-              <p className="text-red-600 text-sm mt-1">{errors.description}</p>
-            )}
-          </div>
+          <FormTextarea
+            id="description"
+            name="description"
+            label="Опис"
+            value={values.description}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.description && errors.description}
+            required
+            disabled={isSubmitting || isPending}
+          />
 
           <div>
             <Label
@@ -174,7 +172,7 @@ const AchievementForm: React.FC<AchievementFormProps> = ({
           <Button
             type="submit"
             className="w-full"
-            disabled={mutation.isPending}
+            disabled={isSubmitting || isPending}
           >
             {isEditing ? "Оновити" : "Створити"}
           </Button>

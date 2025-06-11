@@ -95,6 +95,7 @@ export function SignInPage() {
                     onBlur={handleBlur}
                     error={touched.email && errors.email}
                     required
+                    disabled={isPending || isSubmitting}
                   />
                 </div>
                 <div className="grid gap-3 relative">
@@ -117,6 +118,7 @@ export function SignInPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={touched.password && errors.password}
+                    disabled={isPending || isSubmitting}
                   />
                 </div>
                 <Button

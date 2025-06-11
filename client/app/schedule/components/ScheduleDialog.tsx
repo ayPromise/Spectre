@@ -35,6 +35,7 @@ import { useSchedule } from "@/context/ScheduleContext";
 import createSchedule from "../utils/createSchedule";
 import updateSchedule from "../utils/updateSchedule";
 import { Schedule } from "@shared/types";
+import FormTextarea from "@/components/custom/FormTextarea";
 
 interface ScheduleDialogProps {
   date?: {
@@ -135,6 +136,7 @@ const ScheduleDialog = ({
     handleBlur,
     handleSubmit,
     setFieldValue,
+    isSubmitting,
     errors,
     touched,
   } = formik;
@@ -180,6 +182,7 @@ const ScheduleDialog = ({
             onChange={handleChange}
             onBlur={handleBlur}
             error={touched.title && errors.title}
+            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
           />
 
           <div className="flex gap-4">
@@ -193,6 +196,9 @@ const ScheduleDialog = ({
               <Select
                 value={values.lessonType}
                 onValueChange={(val) => setFieldValue("lessonType", val)}
+                disabled={
+                  isScheduleCreating || isScheduleUpdating || isSubmitting
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Оберіть тип заняття" />
@@ -219,6 +225,9 @@ const ScheduleDialog = ({
                     value={values.meetingType}
                     onValueChange={(val) => setFieldValue("meetingType", val)}
                     name="meetingType"
+                    disabled={
+                      isScheduleCreating || isScheduleUpdating || isSubmitting
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Оберіть формат" />
@@ -248,31 +257,28 @@ const ScheduleDialog = ({
                 onChange={handleChange}
                 onBlur={handleBlur}
                 error={touched.time && errors.time}
+                disabled={
+                  isScheduleCreating || isScheduleUpdating || isSubmitting
+                }
               />
             </div>
           </div>
 
-          <div>
-            <Label htmlFor="note" className="block mb-3 font-medium">
-              Додаткова інформація
-            </Label>
-            <Textarea
-              id="note"
-              name="note"
-              rows={5}
-              placeholder="Не забудьте взяти..."
-              value={values.note}
-              onChange={handleChange}
-              onBlur={handleBlur}
-            />
-            {touched.note && errors.note && (
-              <p className="text-red-600 text-sm mt-1">{errors.note}</p>
-            )}
-          </div>
+          <FormTextarea
+            label="Додаткова інформація"
+            id="note"
+            name="note"
+            placeholder="Не забудьте взяти..."
+            value={values.note}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.note && errors.note}
+            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
+          />
 
           <Button
             type="submit"
-            disabled={isScheduleCreating || isScheduleUpdating}
+            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
           >
             {isEditing ? "Зберегти зміни" : "Повідомити про заняття"}
           </Button>

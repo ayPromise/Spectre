@@ -6,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -26,6 +25,7 @@ import {
 import { useMaterials } from "@/context/MaterialsContext";
 import { CreateVideoPayload } from "@/types/CreateMaterialPayload";
 import saveMaterial from "../utils/saveMaterial";
+import FormTextarea from "@/components/custom/FormTextarea";
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
@@ -113,6 +113,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.title && errors.title}
           required
+          disabled={isSubmitting || isPending}
         />
 
         <div>
@@ -123,6 +124,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
             name="type"
             value={values.type}
             onValueChange={(value) => setFieldValue("type", value)}
+            disabled={isSubmitting || isPending}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
@@ -146,29 +148,18 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           )}
         </div>
 
-        <div>
-          <Label htmlFor="description" className="block mb-3 font-medium">
-            Опис
-          </Label>
-          <Textarea
-            id="description"
-            name="description"
-            rows={6}
-            placeholder="Введіть короткий опис відео..."
-            value={values.description}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            className={`block w-full rounded-md border p-2 ${
-              touched.description && errors.description
-                ? "border-red-600"
-                : "border-gray-300"
-            }`}
-          />
-          {touched.description && errors.description && (
-            <p className="text-red-600 text-sm mt-1">{errors.description}</p>
-          )}
-        </div>
+        <FormTextarea
+          id="description"
+          name="description"
+          placeholder="Введіть короткий опис лекції..."
+          value={values.description}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          required
+          label="Опис"
+          error={touched.description && errors.description}
+          disabled={isSubmitting || isPending}
+        />
 
         <FormInput
           id="videoURL"
@@ -179,6 +170,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.videoURL && errors.videoURL}
           required
+          disabled={isSubmitting || isPending}
         />
       </form>
 

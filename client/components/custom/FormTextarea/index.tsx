@@ -15,6 +15,7 @@ type Props = {
   onBlur: (e: React.FocusEvent<HTMLTextAreaElement>) => void;
   error?: string | false;
   required?: boolean;
+  disabled?: boolean;
 };
 
 const FormTextarea: React.FC<Props> = ({
@@ -27,6 +28,7 @@ const FormTextarea: React.FC<Props> = ({
   onBlur,
   error,
   required = false,
+  disabled = false,
 }) => {
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
   return (
@@ -52,6 +54,7 @@ const FormTextarea: React.FC<Props> = ({
         onBlur={onBlur}
         required={required}
         isError={!!error}
+        disabled={disabled}
       />
     </div>
   );

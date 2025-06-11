@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
@@ -24,17 +24,19 @@ const validationSchema = Yup.object({
 });
 
 const ApplySection: React.FC = () => {
+  const [isPending, setIsPending] = useState<boolean>(false);
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      motivation: "",
+      firstName: "adsasd",
+      lastName: "asdasd",
+      email: "asd@gmail.com",
+      phoneNumber: "+380678078342",
+      motivation: "adasdasdasdasdasjdiasjd",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
+        setIsPending(true);
         const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
         const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
         const publicKEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
@@ -57,6 +59,7 @@ const ApplySection: React.FC = () => {
           "Дякуємо за лист! Очікуйте на відповідь або дзвінок на вказаний номер."
         );
         resetForm();
+        setIsPending(false);
       } catch (error) {
         showError("Помилка при відправці листа. Спробуйте пізніше.");
         console.error(error);
@@ -105,6 +108,7 @@ const ApplySection: React.FC = () => {
               onBlur={handleBlur}
               error={touched.firstName && errors.firstName}
               required
+              disabled={isSubmitting || isPending}
             />
           </div>
           <div className="flex-1">
@@ -117,6 +121,7 @@ const ApplySection: React.FC = () => {
               onBlur={handleBlur}
               error={touched.lastName && errors.lastName}
               required
+              disabled={isSubmitting || isPending}
             />
           </div>
         </div>
@@ -132,6 +137,7 @@ const ApplySection: React.FC = () => {
           onBlur={handleBlur}
           error={touched.email && errors.email}
           required
+          disabled={isSubmitting || isPending}
         />
 
         <FormInput
@@ -145,6 +151,7 @@ const ApplySection: React.FC = () => {
           onBlur={handleBlur}
           error={touched.phoneNumber && errors.phoneNumber}
           required
+          disabled={isSubmitting || isPending}
         />
 
         <FormTextarea
@@ -157,9 +164,14 @@ const ApplySection: React.FC = () => {
           onBlur={handleBlur}
           error={touched.motivation && errors.motivation}
           required
+          disabled={isSubmitting || isPending}
         />
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting || isPending}
+          className="w-full"
+        >
           Send
         </Button>
       </form>

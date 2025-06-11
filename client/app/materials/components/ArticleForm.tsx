@@ -174,6 +174,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.title && errors.title ? errors.title : undefined}
           required
+          disabled={(isSubmitting && !isValid) || isCreating}
         />
 
         <div>
@@ -184,6 +185,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
             name="type"
             value={values.type}
             onValueChange={(value) => setFieldValue("type", value)}
+            disabled={(isSubmitting && !isValid) || isCreating}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
