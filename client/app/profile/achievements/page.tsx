@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { getAchievements } from "./utils/getAchievements";
 import groupByCategory from "./utils/groupByCategory";
 import { Achievement } from "@shared/types";
@@ -17,39 +17,34 @@ import AchievementForm from "./components/AchievmentForm";
 import { useAuth } from "@/context/AuthContext";
 import { tryAssignAchievements } from "@/lib/tryAssignAchievements";
 
-export const dynamic = "force-dynamic";
-
 const AchievementsPage: React.FC = () => {
   const [selectedAchievement, setSelectedAchievement] =
     useState<Achievement | null>(null);
   const { materials } = useMaterials();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
-  const [isOpenCreationForm, setIsOpenCreationForm] = useState<boolean>(false);
+  const [isOpenCreationForm, setIsOpenCreationForm] = useState(false);
   const { userData, setUserData } = useAuth();
-  const [canFetchAchievements, setCanFetchAchievements] = useState(false);
 
   const {
     data: achievements,
     isLoading,
     isError,
     error,
+    refetch: refetchAchievements,
   } = useQuery({
     queryKey: ["achievements"],
     queryFn: getAchievements,
-    staleTime: 0,
-    enabled: canFetchAchievements,
+    staleTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {
-    const updateAchievements = async () => {
-      if (userData) {
+    if (userData && achievements) {
+      (async () => {
         await tryAssignAchievements(userData, setUserData);
-        setCanFetchAchievements(true);
-      }
-    };
-
-    updateAchievements();
-  }, [userData, setUserData]);
+        await refetchAchievements();
+      })();
+    }
+  }, [userData, achievements, setUserData, refetchAchievements]);
 
   useEffect(() => {
     localStorage.removeItem("hasNewAchievements");
@@ -71,7 +66,7 @@ const AchievementsPage: React.FC = () => {
         читанні статей та перегляді відео.
       </p>
 
-      {isLoading || (!canFetchAchievements && <Loader />)}
+      {isLoading && <Loader />}
 
       {isError && (
         <ErrorMessage>

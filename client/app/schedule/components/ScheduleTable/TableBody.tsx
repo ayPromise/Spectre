@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import ScheduleDay from "./ScheduleDay";
 import Lesson from "../Lesson";
@@ -34,7 +35,6 @@ const TableBody = () => {
 
               const currentDay = dayIndex + 1;
 
-              // Фільтруємо розклади для цього дня
               const schedulesForDay = schedules.filter((schedule) => {
                 const scheduleDateObj = new Date(schedule.date);
                 return (

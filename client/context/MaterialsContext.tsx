@@ -1,9 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, ReactNode } from "react";
+import React, { createContext, useContext, ReactNode, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getMaterials from "@/app/materials/utils/getAllMaterials";
 import { MaterialUnion } from "@shared/types";
+import { useAuth } from "./AuthContext";
 
 interface MaterialsContextValue {
   materials: MaterialUnion[] | [];
@@ -22,6 +23,7 @@ const MaterialsContext = createContext<MaterialsContextValue>({
 });
 
 export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
+  const { isAuth } = useAuth();
   const {
     data: materials,
     isLoading,
@@ -31,8 +33,15 @@ export const MaterialsProvider = ({ children }: { children: ReactNode }) => {
   } = useQuery<MaterialUnion[]>({
     queryKey: ["materials"],
     queryFn: getMaterials,
-    staleTime: 1000 * 60 * 5, // кеш 5 хвилин
+    staleTime: 1000 * 60 * 5,
+    enabled: false,
   });
+
+  useEffect(() => {
+    if (isAuth) {
+      refetch();
+    }
+  }, [isAuth, refetch]);
 
   return (
     <MaterialsContext.Provider

@@ -24,7 +24,9 @@ export function AuthProvider({
   children: React.ReactNode;
   user: AuthStatus | null;
 }) {
-  const { data, isError, refetch } = useAuthStatus();
+  const { data, isError, refetch } = useAuthStatus({
+    enabled: !user,
+  });
   const [isAuth, setIsAuth] = useState<boolean>(!!user);
   const [userData, setUserData] = useState<AuthStatus | null>(user);
 
