@@ -8,6 +8,9 @@ const server_endpoints = {
   achievements: "/achievements",
   assignAchievements: "/auth/assign-achievements",
   createUser: "/auth/create-user",
+  users: "/auth/get-all-users",
+  editUser: "/auth/edit-user",
+  deleteUser: "/auth/delete-user",
 };
 
 export default server_endpoints;

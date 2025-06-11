@@ -1,9 +1,19 @@
-import { Controller, Post, Body, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  UseGuards,
+  Get,
+  Delete,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { Response } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
-import { UserRole } from '@shared/types';
+import { User, UserRole } from '@shared/types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { NotAuthenticatedGuard } from 'src/guards/not-authenticated.guard';
@@ -72,5 +82,26 @@ export class AuthController {
     @Body() body: { achievements: string[]; userId: string },
   ) {
     return this.authService.assignAchievements(body.userId, body.achievements);
+  }
+
+  @Get('get-all-users')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor)
+  async getAllUsers() {
+    return this.authService.getAllUsers();
+  }
+
+  @Delete('delete-user/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor)
+  async deleteUser(@Param('id') id: string) {
+    return this.authService.deleteUser(id);
+  }
+
+  @Patch('edit-user/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor)
+  async editUser(@Param('id') id: string, @Body() body: Partial<User>) {
+    return this.authService.editUser(id, body);
   }
 }

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
+import UsersPanel from "./components/UsersPanel";
 
 const DashboardPage: React.FC = () => {
   return (
@@ -9,6 +10,8 @@ const DashboardPage: React.FC = () => {
       <Link href={"/dashboard/create-user"}>
         <Button>Створити користувача</Button>
       </Link>
+
+      <UsersPanel />
     </>
   );
 };

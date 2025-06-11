@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
@@ -44,7 +45,6 @@ export class AuthService {
         completedArticles: [],
         completedVideos: [],
         completedLectures: [],
-        certificates: [],
         achievements: [],
         lastLogin: new Date(),
         ...rest,
@@ -130,6 +130,31 @@ export class AuthService {
     }
 
     return this.generateToken(user);
+  }
+
+  async getAllUsers() {
+    return this.userModel.find().select('-password').exec();
+  }
+
+  async deleteUser(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('Користувача не знайдено');
+    await user.deleteOne();
+    return { message: 'Користувача видалено' };
+  }
+
+  async editUser(userId: string, updates: Partial<User>) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('Користувача не знайдено');
+
+    if ('password' in updates) {
+      delete updates.password;
+    }
+
+    Object.assign(user, updates);
+    await user.save();
+
+    return this.userModel.findById(userId).select('-password');
   }
 
   generateToken(user: UserDocument) {
