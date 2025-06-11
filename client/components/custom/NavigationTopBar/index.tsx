@@ -13,8 +13,13 @@ import { useAuth } from "@/context/AuthContext";
 import { Trophy, User, Archive } from "lucide-react";
 import { usePathname } from "next/navigation";
 import io from "socket.io-client";
-import { MaterialUnion } from "@shared/types";
 import MaterialNotification from "./components/MaterialNotification";
+import {
+  StorageNotifications,
+  WebSocketNotification,
+} from "@/types/client/Notification";
+import { MaterialUnion, Schedule } from "@shared/types";
+import ScheduleNotification from "./components/ScheduleNotification";
 
 const socket = io("http://localhost:3333");
 
@@ -23,7 +28,9 @@ const TopBar: React.FC = () => {
   const pathname = usePathname();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [hasNewAchievements, setHasNewAchievements] = useState(false);
-  const [notifications, setNotifications] = useState<MaterialUnion[]>([]);
+  const [notifications, setNotifications] = useState<WebSocketNotification[]>(
+    []
+  );
   const [readNotifications, setReadNotifications] = useState<Set<string>>(
     new Set()
   );
@@ -32,10 +39,10 @@ const TopBar: React.FC = () => {
     const stored = localStorage.getItem("notifications");
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
+        const parsed = JSON.parse(stored) as StorageNotifications;
         if (userData?.sub === parsed.userId) {
           setNotifications(
-            parsed.notifications.filter((m: any) => !m.isRead).slice(0, 5)
+            parsed.notifications.filter((item) => !item.isRead).slice(0, 5)
           );
         }
       } catch (err) {
@@ -52,12 +59,15 @@ const TopBar: React.FC = () => {
     };
     checkAchievements();
 
-    const handleNewNotification = (material: MaterialUnion) => {
-      setNotifications((prev) =>
-        [{ ...material, isRead: false }, ...prev].slice(0, 5)
-      );
+    const handleNewNotification = (item: WebSocketNotification) => {
+      setNotifications((prev) => {
+        const exists = prev.some((not) => not.data._id === item.data._id);
+        if (exists) return prev;
+        return [item, ...prev].slice(0, 5);
+      });
     };
-    socket.on("newMaterialNotification", handleNewNotification);
+
+    socket.on("newNotification", handleNewNotification);
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === "hasNewAchievements") checkAchievements();
@@ -76,9 +86,9 @@ const TopBar: React.FC = () => {
 
   useEffect(() => {
     if (isAuth) {
-      const notificationsToSave = notifications.map((m) => ({
-        ...m,
-        isRead: readNotifications.has(m._id),
+      const notificationsToSave = notifications.map((item) => ({
+        ...item,
+        isRead: readNotifications.has(item.data._id),
       }));
       localStorage.setItem(
         "notifications",
@@ -142,7 +152,9 @@ const TopBar: React.FC = () => {
                   )}
                 >
                   <Archive className="w-5 h-5 text-primary" />
-                  {notifications.some((m) => !readNotifications.has(m._id)) && (
+                  {notifications.some(
+                    (item) => !readNotifications.has(item.data._id)
+                  ) && (
                     <span className="absolute top-[4px] right-[4px] w-[7px] h-[7px] bg-indigo-600 rounded-full animate-pulse" />
                   )}
                 </div>
@@ -157,15 +169,27 @@ const TopBar: React.FC = () => {
                   </p>
                 ) : (
                   <ul className="space-y-2 max-h-60 overflow-auto pr-2 custom-scrollbar">
-                    {notifications.map((material, idx) => (
-                      <li key={idx}>
-                        <MaterialNotification
-                          material={material}
-                          onHover={handleNotificationHover}
-                          isRead={readNotifications.has(material._id)}
-                        />
-                      </li>
-                    ))}
+                    {notifications.map((item, idx) => {
+                      if (item.type === "material") {
+                        return (
+                          <MaterialNotification
+                            key={idx}
+                            material={item.data as MaterialUnion}
+                            onHover={handleNotificationHover}
+                            isRead={readNotifications.has(item.data._id)}
+                          />
+                        );
+                      } else {
+                        return (
+                          <ScheduleNotification
+                            key={idx}
+                            schedule={item.data as Schedule}
+                            onHover={handleNotificationHover}
+                            isRead={readNotifications.has(item.data._id)}
+                          />
+                        );
+                      }
+                    })}
                   </ul>
                 )}
               </PopoverContent>
