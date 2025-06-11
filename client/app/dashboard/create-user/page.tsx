@@ -17,26 +17,18 @@ import {
 
 import { showSuccess, showError } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { UserRole } from "@shared/types";
 import generatePassword from "./utils/generatePassword";
 import createUser from "./utils/createUser";
-
-interface CreateUserPayload {
-  email: string;
-  phoneNumber: string;
-  hashedPassword: string;
-  firstName: string;
-  lastName: string;
-  role?: UserRole;
-}
+import { CreateUserPayload } from "@/types/UserPayloads";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Невірний email").required("Обов'язкове поле"),
   phoneNumber: Yup.string()
     .matches(/^\+380\d{9}$/, "Формат: +380XXXXXXXXX")
     .required("Обов'язкове поле"),
-  hashedPassword: Yup.string()
+  password: Yup.string()
     .min(8, "Мінімум 8 символів")
     .required("Обов'язкове поле"),
   firstName: Yup.string().required("Обов'язкове поле"),
@@ -46,6 +38,12 @@ const validationSchema = Yup.object({
 
 const UserCreationForm = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialEmail = searchParams.get("email") || "";
+  const initialFirstName = searchParams.get("firstName") || "";
+  const initialLastName = searchParams.get("lastName") || "";
+  const initialPhoneNumber =
+    `+${searchParams.get("phoneNumber")?.trim()}` || "";
 
   const { mutate: createUserMutation, isPending } = useMutation({
     mutationFn: (data: CreateUserPayload) => createUser(data),
@@ -60,12 +58,12 @@ const UserCreationForm = () => {
 
   const formik = useFormik<CreateUserPayload>({
     initialValues: {
-      email: "",
-      phoneNumber: "",
-      hashedPassword: "",
-      firstName: "",
-      lastName: "",
-      role: undefined,
+      email: initialEmail,
+      phoneNumber: initialPhoneNumber,
+      password: "",
+      firstName: initialFirstName,
+      lastName: initialLastName,
+      role: UserRole.Student,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -142,24 +140,22 @@ const UserCreationForm = () => {
       <div className="flex items-end gap-2">
         <div className="flex-grow">
           <FormInput
-            id="hashedPassword"
+            id="password"
             label="Пароль"
-            name="hashedPassword"
-            value={values.hashedPassword}
+            name="password"
+            value={values.password}
             onChange={handleChange}
             onBlur={handleBlur}
             error={
-              touched.hashedPassword && errors.hashedPassword
-                ? errors.hashedPassword
-                : undefined
+              touched.password && errors.password ? errors.password : undefined
             }
             required
           />
         </div>
         <Button
           type="button"
-          onClick={() => setFieldValue("hashedPassword", generatePassword())}
-          className="align-bottom "
+          onClick={() => setFieldValue("password", generatePassword())}
+          className="align-bottom"
         >
           Згенерувати
         </Button>
@@ -181,7 +177,6 @@ const UserCreationForm = () => {
           <SelectContent>
             <SelectItem value={UserRole.Student}>Студент</SelectItem>
             <SelectItem value={UserRole.Instructor}>Інструктор</SelectItem>
-            <SelectItem value={UserRole.Admin}>Адміністратор</SelectItem>
           </SelectContent>
         </Select>
         {touched.role && errors.role && (
@@ -191,7 +186,7 @@ const UserCreationForm = () => {
 
       <Button
         type="submit"
-        disabled={isSubmitting || isPending}
+        disabled={isPending && isSubmitting}
         className="w-full"
       >
         Створити користувача

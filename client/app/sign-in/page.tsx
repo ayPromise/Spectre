@@ -5,7 +5,7 @@ import React from "react";
 import { useFormik } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // UTILS
 import { showError, showSuccess } from "@/utils/toast";
@@ -20,14 +20,16 @@ import FormInput from "@/components/custom/FormInput";
 
 export function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { refetchUser } = useAuth();
+  const redirectURL = searchParams.get("redirectURL") || "/";
 
   const { mutate, isPending } = useMutation({
     mutationFn: signIn,
     onSuccess: (data) => {
       refetchUser();
       showSuccess(data.message);
-      router.push("/");
+      router.push(redirectURL);
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {

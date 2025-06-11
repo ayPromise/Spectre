@@ -3,10 +3,10 @@ import { ID, UserRole } from "@shared/types";
 interface CreateUserPayload {
   email: string;
   phoneNumber: string;
-  hashedPassword: string;
+  password: string;
   firstName: string;
   lastName: string;
-  role?: UserRole;
+  role: UserRole;
 }
 
 interface UpdateUserPayload {
@@ -22,4 +22,4 @@ interface UpdateUserPayload {
   achievements?: ID[];
 }
 
-export type{ CreateUserPayload, UpdateUserPayload}
+export type { CreateUserPayload, UpdateUserPayload };

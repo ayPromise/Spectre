@@ -11,7 +11,7 @@ export class RegisterUserDto {
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
+  @IsString()
   password: string;
 
   @IsString()

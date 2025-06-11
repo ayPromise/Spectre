@@ -4,7 +4,6 @@ import { UserRole } from "@shared/types";
 import getUserFromToken from "./lib/getUserFromToken";
 
 const protectedPatterns = [
-  /^\/dashboard/,
   /^\/profile/,
   /^\/schedule/,
   /^\/archive/,
@@ -16,6 +15,7 @@ const adminOnlyPatterns = [
   /^\/materials\/create$/,
   /^\/materials\/[^\/]+\/[^\/]+\/edit$/,
   /^\/dashboard/,
+  /^\/dashboard(\/[^\/]+)?$/,
 ];
 
 const publicOnlyPaths = ["/sign-in"];
@@ -32,23 +32,35 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith(path)
   );
 
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL("/sign-in", req.url));
+  // 1) Redirect unauthenticated users from admin or protected routes to /sign-in
+  if ((isProtected || isAdminOnly) && !user) {
+    const redirectUrl = new URL("/sign-in", req.url);
+    redirectUrl.searchParams.set("redirectURL", req.url);
+    return NextResponse.redirect(redirectUrl);
   }
 
+  // 2) Redirect authenticated users without admin role if route is admin only
   if (
     isAdminOnly &&
+    user &&
     ![UserRole.Admin, UserRole.Instructor].includes(role as UserRole)
   ) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
+  // 3) Redirect authenticated users from public-only paths (like sign-in) to home
   if (isPublicOnly && user) {
-    if (token) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
+  // 4) Catch-all: if the URL is NOT public, NOT protected, and user is NOT authenticated, redirect to sign-in
+  if (!isPublicOnly && !isProtected && !user) {
+    const redirectUrl = new URL("/sign-in", req.url);
+    redirectUrl.searchParams.set("redirectURL", req.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Otherwise, allow request
   return NextResponse.next();
 }
 
