@@ -40,12 +40,17 @@ const FormInput: React.FC<Props> = ({
   };
 
   return (
-    <div className="flex flex-col gap-3 relative">
-      <Label htmlFor={id} className="font-medium">
-        {label}
-        {error && (
-          <span className="text-red-600 whitespace-nowrap">{error}</span>
-        )}
+    <div className="flex flex-col gap-3">
+      <Label htmlFor={id} className="font-medium h-[10px]">
+        <span className="relative">
+          {label}
+          {required && (
+            <span className="text-red-600 absolute -top-1 -right-2 leading-none">
+              *
+            </span>
+          )}
+        </span>
+        {error && <span className="text-red-600 text-sm ml-2">{error}</span>}
       </Label>
       <Input
         ref={inputRef}
@@ -58,6 +63,7 @@ const FormInput: React.FC<Props> = ({
         onBlur={onBlur}
         required={required}
         onClick={type === "time" ? handleIconClick : undefined}
+        isError={!!error}
       />
     </div>
   );
