@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 
 // UTILS
@@ -38,12 +38,17 @@ const MaterialPage = () => {
   const router = useRouter();
   const { userData } = useAuth();
 
+  const [hasRefetched, setHasRefetched] = useState<boolean>(false);
+
   useEffect(() => {
-    if (!isLoading && !materialById) {
+    if (!isLoading && !materialById && !hasRefetched) {
+      setHasRefetched(true);
+      refetch();
+    } else if (!isLoading && isError && !materialById && hasRefetched) {
       showError("Матеріал не знайдено");
       router.replace(`/materials/${kind}`);
     }
-  }, [isLoading, materialById, kind, router]);
+  }, [isLoading, materialById, kind, router, refetch, hasRefetched, isError]);
 
   const { mutate: removeMaterialMutation, isPending: isRemoving } = useMutation(
     {
