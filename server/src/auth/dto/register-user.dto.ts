@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { UserRole } from '@shared/types';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsEnum,
+} from 'class-validator';
 
 export class RegisterUserDto {
   @IsEmail()
@@ -12,6 +19,9 @@ export class RegisterUserDto {
 
   @IsString()
   lastName: string;
+
+  @IsEnum(UserRole)
+  role: UserRole;
 
   @IsOptional()
   @IsString()

@@ -7,6 +7,7 @@ const server_endpoints = {
   completeLecture: "/auth/complete-lecture",
   achievements: "/achievements",
   assignAchievements: "/auth/assign-achievements",
+  createUser: "/auth/create-user",
 };
 
 export default server_endpoints;

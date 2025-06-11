@@ -3,6 +3,7 @@ import {
   ConflictException,
   UnauthorizedException,
   InternalServerErrorException,
+  BadRequestException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
@@ -23,7 +24,7 @@ export class AuthService {
   ) {}
 
   async createUser(dto: RegisterUserDto) {
-    const { email, password, ...rest } = dto;
+    const { email, password, role, ...rest } = dto;
     const existingUser = await this.userModel.findOne({ email });
     if (existingUser) throw new ConflictException('Email already in use');
 
@@ -31,11 +32,14 @@ export class AuthService {
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    if (role === UserRole.Admin) {
+      throw new BadRequestException('Creating admin users is not allowed.');
+    }
+
     try {
       const user = await new this.userModel({
         email,
         password: hashedPassword,
-        role: UserRole.Student,
         avatarURL: '',
         completedArticles: [],
         completedVideos: [],
