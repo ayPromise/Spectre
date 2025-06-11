@@ -13,6 +13,19 @@ body{
   @apply border-[1px] border-primary;
 }
 
+@keyframes gradient-x {
+  0% {
+    background-position: right;
+  }
+  100% {
+    background-position: left;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 4s linear infinite;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
