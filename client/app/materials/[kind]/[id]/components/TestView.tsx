@@ -11,11 +11,12 @@ import { showError, showSuccess } from "@/utils/toast";
 import updateToken from "@/lib/update-token";
 
 // TYPES
-import { MaterialType, MaterialUnion, Test } from "@shared/types";
+import { MaterialUnion, Test } from "@shared/types";
 
 // HOOKS
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
+import { tryAssignAchievements } from "@/lib/tryAssignAchievements";
 
 interface Props {
   test: Test;
@@ -66,6 +67,7 @@ const TestView: React.FC<Props> = ({ material, test }) => {
       const token = data.access_token;
       const { user } = await updateToken(token);
       setUserData(user);
+      await tryAssignAchievements(user, setUserData);
       showSuccess("Гарна робота!");
     },
     onError: (error) => {

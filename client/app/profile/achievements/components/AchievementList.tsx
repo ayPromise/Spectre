@@ -32,10 +32,10 @@ const AchievementList: React.FC<AchievementListProps> = ({
                 <div
                   key={_id}
                   onClick={() => onSelect(achievement)}
-                  className={`cursor-pointer flex items-start gap-4 p-4 border rounded-xl w-[260px] max-w-[260px] min-h-[85px] transition hover:bg-muted
+                  className={`cursor-pointer flex items-start gap-4 p-4 rounded-xl w-[270px] max-w-[270px] min-h-[85px] transition hover:bg-muted ring-2 ring-black
                     ${
                       isGottenAchievement
-                        ? "ring-2 ring-blue-500 shadow-blue-500/40 shadow-md"
+                        ? "ring-2 ring-indigo-600 shadow-blue-500/40 shadow-md"
                         : ""
                     }`}
                 >
@@ -46,7 +46,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
                     <h3
                       className={`font-medium text-sm truncate ${
                         isGottenAchievement
-                          ? "text-blue-400 drop-shadow-glow"
+                          ? "text-indigo-400 drop-shadow-glow"
                           : ""
                       }`}
                     >
@@ -55,7 +55,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
                     <p
                       className={`text-xs line-clamp-2 ${
                         isGottenAchievement
-                          ? "text-blue-300 drop-shadow-glow"
+                          ? "text-indigo-300 drop-shadow-glow"
                           : "text-muted-foreground"
                       }`}
                     >

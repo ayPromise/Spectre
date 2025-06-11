@@ -10,6 +10,7 @@ import updateToken from "@/lib/update-token";
 import completeMaterial from "../utils/completeMaterial";
 import { MaterialType } from "@shared/types";
 import isMaterialFinished from "../utils/isMaterialFinished";
+import { tryAssignAchievements } from "@/lib/tryAssignAchievements";
 
 type Props = {
   videoId: string;
@@ -27,6 +28,7 @@ const CompleteButton = ({ type, videoId }: Props) => {
       const token = data.access_token;
       const { user } = await updateToken(token);
       setUserData(user);
+      await tryAssignAchievements(user, setUserData);
       showSuccess("Гарна робота!");
     },
     onError: (error) => {

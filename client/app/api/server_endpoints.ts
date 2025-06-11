@@ -6,6 +6,7 @@ const server_endpoints = {
   completeArticle: "/auth/complete-article",
   completeLecture: "/auth/complete-lecture",
   achievements: "/achievements",
+  assignAchievements: "/auth/assign-achievements",
 };
 
 export default server_endpoints;

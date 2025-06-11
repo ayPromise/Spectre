@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAchievements } from "./utils/getAchievements";
 import groupByCategory from "./utils/groupByCategory";
 import { Achievement } from "@shared/types";
@@ -14,6 +14,8 @@ import AchievementDialog from "./components/AchievementDialog";
 import { useAccess } from "@/hooks/useAccess";
 import CreateButton from "@/components/custom/CreateButton";
 import AchievementForm from "./components/AchievmentForm";
+import { useAuth } from "@/context/AuthContext";
+import { tryAssignAchievements } from "@/lib/tryAssignAchievements";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,8 @@ const AchievementsPage: React.FC = () => {
   const { materials } = useMaterials();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
   const [isOpenCreationForm, setIsOpenCreationForm] = useState<boolean>(false);
+  const { userData, setUserData } = useAuth();
+  const [canFetchAchievements, setCanFetchAchievements] = useState(false);
 
   const {
     data: achievements,
@@ -33,7 +37,19 @@ const AchievementsPage: React.FC = () => {
     queryKey: ["achievements"],
     queryFn: getAchievements,
     staleTime: 0,
+    enabled: canFetchAchievements,
   });
+
+  useEffect(() => {
+    const updateAchievements = async () => {
+      if (userData) {
+        await tryAssignAchievements(userData, setUserData);
+        setCanFetchAchievements(true);
+      }
+    };
+
+    updateAchievements();
+  }, [userData, setUserData]);
 
   const grouped = achievements ? groupByCategory(achievements) : {};
 
@@ -50,7 +66,7 @@ const AchievementsPage: React.FC = () => {
         читанні статей та перегляді відео.
       </p>
 
-      {isLoading && <Loader />}
+      {isLoading || (!canFetchAchievements && <Loader />)}
 
       {isError && (
         <ErrorMessage>

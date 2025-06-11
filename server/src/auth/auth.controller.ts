@@ -64,4 +64,13 @@ export class AuthController {
   async completeVideo(@Body() body: { videoId: string; userId: string }) {
     return this.authService.completeVideo(body.userId, body.videoId);
   }
+
+  @Post('assign-achievements')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin, UserRole.Instructor, UserRole.Student)
+  async assignAchievement(
+    @Body() body: { achievements: string[]; userId: string },
+  ) {
+    return this.authService.assignAchievements(body.userId, body.achievements);
+  }
 }

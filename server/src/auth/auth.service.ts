@@ -112,6 +112,22 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  async assignAchievements(userId: string, achievements: string[]) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const newAchievements = achievements.filter(
+      (achievementId) => !user.achievements.includes(achievementId),
+    );
+
+    if (newAchievements.length > 0) {
+      user.achievements.push(...newAchievements);
+      await user.save();
+    }
+
+    return this.generateToken(user);
+  }
+
   generateToken(user: UserDocument) {
     return {
       access_token: this.jwtService.sign({
