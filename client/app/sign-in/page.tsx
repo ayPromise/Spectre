@@ -116,7 +116,11 @@ export function SignInPage() {
                     error={touched.password && errors.password}
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isPending}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isPending || isSubmitting}
+                >
                   {isSubmitting ? "Зачекайте..." : "Увійти"}
                 </Button>
               </div>
