@@ -1,34 +1,29 @@
 "use client";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { User } from "@shared/types";
 import { getAllUsers } from "../utils/getAllUsers";
 import getAllMaterials from "@/app/materials/utils/getAllMaterials";
+import { getAchievements } from "@/app/profile/achievements/utils/getAchievements";
 import { deleteUser } from "../utils/deleteUser";
 import { editUser } from "../utils/editUser";
 import MultiSelect from "@/components/custom/MultiSelect";
-import { MaterialTypeNameUA } from "@shared/types/Enums";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@radix-ui/react-select";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Trash2, Pencil } from "lucide-react";
 import Loader from "@/components/custom/Loader";
 import { showError, showSuccess } from "@/utils/toast";
-import { getAchievements } from "@/app/profile/achievements/utils/getAchievements";
+import Link from "next/link";
 
 export default function UsersPanel() {
   const { data: users, refetch } = useQuery({
     queryKey: ["users"],
     queryFn: getAllUsers,
   });
-
   const { data: materials } = useQuery({
     queryKey: ["materials"],
     queryFn: getAllMaterials,
   });
-
   const { data: achievements } = useQuery({
     queryKey: ["achievements"],
     queryFn: getAchievements,
@@ -37,224 +32,323 @@ export default function UsersPanel() {
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      showSuccess("Успішно було видалено користувача");
+      showSuccess("Користувача видалено");
       refetch();
     },
-    onError: () => {
-      showError("Виникла помилка. Спробуйте пізніше");
-    },
+    onError: () => showError("Помилка при видаленні"),
   });
 
   const editMutation = useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<User> }) =>
-      editUser(id, updates),
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<User> }) => {
+      console.log(id, updates);
+      return editUser(id, updates);
+    },
     onSuccess: () => {
-      showSuccess("Успішно було редаговано користувача");
+      showSuccess("Оновлено");
       refetch();
     },
-    onError: () => {
-      showError("Виникла помилка. Спробуйте пізніше");
-    },
+    onError: () => showError("Помилка при оновленні"),
   });
 
-  const [editing, setEditing] = useState<Record<string, string>>({});
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [tempValues, setTempValues] = useState<Record<string, any>>({});
-
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredUsers = useMemo(() => {
-    if (!searchTerm) return users;
-    return users?.filter((user) => {
-      const valuesToSearch = [
-        user.firstName,
-        user.lastName,
-        user.email,
-        user.phoneNumber,
-      ];
+  const filtered = useMemo(() => {
+    if (!users) return [];
+    return users.filter((u) =>
+      [u.firstName, u.lastName, u.email, u.phoneNumber].some((v) =>
+        v?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [users, searchTerm]);
 
-      return valuesToSearch.some((val) => val?.includes(searchTerm));
-    });
-  }, [searchTerm, users]);
-
-  if (!users || !materials) return <Loader />;
+  if (!users || !materials || !achievements) return <Loader />;
 
   return (
-    <div className="grid gap-6 mt-6">
-      <div className="mb-6">
-        <Input
-          placeholder="Пошук по імені, прізвищу, email або номеру"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      {filteredUsers &&
-        filteredUsers.map((user) => (
-          <Card key={user._id}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl">
-                Користувач: {user.firstName} {user.lastName}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {Object.entries(user).map(([key, value]) => (
-                <div key={key} className="space-y-2">
-                  <div className="flex justify-between items-start gap-4">
-                    <Label className="min-w-[160px] capitalize">{key}</Label>
-                    <div className="flex-1">
-                      {editing[user._id] === key ? (
-                        Array.isArray(value) ? (
-                          // MultiSelect для матеріалів
-                          key === "completedArticles" ||
-                          key === "completedVideos" ||
-                          key === "completedLectures" ? (
-                            <MultiSelect
-                              options={materials
-                                .filter(
-                                  (m) =>
-                                    m.kind ===
-                                    key.split("completed")[1].slice(0, -1)
-                                )
-                                .map((m) => ({
-                                  label: `${m.title} (${
-                                    MaterialTypeNameUA[m.kind]
-                                  })`,
-                                  value: m._id,
-                                }))}
-                              selectedValues={
-                                tempValues[`${user._id}.${key}`] ?? user[key]
-                              }
-                              setSelectedValues={(sel) => {
-                                setTempValues((prev) => ({
-                                  ...prev,
-                                  [`${user._id}.${key}`]: sel,
-                                }));
-                              }}
-                              placeholder="Оберіть матеріали..."
-                            />
-                          ) : key === "achievements" ? (
-                            <MultiSelect
-                              options={
-                                achievements?.map((a) => ({
-                                  label: a.title,
-                                  value: a._id,
-                                })) ?? []
-                              }
-                              selectedValues={
-                                tempValues[`${user._id}.${key}`] ?? user[key]
-                              }
-                              setSelectedValues={(sel) => {
-                                setTempValues((prev) => ({
-                                  ...prev,
-                                  [`${user._id}.${key}`]: sel,
-                                }));
-                              }}
-                              placeholder="Оберіть досягнення..."
-                            />
-                          ) : (
-                            <Input
-                              value={
-                                tempValues[`${user._id}.${key}`] ??
-                                JSON.stringify(value)
-                              }
-                              onChange={(e) =>
-                                setTempValues((prev) => ({
-                                  ...prev,
-                                  [`${user._id}.${key}`]: e.target.value,
-                                }))
-                              }
-                            />
-                          )
-                        ) : (
-                          <Input
-                            value={tempValues[`${user._id}.${key}`] ?? value}
-                            onChange={(e) =>
-                              setTempValues((prev) => ({
-                                ...prev,
-                                [`${user._id}.${key}`]: e.target.value,
-                              }))
-                            }
-                          />
-                        )
-                      ) : Array.isArray(value) ? (
-                        <ul className="list-disc list-inside space-y-1">
-                          {value.map((v: any, i) => (
-                            <li
-                              key={i}
-                              className="flex items-center justify-between"
-                            >
-                              <span className="text-sm text-muted-foreground">
-                                {materials &&
-                                  materials.find((m) => m._id === v)?.title}
-                                {achievements &&
-                                  achievements.find((a) => a._id === v)?.title}
-                              </span>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-red-500 hover:text-red-700"
-                                onClick={() => {
-                                  const updated = [...value];
-                                  updated.splice(i, 1);
-                                  editMutation.mutate({
-                                    id: user._id,
-                                    updates: { [key]: updated },
-                                  });
-                                }}
-                              >
-                                Видалити
-                              </Button>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm">{String(value)}</p>
-                      )}
-                    </div>
-                    <div className="min-w-[100px] flex justify-end">
-                      {editing[user._id] === key ? (
-                        <Button
-                          size="sm"
-                          variant="default"
-                          onClick={() => {
-                            editMutation.mutate({
-                              id: user._id,
-                              updates: {
-                                [key]: tempValues[`${user._id}.${key}`],
-                              },
-                            });
-                            setEditing((prev) => ({ ...prev, [user._id]: "" }));
-                          }}
-                        >
-                          Зберегти
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() =>
-                            setEditing((prev) => ({ ...prev, [user._id]: key }))
-                          }
-                        >
-                          Редагувати
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  <Separator />
-                </div>
-              ))}
+    <div className="space-y-4">
+      <Input
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Пошук..."
+        className="max-w-md mb-4"
+      />
 
-              <div className="pt-4 text-right">
-                <Button
-                  variant="destructive"
-                  onClick={() => deleteMutation.mutate(user._id)}
-                >
-                  Видалити користувача
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="overflow-x-auto rounded border max-w-full">
+        <table className="w-full table-auto text-sm border-collapse">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 border-b min-w-[200px]">Ім’я</th>
+              <th className="px-4 py-2 border-b min-w-[250px]">Пошта</th>
+              <th className="px-4 py-2 border-b min-w-[180px]">
+                Номер телефону
+              </th>
+              <th className="px-4 py-2 border-b min-w-[300px]">
+                Статус матеріалів
+              </th>
+              <th className="px-4 py-2 border-b min-w-[250px]">Досягнення</th>
+              <th className="px-4 py-2 border-b min-w-[120px] text-center sticky right-0 z-10 bg-gray-100 border-l-2">
+                Дії
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((user) => {
+              const isEditing = editingId === user._id;
+
+              const renderMulti = (
+                key: keyof User,
+                opts: { label: string; value: string }[]
+              ) => (
+                <MultiSelect
+                  options={opts}
+                  selectedValues={
+                    tempValues[`${user._id}.${key}`] ?? (user[key] as string[])
+                  }
+                  setSelectedValues={(sel) =>
+                    setTempValues((prev) => ({
+                      ...prev,
+                      [`${user._id}.${key}`]: sel,
+                    }))
+                  }
+                  placeholder="Оберіть..."
+                />
+              );
+
+              return (
+                <tr key={user._id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border-b">
+                    {isEditing ? (
+                      <div className="space-y-1">
+                        <Input
+                          placeholder="Ім’я"
+                          value={
+                            tempValues[`${user._id}.firstName`] ??
+                            user.firstName
+                          }
+                          onChange={(e) =>
+                            setTempValues((prev) => ({
+                              ...prev,
+                              [`${user._id}.firstName`]: e.target.value,
+                            }))
+                          }
+                        />
+                        <Input
+                          placeholder="Прізвище"
+                          value={
+                            tempValues[`${user._id}.lastName`] ?? user.lastName
+                          }
+                          onChange={(e) =>
+                            setTempValues((prev) => ({
+                              ...prev,
+                              [`${user._id}.lastName`]: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    ) : (
+                      `${user.firstName} ${user.lastName}`
+                    )}
+                  </td>
+
+                  <td className="px-4 py-2 border-b">
+                    {isEditing ? (
+                      <Input
+                        placeholder="Email"
+                        value={tempValues[`${user._id}.email`] ?? user.email}
+                        onChange={(e) =>
+                          setTempValues((prev) => ({
+                            ...prev,
+                            [`${user._id}.email`]: e.target.value,
+                          }))
+                        }
+                      />
+                    ) : (
+                      user.email
+                    )}
+                  </td>
+
+                  <td className="px-4 py-2 border-b">
+                    {isEditing ? (
+                      <Input
+                        placeholder="Телефон"
+                        value={
+                          tempValues[`${user._id}.phoneNumber`] ??
+                          user.phoneNumber
+                        }
+                        onChange={(e) =>
+                          setTempValues((prev) => ({
+                            ...prev,
+                            [`${user._id}.phoneNumber`]: e.target.value,
+                          }))
+                        }
+                      />
+                    ) : (
+                      user.phoneNumber
+                    )}
+                  </td>
+
+                  <td className="px-4 py-2 border-b">
+                    {!isEditing ? (
+                      <div className="text-sm text-gray-700 space-y-1">
+                        {(() => {
+                          const allLinks = [
+                            "completedArticles",
+                            "completedLectures",
+                            "completedVideos",
+                          ]
+                            .flatMap((key) => {
+                              const ids = user[key as keyof typeof user] as
+                                | string[]
+                                | undefined;
+                              if (!ids) return [];
+
+                              return ids.map((id) => {
+                                const m = materials.find(
+                                  (mat) => mat._id === id
+                                );
+                                return m ? (
+                                  <Link
+                                    key={id}
+                                    href={`/materials/${m.kind}/${m._id}`}
+                                    className="hover:underline"
+                                  >
+                                    {m.title}
+                                  </Link>
+                                ) : null;
+                              });
+                            })
+                            .filter(Boolean);
+
+                          return allLinks.flatMap((link, idx) =>
+                            idx < allLinks.length - 1 ? [link, ", "] : [link]
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-xs font-medium text-gray-500 mt-2">
+                          Статті
+                        </div>
+                        {renderMulti(
+                          "completedArticles",
+                          materials
+                            .filter((m) => m.kind === "Article")
+                            .map((m) => ({ label: m.title, value: m._id }))
+                        )}
+
+                        <div className="text-xs font-medium text-gray-500 mt-2">
+                          Лекції
+                        </div>
+                        {renderMulti(
+                          "completedLectures",
+                          materials
+                            .filter((m) => m.kind === "Lecture")
+                            .map((m) => ({ label: m.title, value: m._id }))
+                        )}
+
+                        <div className="text-xs font-medium text-gray-500 mt-2">
+                          Відео
+                        </div>
+                        {renderMulti(
+                          "completedVideos",
+                          materials
+                            .filter((m) => m.kind === "Video")
+                            .map((m) => ({ label: m.title, value: m._id }))
+                        )}
+                      </>
+                    )}
+                  </td>
+
+                  <td className="px-4 py-2 border-b">
+                    {isEditing ? (
+                      renderMulti(
+                        "achievements",
+                        achievements.map((a) => ({
+                          label: a.title,
+                          value: a._id,
+                        }))
+                      )
+                    ) : (
+                      <ul className="list-disc list-inside text-sm">
+                        {(user.achievements || []).map((id) => {
+                          const a = achievements.find((x) => x._id === id);
+                          return <li key={id}>{a?.title || "—"}</li>;
+                        })}
+                      </ul>
+                    )}
+                  </td>
+
+                  <td className="px-2 py-2 border-b sticky right-0 min-w-[140px] z-10 bg-white border-l-2">
+                    <div className="gap-3 h-full flex justify-center">
+                      {isEditing ? (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              const updates: any = {};
+                              const fieldsToSave = [
+                                "firstName",
+                                "lastName",
+                                "phone",
+                                "email",
+                                "completedArticles",
+                                "completedLectures",
+                                "completedVideos",
+                                "achievements",
+                              ];
+
+                              fieldsToSave.forEach((k) => {
+                                const key = `${user._id}.${k}`;
+                                if (tempValues[key] !== undefined) {
+                                  updates[k] = tempValues[key];
+                                }
+                              });
+
+                              editMutation.mutate({ id: user._id, updates });
+                              setEditingId(null);
+                              setTempValues({});
+                            }}
+                          >
+                            Зберегти
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditingId(null);
+                              setTempValues({});
+                            }}
+                          >
+                            Скасувати
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditingId(user._id)}
+                          >
+                            <Pencil size={16} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deleteMutation.mutate(user._id)}
+                          >
+                            <Trash2 size={16} />
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
