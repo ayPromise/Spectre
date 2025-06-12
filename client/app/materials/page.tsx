@@ -10,7 +10,7 @@ import Loader from "@/components/custom/Loader";
 const MaterialsPage = () => {
   const { materials, isLoading, isError, error } = useMaterials();
 
-  if (isLoading) {
+  if (isLoading || !materials.length) {
     return <Loader />;
   }
 
