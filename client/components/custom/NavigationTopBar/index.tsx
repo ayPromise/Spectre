@@ -119,7 +119,7 @@ const TopBar: React.FC = () => {
           className="font-bold text-primary hover:opacity-80 saira text-[24px] flex items-center gap-2"
         >
           {" "}
-          <div className="w-[24px]">
+          <div className="w-[28px]">
             <svg
               role="img"
               viewBox="0 0 24 24"
