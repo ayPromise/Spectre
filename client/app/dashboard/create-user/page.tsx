@@ -44,7 +44,11 @@ const UserCreationForm = () => {
   const initialLastName = searchParams.get("lastName") || "";
   const initialPhoneNumber = searchParams.get("phoneNumber") || "";
 
-  const { mutate: createUserMutation, isPending } = useMutation({
+  const {
+    mutate: createUserMutation,
+    isPending,
+    isError,
+  } = useMutation({
     mutationFn: (data: CreateUserPayload) => createUser(data),
     onSuccess: () => {
       showSuccess("Користувача створено успішно 🎉");
@@ -93,7 +97,7 @@ const UserCreationForm = () => {
         onBlur={handleBlur}
         error={touched.email && errors.email ? errors.email : undefined}
         required
-        disabled={isSubmitting || isPending}
+        disabled={(isSubmitting || isPending) && !isError}
       />
 
       <FormInput
@@ -107,7 +111,7 @@ const UserCreationForm = () => {
           touched.firstName && errors.firstName ? errors.firstName : undefined
         }
         required
-        disabled={isSubmitting || isPending}
+        disabled={(isSubmitting || isPending) && !isError}
       />
 
       <FormInput
@@ -121,7 +125,7 @@ const UserCreationForm = () => {
           touched.lastName && errors.lastName ? errors.lastName : undefined
         }
         required
-        disabled={isSubmitting || isPending}
+        disabled={(isSubmitting || isPending) && !isError}
       />
 
       <FormInput
@@ -137,7 +141,7 @@ const UserCreationForm = () => {
             : undefined
         }
         required
-        disabled={isSubmitting || isPending}
+        disabled={(isSubmitting || isPending) && !isError}
       />
 
       <div className="flex items-end gap-2">
@@ -153,14 +157,14 @@ const UserCreationForm = () => {
               touched.password && errors.password ? errors.password : undefined
             }
             required
-            disabled={isSubmitting || isPending}
+            disabled={(isSubmitting || isPending) && !isError}
           />
         </div>
         <Button
           type="button"
           onClick={() => setFieldValue("password", generatePassword())}
           className="align-bottom"
-          disabled={isSubmitting || isPending}
+          disabled={(isSubmitting || isPending) && !isError}
         >
           Згенерувати
         </Button>
@@ -175,6 +179,7 @@ const UserCreationForm = () => {
           value={values.role}
           defaultValue="Student"
           onValueChange={(val) => setFieldValue("role", val)}
+          disabled={(isSubmitting || isPending) && !isError}
         >
           <SelectTrigger className="w-full border p-2 rounded-md">
             <SelectValue placeholder="Оберіть роль..." />
@@ -191,7 +196,7 @@ const UserCreationForm = () => {
 
       <Button
         type="submit"
-        disabled={isPending && isSubmitting}
+        disabled={(isSubmitting || isPending) && !isError}
         className="w-full"
       >
         Створити користувача

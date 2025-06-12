@@ -17,7 +17,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 
-const CreateFlightDialog = () => {
+interface CreateFlightDialogProps {
+  refetch: () => void;
+}
+
+const CreateFlightDialog: React.FC<CreateFlightDialogProps> = ({ refetch }) => {
   const [open, setOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +29,7 @@ const CreateFlightDialog = () => {
     mutationFn: createFlight,
     onSuccess: () => {
       showSuccess("Політ додано");
-      window.location.reload();
+      refetch();
       setOpen(false);
     },
     onError: (err: Error) => showError(err.message),

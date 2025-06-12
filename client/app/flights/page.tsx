@@ -11,7 +11,7 @@ import CreateFlightDialog from "./components/CreateFlightDialog";
 import FlightTable from "./components/FlightTable";
 
 const FlightsPage = () => {
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["flights"],
     queryFn: getFlights,
   });
@@ -20,7 +20,7 @@ const FlightsPage = () => {
     mutationFn: deleteFlight,
     onSuccess: () => {
       showSuccess("Політ видалено");
-      window.location.reload();
+      refetch();
     },
     onError: (err: Error) => showError(err.message),
   });
@@ -32,7 +32,7 @@ const FlightsPage = () => {
   return (
     <div>
       <div className="mb-4 flex justify-end">
-        <CreateFlightDialog />
+        <CreateFlightDialog refetch={refetch} />
       </div>
 
       {isLoading && <Loader />}

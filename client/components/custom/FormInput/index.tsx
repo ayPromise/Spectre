@@ -16,6 +16,7 @@ type Props = {
   error?: string | false;
   required?: boolean;
   disabled?: boolean;
+  ref?: React.RefObject<HTMLInputElement>;
 };
 
 const FormInput: React.FC<Props> = ({
