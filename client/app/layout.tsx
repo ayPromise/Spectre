@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Saira } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
 import Providers from "@/components/providers";
 import getServerUser from "@/lib/auth";
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+});
+
+const saira = Saira({
+  subsets: ["latin"],
+  variable: "--font-saira",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +30,9 @@ export default async function RootLayout({
 
   return (
     <html lang="uk">
-      <body className={`antialiased ${inter.variable} flex flex-col h-screen`}>
+      <body
+        className={`antialiased ${inter.variable} flex flex-col h-screen ${saira.variable}`}
+      >
         <Providers user={userFromServer}>
           <TopBar />
           <main className="flex grow justify-center">

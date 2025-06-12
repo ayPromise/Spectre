@@ -65,7 +65,7 @@ const SideBar: React.FC = () => {
     isAuth && (
       <aside
         className={cn(
-          "sticky top-0 max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
+          "sticky top-0 w-[230px] max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
           collapsed ? "w-2" : "min-w-52"
         )}
       >
@@ -91,8 +91,8 @@ const SideBar: React.FC = () => {
                     key={href}
                     href={href}
                     className={cn(
-                      "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                      "hover:bg-muted hover:text-primary",
+                      "flex items-center px-4 py-2 rounded-md text-sm transition-colors",
+                      "hover:bg-muted hover:text-primary font-bold",
                       isActive(href) && "bg-muted"
                     )}
                   >
@@ -105,7 +105,7 @@ const SideBar: React.FC = () => {
                   key={href}
                   href={href}
                   className={cn(
-                    "flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors",
+                    "flex items-center px-4 py-2 rounded-md text-sm font-semibold transition-colors",
                     "hover:bg-muted hover:text-primary",
                     isActive(href) && "bg-muted"
                   )}

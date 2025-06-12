@@ -114,9 +114,9 @@ const TopBar: React.FC = () => {
       <div className="flex items-center justify-between px-8 py-4">
         <Link
           href="/"
-          className="text-xl font-bold text-primary hover:opacity-80"
+          className="font-bold text-primary hover:opacity-80 saira text-[24px]"
         >
-          Спектр
+          SPECTRE
         </Link>
 
         {!isAuth && (

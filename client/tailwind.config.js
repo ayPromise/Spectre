@@ -15,6 +15,7 @@ module.exports = {
 
       fontFamily: {
         sans: "var(--font-sans)",
+        saira: "var(--font-saira)"
       },
 
       fontSize: {

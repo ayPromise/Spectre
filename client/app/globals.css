@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.saira{
+  font-family: var(--font-saira)
+}
+
 body{
   overflow: auto !important;
 }
