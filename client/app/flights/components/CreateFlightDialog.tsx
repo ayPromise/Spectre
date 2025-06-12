@@ -63,7 +63,7 @@ const CreateFlightDialog: React.FC<CreateFlightDialogProps> = ({ refetch }) => {
         <DialogFooter>
           <Button
             onClick={handleFileUpload}
-            disabled={createMutation.isPending}
+            disabled={createMutation.isPending && !createMutation.isError}
           >
             {createMutation.isPending ? "Завантаження..." : "Завантажити"}
           </Button>

@@ -84,7 +84,11 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
   };
 
   const { refetch } = useMaterials();
-  const { mutate: createMaterialMutation, isPending } = useMutation({
+  const {
+    mutate: createMaterialMutation,
+    isPending,
+    isError,
+  } = useMutation({
     mutationFn: (data: CreateLecturePayload) =>
       saveMaterial(data, isEditingMode ? initialData._id : undefined),
     onSuccess: (lecture) => {
@@ -200,7 +204,7 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.title && errors.title}
           required
-          disabled={(isSubmitting && !isValid) || isPending}
+          disabled={((isSubmitting && !isValid) || isPending) && !isError}
         />
 
         <div>
@@ -211,7 +215,7 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
             name="type"
             value={values.type}
             onValueChange={(value) => setFieldValue("type", value)}
-            disabled={(isSubmitting && !isValid) || isPending}
+            disabled={((isSubmitting && !isValid) || isPending) && !isError}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
@@ -245,7 +249,7 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
           required
           label="Опис"
           error={touched.description && errors.description}
-          disabled={(isSubmitting && !isValid) || isPending}
+          disabled={((isSubmitting && !isValid) || isPending) && !isError}
         />
 
         <div>
@@ -294,7 +298,7 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
         type="submit"
         form="lectureForm"
         className="w-full mt-5 font-bold text-lg"
-        disabled={(isSubmitting && !isValid) || isPending}
+        disabled={((isSubmitting && !isValid) || isPending) && !isError}
       >
         {isEditingMode ? "Оновити" : "Створити"}
       </Button>

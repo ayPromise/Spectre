@@ -53,7 +53,11 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
   const router = useRouter();
 
   const { refetch } = useMaterials();
-  const { mutate: createVideoMutation, isPending } = useMutation({
+  const {
+    mutate: createVideoMutation,
+    isPending,
+    isError,
+  } = useMutation({
     mutationFn: (data: CreateVideoPayload) =>
       saveMaterial(data, isEditingMode ? initialData._id : undefined),
     onSuccess: (video) => {
@@ -113,7 +117,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.title && errors.title}
           required
-          disabled={isSubmitting || isPending}
+          disabled={(isSubmitting || isPending) && !isError}
         />
 
         <div>
@@ -124,7 +128,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
             name="type"
             value={values.type}
             onValueChange={(value) => setFieldValue("type", value)}
-            disabled={isSubmitting || isPending}
+            disabled={(isSubmitting || isPending) && !isError}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
@@ -158,7 +162,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           required
           label="Опис"
           error={touched.description && errors.description}
-          disabled={isSubmitting || isPending}
+          disabled={(isSubmitting || isPending) && !isError}
         />
 
         <FormInput
@@ -170,7 +174,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.videoURL && errors.videoURL}
           required
-          disabled={isSubmitting || isPending}
+          disabled={(isSubmitting || isPending) && !isError}
         />
       </form>
 
@@ -178,7 +182,7 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
         type="submit"
         form="videoForm"
         className="w-full mt-5 font-bold text-lg"
-        disabled={isSubmitting || isPending}
+        disabled={(isSubmitting || isPending) && !isError}
       >
         {isEditingMode ? "Оновити" : "Створити"}
       </Button>

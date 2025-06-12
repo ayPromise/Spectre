@@ -81,29 +81,31 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
   };
   const [isValid, setIsValid] = useState(false);
   const { refetch } = useMaterials();
-  const { mutate: createMaterialMutation, isPending: isCreating } = useMutation(
-    {
-      mutationFn: (data: CreateArticlePayload) =>
-        saveMaterial(data, isEditingMode ? initialData!._id : undefined),
-      onSuccess: (article) => {
-        const kind = article.kind.toLocaleLowerCase();
-        const id = article._id;
-        showSuccess(
-          `${MaterialTypeNameUA[MaterialType.Article]} була успішно ${
-            isEditingMode ? "оновлена" : "створена"
-          } 🎉`
-        );
-        refetch();
-        router.push(`/materials/${kind}/${id}`);
-      },
-      onError: (error: Error) => {
-        showError(
-          error.message ||
-            `Не вдалося ${isEditingMode ? "оновити" : "створити"} матеріал`
-        );
-      },
-    }
-  );
+  const {
+    mutate: createMaterialMutation,
+    isPending: isCreating,
+    isError,
+  } = useMutation({
+    mutationFn: (data: CreateArticlePayload) =>
+      saveMaterial(data, isEditingMode ? initialData!._id : undefined),
+    onSuccess: (article) => {
+      const kind = article.kind.toLocaleLowerCase();
+      const id = article._id;
+      showSuccess(
+        `${MaterialTypeNameUA[MaterialType.Article]} була успішно ${
+          isEditingMode ? "оновлена" : "створена"
+        } 🎉`
+      );
+      refetch();
+      router.push(`/materials/${kind}/${id}`);
+    },
+    onError: (error: Error) => {
+      showError(
+        error.message ||
+          `Не вдалося ${isEditingMode ? "оновити" : "створити"} матеріал`
+      );
+    },
+  });
   const formik = useFormik<ArticleFormData>({
     initialValues: {
       title: initialData?.title ?? "",
@@ -174,7 +176,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
           onBlur={handleBlur}
           error={touched.title && errors.title ? errors.title : undefined}
           required
-          disabled={(isSubmitting && !isValid) || isCreating}
+          disabled={((isSubmitting && !isValid) || isCreating) && !isError}
         />
 
         <div>
@@ -185,7 +187,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
             name="type"
             value={values.type}
             onValueChange={(value) => setFieldValue("type", value)}
-            disabled={(isSubmitting && !isValid) || isCreating}
+            disabled={((isSubmitting && !isValid) || isCreating) && !isError}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
@@ -233,7 +235,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
         type="submit"
         form="articleForm"
         className="w-full mt-5 font-bold text-lg"
-        disabled={(isSubmitting && !isValid) || isCreating}
+        disabled={((isSubmitting && !isValid) || isCreating) && !isError}
       >
         {isEditingMode ? "Оновити" : "Створити"}
       </Button>
