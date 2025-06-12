@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 
 // UTILS
@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useMaterials } from "@/context/MaterialsContext";
 import isMaterialFinished from "./utils/isMaterialFinished";
 import Link from "next/link";
+import Head from "next/head";
 
 const MaterialPage = () => {
   const params = useParams();
@@ -90,55 +91,64 @@ const MaterialPage = () => {
   );
 
   return (
-    <div className="container space-y-8">
-      <div className="flex justify-between">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between gap-2">
-            <h1 className="text-3xl font-bold">{materialById.title}</h1>
-            {isFinished && <FinishedLabel />}
+    <>
+      <Head>
+        <title>{materialById.title} | SPECTRE</title>
+        <meta
+          name="description"
+          content={`Перегляд матеріалу "${materialById.title}"...`}
+        />
+      </Head>
+      <div className="container space-y-8">
+        <div className="flex justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <h1 className="text-3xl font-bold">{materialById.title}</h1>
+              {isFinished && <FinishedLabel />}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Створено: {new Date(materialById.createdAt).toLocaleDateString()}
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Створено: {new Date(materialById.createdAt).toLocaleDateString()}
-          </p>
+
+          {(hasInstructorAccess || hasAdminAccess) && (
+            <div className="flex gap-3">
+              <Link
+                href={`/materials/${materialById.kind.toLocaleLowerCase()}/${
+                  materialById._id
+                }/edit`}
+              >
+                <Button variant="default" onClick={() => {}}>
+                  Редагувати
+                </Button>
+              </Link>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={isRemoving}
+              >
+                Видалити матеріал
+              </Button>
+            </div>
+          )}
         </div>
 
-        {(hasInstructorAccess || hasAdminAccess) && (
-          <div className="flex gap-3">
-            <Link
-              href={`/materials/${materialById.kind.toLocaleLowerCase()}/${
-                materialById._id
-              }/edit`}
-            >
-              <Button variant="default" onClick={() => {}}>
-                Редагувати
-              </Button>
-            </Link>
-            <Button
-              variant="destructive"
-              onClick={handleDelete}
-              disabled={isRemoving}
-            >
-              Видалити матеріал
-            </Button>
-          </div>
+        {materialById.kind === MaterialType.Article && (
+          <ArticleView article={materialById} />
+        )}
+        {materialById.kind === MaterialType.Lecture && (
+          <LectureView lecture={materialById} />
+        )}
+        {materialById.kind === MaterialType.Video && (
+          <VideoView video={materialById} />
+        )}
+
+        {(materialById.kind === MaterialType.Article ||
+          materialById.kind === MaterialType.Lecture) && (
+          <TestView test={materialById.test} material={materialById} />
         )}
       </div>
-
-      {materialById.kind === MaterialType.Article && (
-        <ArticleView article={materialById} />
-      )}
-      {materialById.kind === MaterialType.Lecture && (
-        <LectureView lecture={materialById} />
-      )}
-      {materialById.kind === MaterialType.Video && (
-        <VideoView video={materialById} />
-      )}
-
-      {(materialById.kind === MaterialType.Article ||
-        materialById.kind === MaterialType.Lecture) && (
-        <TestView test={materialById.test} material={materialById} />
-      )}
-    </div>
+    </>
   );
 };
 

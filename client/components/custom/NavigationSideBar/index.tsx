@@ -95,7 +95,7 @@ const SideBar: React.FC = () => {
                     href={href}
                     className={cn(
                       "flex items-center px-4 py-2 rounded-md text-sm transition-colors",
-                      "hover:bg-muted hover:text-primary font-bold",
+                      "hover:bg-muted hover:text-primary font-semibold",
                       isActive(href) && "bg-muted"
                     )}
                   >

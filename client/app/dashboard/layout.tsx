@@ -1,20 +1,14 @@
 import { Metadata } from "next";
-import SubNavHeader from "./components/SubNavHeader";
 
 export const metadata: Metadata = {
-  title: "Матеріали | SPECTRE",
+  title: "Панель керування | SPECTRE",
   description: "Навчальні матеріали для курсантів та інструкторів.",
 };
 
-export default function MaterialsLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <SubNavHeader />
-      {children}
-    </>
-  );
+  return children;
 }
