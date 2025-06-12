@@ -13,7 +13,7 @@ export type { User } from "./User";
 
 export type { Schedule } from "./Schedule";
 
-export type { ArchiveLog, MapPoint } from "./ArchiveLog";
+export type { Flight, MapPoint } from "./Flight";
 
 export type { Video } from "./Video";
 

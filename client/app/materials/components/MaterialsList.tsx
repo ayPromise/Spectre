@@ -120,13 +120,13 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
               {materials.length}
             </div>
           </div>
-          <div className="relative w-[65%] h-full border-2 rounded-md">
+          <div className="relative w-[65%] h-[70%] border-2 rounded-md">
             <div
               className={` h-full bg-black top-0 left-0 rounded-md`}
               style={{ width: `${progressCompletion}%` }}
             >
               <span
-                className={`select-none absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-3xl ${
+                className={`select-none absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-2xl ${
                   progressCompletion > 40 ? "text-gray-100" : "text-gray-800"
                 }`}
               >
