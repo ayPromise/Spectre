@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { showError, showSuccess } from "@/utils/toast";
 import * as Yup from "yup";
 import signIn from "./utils/signIn";
+import emailjs from "@emailjs/browser";
 
 // COMPONENTS
 import { Button } from "@/components/ui/button";
@@ -18,13 +19,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import FormInput from "@/components/custom/FormInput";
 
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_APPLY_ID;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
 export function SignInPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { refetchUser } = useAuth();
   const redirectURL = searchParams.get("redirectURL") || "/";
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, isError } = useMutation({
     mutationFn: signIn,
     onSuccess: (data) => {
       refetchUser();
@@ -73,6 +78,31 @@ export function SignInPage() {
     }
   };
 
+  const sendResetPasswordMail = async () => {
+    try {
+      if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+        return;
+      }
+
+      await emailjs.send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          firstName: "RESET PASSWORD DATA",
+          lastName: "RESET PASSWORD DATA",
+          email: "RESET PASSWORD DATA",
+          phoneNumber: "RESET PASSWORD DATA",
+          motivation: "RESET PASSWORD DATA",
+        },
+        PUBLIC_KEY
+      );
+      showSuccess("Лист з вашим новим паролем з'явиться на вашій пошті.");
+    } catch (error) {
+      showError("Помилка при відправці листа. Спробуйте пізніше.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="w-full h-full flex justify-center items-center">
       <div className="flex flex-col gap-6 w-[500px]">
@@ -95,17 +125,17 @@ export function SignInPage() {
                     onBlur={handleBlur}
                     error={touched.email && errors.email}
                     required
-                    disabled={isPending || isSubmitting}
+                    disabled={(isPending || isSubmitting) && !isError}
                   />
                 </div>
                 <div className="grid gap-3 relative">
-                  <div className="absolute right-0 -top-3">
-                    <Link
-                      href="/reset-password"
-                      className="ml-auto inline-block text-sm underline-offset-4 underline"
-                    >
+                  <div
+                    className="absolute right-0 -top-3"
+                    onClick={sendResetPasswordMail}
+                  >
+                    <span className="ml-auto inline-block text-sm underline-offset-4 underline cursor-pointer">
                       Забули свій пароль?
-                    </Link>
+                    </span>
                   </div>
                   <FormInput
                     id="password"
@@ -118,19 +148,20 @@ export function SignInPage() {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     error={touched.password && errors.password}
-                    disabled={isPending || isSubmitting}
+                    disabled={(isPending || isSubmitting) && !isError}
                   />
                 </div>
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={isPending || isSubmitting}
+                  disabled={(isPending || isSubmitting) && !isError}
                 >
                   {isSubmitting ? "Зачекайте..." : "Увійти"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">
-                Бажаєте приєднатися до Спектру?{" "}
+                Бажаєте приєднатися до{" "}
+                <span className="saira font-bold">SPECTRE</span> ?{" "}
                 <Link href="/#apply" className="underline underline-offset-4">
                   Заповніть форму
                 </Link>

@@ -106,11 +106,6 @@ const TopBar: React.FC = () => {
     setReadNotifications((prev) => new Set(prev).add(id));
   };
 
-  const anchorLinks = [
-    { id: "about", label: "Про нас" },
-    { id: "faq", label: "FAQ" },
-  ];
-
   return (
     <header className="w-full border-b border-border bg-background">
       <div className="flex items-center justify-between px-16 py-4">
@@ -134,15 +129,6 @@ const TopBar: React.FC = () => {
 
         {!isAuth && (
           <nav className="hidden md:flex gap-6 items-center">
-            {anchorLinks.map(({ id, label }) => (
-              <Link
-                key={id}
-                href={`/#${id}`}
-                className="text-sm font-medium transition-colors"
-              >
-                {label}
-              </Link>
-            ))}
             <div className="flex items-center gap-2">
               <Link href="/sign-in">
                 <Button className="rounded-xl px-6">Увійти</Button>

@@ -23,6 +23,10 @@ const validationSchema = Yup.object({
     .required("Нам важливо знати вашу мотивацію"),
 });
 
+const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_APPLY_ID;
+const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
 const ApplySection: React.FC = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const formik = useFormik({
@@ -37,15 +41,12 @@ const ApplySection: React.FC = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         setIsPending(true);
-        const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
-        const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-        const publicKEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-        if (!serviceID || !templateID || !publicKEY) {
+        if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
           return;
         }
         await emailjs.send(
-          serviceID,
-          templateID,
+          SERVICE_ID,
+          TEMPLATE_ID,
           {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -53,7 +54,7 @@ const ApplySection: React.FC = () => {
             phoneNumber: values.phoneNumber,
             motivation: values.motivation,
           },
-          publicKEY
+          PUBLIC_KEY
         );
         showSuccess(
           "Дякуємо за лист! Очікуйте на відповідь або дзвінок на вказаний номер."
@@ -91,12 +92,11 @@ const ApplySection: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4" id="apply">
-        Apply
-      </h1>
-
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+    <div className="flex justify-center items-center h-full">
+      <form onSubmit={handleSubmit} className="space-y-6 w-xl">
+        <h1 className="text-3xl font-bold mb-4" id="apply">
+          Подати заявку
+        </h1>
         <div className="flex gap-4">
           <div className="flex-1">
             <FormInput
