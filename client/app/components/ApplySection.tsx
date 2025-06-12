@@ -27,11 +27,11 @@ const ApplySection: React.FC = () => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const formik = useFormik({
     initialValues: {
-      firstName: "adsasd",
-      lastName: "asdasd",
-      email: "asd@gmail.com",
-      phoneNumber: "+380678078342",
-      motivation: "adasdasdasdasdasjdiasjd",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      motivation: "",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
