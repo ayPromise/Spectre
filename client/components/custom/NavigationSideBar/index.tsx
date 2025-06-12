@@ -66,13 +66,11 @@ const SideBar: React.FC = () => {
     isAuth && (
       <aside
         className={cn(
-          "w-[230px] max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out",
-          collapsed ? "w-2" : "min-w-52"
+          "max-w-[230px] border-r border-border bg-background text-primary transition-all duration-300 ease-in-out",
+          collapsed ? "w-[20px]" : "min-w-[230px]"
         )}
       >
-        {/* Full nav */}
         <nav className="sticky top-0 flex flex-col gap-2 px-2 pt-4">
-          {/* Collapse button */}
           <div className="absolute -right-4">
             <Button
               variant="default"
