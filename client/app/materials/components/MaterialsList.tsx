@@ -30,15 +30,35 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
   };
 
   const filteredMaterials = useMemo(() => {
-    return materials.filter((item) => {
+    if (!userData) return [];
+
+    const isCompleted = (item: MaterialUnion) => {
+      if (item.kind === MaterialType.Article)
+        return userData.completedArticles?.includes(item._id);
+      if (item.kind === MaterialType.Lecture)
+        return userData.completedLectures?.includes(item._id);
+      if (item.kind === MaterialType.Video)
+        return userData.completedVideos?.includes(item._id);
+      return false;
+    };
+
+    const matchesFilters = (item: MaterialUnion) => {
       const matchesSearch =
         !debouncedSearch.trim() ||
         item.title.toLowerCase().includes(debouncedSearch.toLowerCase());
       const matchesType = !activeType || activeType === item.type;
-
       return matchesSearch && matchesType;
-    });
-  }, [debouncedSearch, materials, activeType]);
+    };
+
+    const incomplete = materials.filter(
+      (item) => matchesFilters(item) && !isCompleted(item)
+    );
+    const complete = materials.filter(
+      (item) => matchesFilters(item) && isCompleted(item)
+    );
+
+    return [...incomplete, ...complete];
+  }, [debouncedSearch, materials, activeType, userData]);
 
   const completedCount =
     listType === "all"
