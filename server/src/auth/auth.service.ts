@@ -168,7 +168,6 @@ export class AuthService {
         completedArticles: user.completedArticles,
         completedVideos: user.completedVideos,
         completedLectures: user.completedLectures,
-        certificates: user.certificates,
         achievements: user.achievements,
       }),
     };

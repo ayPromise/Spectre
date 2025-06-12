@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { User } from "@shared/types";
 import { getAllUsers } from "../utils/getAllUsers";
 import getAllMaterials from "@/app/materials/utils/getAllMaterials";
@@ -15,6 +15,7 @@ import { Separator } from "@radix-ui/react-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Loader from "@/components/custom/Loader";
+import { showError, showSuccess } from "@/utils/toast";
 
 export default function UsersPanel() {
   const { data: users, refetch } = useQuery({
@@ -29,23 +30,58 @@ export default function UsersPanel() {
 
   const deleteMutation = useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => refetch(),
+    onSuccess: () => {
+      showSuccess("Успішно було видалено користувача");
+      refetch();
+    },
+    onError: () => {
+      showError("Виникла помилка. Спробуйте пізніше");
+    },
   });
 
   const editMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: Partial<User> }) =>
       editUser(id, updates),
-    onSuccess: () => refetch(),
+    onSuccess: () => {
+      showSuccess("Успішно було редаговано користувача");
+      refetch();
+    },
+    onError: () => {
+      showError("Виникла помилка. Спробуйте пізніше");
+    },
   });
 
   const [editing, setEditing] = useState<Record<string, string>>({});
   const [tempValues, setTempValues] = useState<Record<string, any>>({});
 
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredUsers = useMemo(() => {
+    if (!searchTerm) return users;
+    return users?.filter((user) => {
+      const valuesToSearch = [
+        user.firstName,
+        user.lastName,
+        user.email,
+        user.phoneNumber,
+      ];
+
+      return valuesToSearch.some((val) => val?.includes(searchTerm));
+    });
+  }, [searchTerm, users]);
+
   if (!users || !materials) return <Loader />;
 
   return (
     <div className="grid gap-6 mt-6">
-      {users.map((user) => (
+      <div className="mb-6">
+        <Input
+          placeholder="Пошук по імені, прізвищу, email або номеру"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+      {filteredUsers.map((user) => (
         <Card key={user._id}>
           <CardHeader className="pb-2">
             <CardTitle className="text-xl">
@@ -59,23 +95,33 @@ export default function UsersPanel() {
                   <Label className="min-w-[160px] capitalize">{key}</Label>
                   <div className="flex-1">
                     {editing[user._id] === key ? (
-                      Array.isArray(value) && key === "completedArticles" ? (
+                      Array.isArray(value) &&
+                      (key === "completedArticles" ||
+                        key === "completedVideos" ||
+                        key === "completedLectures") ? (
                         <MultiSelect
-                          options={materials.map((m) => ({
-                            label: `${m.title} (${MaterialTypeNameUA[m.kind]})`,
-                            value: JSON.stringify(m._id),
-                          }))}
+                          options={materials
+                            .filter(
+                              (m) =>
+                                m.kind ===
+                                key.split("completed")[1].slice(0, -1)
+                            )
+                            .map((m) => ({
+                              label: `${m.title} (${
+                                MaterialTypeNameUA[m.kind]
+                              })`,
+                              value: m._id,
+                            }))}
                           selectedValues={(
                             tempValues[`${user._id}.${key}`] || []
-                          ).map((r: any) => {
-                            console.log("r", r);
-                            return JSON.stringify(r);
-                          })}
+                          ).map((r: any) => r)}
                           setSelectedValues={(sel) => {
-                            const arr = sel.map((s) => JSON.parse(s));
+                            const selected = materials.filter((m) =>
+                              sel.includes(m._id)
+                            );
                             setTempValues((prev) => ({
                               ...prev,
-                              [`${user._id}.${key}`]: arr,
+                              [`${user._id}.${key}`]: selected,
                             }));
                           }}
                           placeholder="Оберіть матеріали..."

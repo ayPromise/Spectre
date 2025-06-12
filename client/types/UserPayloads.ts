@@ -18,7 +18,6 @@ interface UpdateUserPayload {
   role?: UserRole;
   completedArticles?: ID[];
   completedVideos?: ID[];
-  certificates?: ID[];
   achievements?: ID[];
 }
 

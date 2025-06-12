@@ -12,7 +12,6 @@ export interface User {
   completedArticles: ID[];
   completedVideos: ID[];
   completedLectures: ID[];
-  certificates: ID[];
   achievements: ID[];
   createdAt: Date;
   updatedAt: Date;

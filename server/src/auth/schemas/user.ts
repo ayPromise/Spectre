@@ -34,9 +34,6 @@ export class User {
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Lecture' })
   completedLectures: ID[];
 
-  @Prop({ type: [Types.ObjectId], default: [], ref: 'Certificate' })
-  certificates: ID[];
-
   @Prop({ type: [Types.ObjectId], default: [], ref: 'Achievement' })
   achievements: ID[];
 

@@ -11,7 +11,6 @@ interface AuthStatus {
   completedArticles: ID[];
   completedVideos: ID[];
   completedLectures: ID[];
-  certificates: ID[];
   achievements: ID[];
 }
 

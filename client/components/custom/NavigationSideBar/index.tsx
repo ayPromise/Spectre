@@ -22,7 +22,6 @@ const links = [
   { href: "/", label: "Головна сторінка" },
   { href: "/schedule", label: "Розклад" },
   { href: "/materials", label: "Навчальні матеріали" },
-  { href: "/archive", label: "Архіви польотів" },
 ];
 
 const SideBar: React.FC = () => {

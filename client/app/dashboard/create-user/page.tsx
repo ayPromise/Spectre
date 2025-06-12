@@ -42,14 +42,13 @@ const UserCreationForm = () => {
   const initialEmail = searchParams.get("email") || "";
   const initialFirstName = searchParams.get("firstName") || "";
   const initialLastName = searchParams.get("lastName") || "";
-  const initialPhoneNumber =
-    `+${searchParams.get("phoneNumber")?.trim()}` || "";
+  const initialPhoneNumber = searchParams.get("phoneNumber") || "";
 
   const { mutate: createUserMutation, isPending } = useMutation({
     mutationFn: (data: CreateUserPayload) => createUser(data),
     onSuccess: () => {
       showSuccess("Користувача створено успішно 🎉");
-      router.push("/dashboard/users");
+      router.push("/dashboard");
     },
     onError: (error: Error) => {
       showError(error.message || "Помилка при створенні користувача");
