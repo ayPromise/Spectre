@@ -43,30 +43,32 @@ const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
               <td className="px-4 py-2 border-b">
                 {FlightTypeNameUA[flight.flightType]}
               </td>
-              <td className="px-4 py-2 border-b text-center space-x-3">
-                {userData?.sub === flight.userId && (
+              <td className="px-4 py-2 border-b text-center flex">
+                <div className="w-1/2">
                   <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => onDelete(flight._id)}
+                    variant="outline"
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = flight.filePath;
+                      link.download = "";
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
                   >
-                    <Trash2 size={16} />
+                    <DownloadIcon size={16} />
                   </Button>
-                )}
-
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href = flight.filePath;
-                    link.download = "";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
-                >
-                  <DownloadIcon size={16} />
-                </Button>
+                </div>
+                <div className="w-1/2">
+                  {userData?.sub === flight.userId && (
+                    <Button
+                      variant="destructive"
+                      onClick={() => onDelete(flight._id)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                  )}
+                </div>
               </td>
             </tr>
           ))}
