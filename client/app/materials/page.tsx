@@ -22,7 +22,7 @@ const MaterialsPage = () => {
     return <NotFoundMessage>Немає матеріалів</NotFoundMessage>;
   }
 
-  return <MaterialsList materials={materials} />;
+  return <MaterialsList materials={materials} listType={"all"} />;
 };
 
 export default MaterialsPage;

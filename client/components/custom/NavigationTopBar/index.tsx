@@ -21,7 +21,9 @@ import {
 import { MaterialUnion, Schedule } from "@shared/types";
 import ScheduleNotification from "./components/ScheduleNotification";
 
-const socket = io("http://localhost:3333");
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+const socket = io(SOCKET_URL);
 
 const TopBar: React.FC = () => {
   const { isAuth, userData } = useAuth();
@@ -111,11 +113,22 @@ const TopBar: React.FC = () => {
 
   return (
     <header className="w-full border-b border-border bg-background">
-      <div className="flex items-center justify-between px-8 py-4">
+      <div className="flex items-center justify-between px-16 py-4">
         <Link
           href="/"
-          className="font-bold text-primary hover:opacity-80 saira text-[24px]"
+          className="font-bold text-primary hover:opacity-80 saira text-[24px] flex items-center gap-2"
         >
+          {" "}
+          <div className="w-[24px]">
+            <svg
+              role="img"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title>Checkmk</title>
+              <path d="M5.187 8.738v3.985l4.883-3.157v8.217l1.925 1.111 1.926-1.111V9.57l4.882 3.158V8.742l-6.808-4.269-6.808 4.265zM12 0l10.375 5.999V18L12 24 1.625 18.006V6.003L12 0z" />
+            </svg>
+          </div>
           SPECTRE
         </Link>
 
@@ -164,8 +177,8 @@ const TopBar: React.FC = () => {
                 className="w-80 p-1 rounded-xl shadow-xl"
               >
                 {notifications.length === 0 ? (
-                  <p className="text-xs text-muted-foreground text-center py-4">
-                    Пусто ;)
+                  <p className="text-[15px] text-muted-foreground py-1 pl-2">
+                    Відсутні нові сповіщення
                   </p>
                 ) : (
                   <ul className="space-y-2 max-h-60 overflow-auto pr-2 custom-scrollbar">

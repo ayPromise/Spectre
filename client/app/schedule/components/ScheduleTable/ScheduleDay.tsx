@@ -12,7 +12,7 @@ const ScheduleDay = ({ day, children }: ScheduleDayProps) => {
   return (
     <td
       className={cn(
-        "relative border-2 border-black align-top h-[100px] w-[200px] aspect-square",
+        "relative border-2 border-black align-top h-[100px] min-w-[150px] aspect-square",
         isWeekend && "text-red-600"
       )}
     >

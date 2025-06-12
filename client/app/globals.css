@@ -9,8 +9,16 @@
   font-family: var(--font-saira)
 }
 
+html{
+  scrollbar-gutter: stable;
+}
+
 body{
   overflow: auto !important;
+}
+
+.bg-lch-invert {
+  color: lch(from var(--bg) calc((49.44 - l) * infinity) 0 0);
 }
 
 .content-wrapper{

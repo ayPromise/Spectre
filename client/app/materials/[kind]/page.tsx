@@ -30,7 +30,11 @@ const MaterialsTypePage = () => {
     }
   }, [kind, router]);
 
-  if (isLoading) {
+  const filteredMaterials = materials?.filter(
+    (m) => m.kind.toLowerCase() === kind.toLowerCase()
+  );
+
+  if (!filteredMaterials.length) {
     return <Loader />;
   }
 
@@ -38,11 +42,7 @@ const MaterialsTypePage = () => {
     return <ErrorMessage>Помилка: {(error as Error).message}</ErrorMessage>;
   }
 
-  const filteredMaterials = materials?.filter(
-    (m) => m.kind.toLowerCase() === kind.toLowerCase()
-  );
-
-  if (!filteredMaterials || filteredMaterials.length === 0) {
+  if (!isLoading && filteredMaterials.length === 0) {
     return (
       <NotFoundMessage>
         Немає матеріалів типу{" "}
@@ -51,7 +51,12 @@ const MaterialsTypePage = () => {
     );
   }
 
-  return <MaterialsList materials={filteredMaterials} />;
+  return (
+    <MaterialsList
+      materials={filteredMaterials}
+      listType={normalizeKind(kind) as MaterialType}
+    />
+  );
 };
 
 export default MaterialsTypePage;

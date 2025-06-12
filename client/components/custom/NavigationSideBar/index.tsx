@@ -65,24 +65,27 @@ const SideBar: React.FC = () => {
     isAuth && (
       <aside
         className={cn(
-          "sticky top-0 w-[230px] max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out pt-4",
+          "w-[230px] max-w-[230px] flex-grow border-r border-border bg-background text-primary transition-all duration-300 ease-in-out",
           collapsed ? "w-2" : "min-w-52"
         )}
       >
-        {/* Collapse button */}
-        <div className="absolute -right-4">
-          <Button
-            variant="default"
-            size="icon"
-            onClick={toggleCollapse}
-            className="cursor-pointer"
-          >
-            {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-          </Button>
-        </div>
-
         {/* Full nav */}
-        <nav className="flex flex-col gap-2 px-2">
+        <nav className="sticky top-0 flex flex-col gap-2 px-2 pt-4">
+          {/* Collapse button */}
+          <div className="absolute -right-4">
+            <Button
+              variant="default"
+              size="icon"
+              onClick={toggleCollapse}
+              className="cursor-pointer"
+            >
+              {collapsed ? (
+                <ChevronRight size={20} />
+              ) : (
+                <ChevronLeft size={20} />
+              )}
+            </Button>
+          </div>
           {!collapsed && (
             <>
               {hasAdminAccess &&
