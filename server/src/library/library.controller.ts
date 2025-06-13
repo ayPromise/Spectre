@@ -17,23 +17,23 @@ import { UserRole } from '@shared/types';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Request } from 'express';
-import { FlightsService } from './flights.service';
+import { LibraryService } from './library.service';
 
-@Controller('flights')
+@Controller('library')
 @UseGuards(JwtAuthGuard, RolesGuard)
-export class FlightsController {
-  constructor(private readonly flightService: FlightsService) {}
+export class LibraryController {
+  constructor(private readonly libraryService: LibraryService) {}
 
   @Get()
   @Roles(UserRole.Student, UserRole.Instructor, UserRole.Admin)
   findAll() {
-    return this.flightService.findAll();
+    return this.libraryService.findAll();
   }
 
   @Get(':id')
   @Roles(UserRole.Student, UserRole.Instructor, UserRole.Admin)
   getById(@Param('id') id: string) {
-    return this.flightService.findById(id);
+    return this.libraryService.findById(id);
   }
 
   @Post()
@@ -57,14 +57,14 @@ export class FlightsController {
     }),
   )
   upload(@UploadedFile() file: Request['file'], @Req() req: Request) {
-    return this.flightService.create(file, req.user['userId']);
+    return this.libraryService.create(file, req.user['userId']);
   }
 
   @Delete(':id')
   @Roles(UserRole.Student, UserRole.Instructor, UserRole.Admin)
   delete(@Param('id') id: string, @Req() req: Request) {
-    return this.flightService.delete(id, {
-      userId: req.user.sub,
+    return this.libraryService.delete(id, {
+      userId: req.user.userId,
       role: req.user.role,
     });
   }

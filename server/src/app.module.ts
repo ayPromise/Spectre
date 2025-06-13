@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { MaterialModule } from './materials/material.module';
 import { AchievementModule } from './achievement/achievement.module';
-import { FlightsModule } from './flights/flights.module';
+import { LibraryModule } from './library/library.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,7 +20,7 @@ import { FlightsModule } from './flights/flights.module';
     ScheduleModule,
     MaterialModule,
     AchievementModule,
-    FlightsModule,
+    LibraryModule,
   ],
 })
 export class AppModule {}

@@ -156,7 +156,9 @@ export function SignInPage() {
                   className="w-full"
                   disabled={(isPending || isSubmitting) && !isError}
                 >
-                  {isSubmitting ? "Зачекайте..." : "Увійти"}
+                  {(isPending || isSubmitting) && !isError
+                    ? "Зачекайте..."
+                    : "Увійти"}
                 </Button>
               </div>
               <div className="mt-4 text-center text-sm">

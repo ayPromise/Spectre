@@ -6,26 +6,26 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { FlightType, UserRole } from '@shared/types';
-import { Flight, FlightDocument } from './schemas/flights.schema';
+import { File, LibraryDocument } from './schemas/library.schema';
 
 @Injectable()
-export class FlightsService {
+export class LibraryService {
   constructor(
-    @InjectModel(Flight.name)
-    private readonly flightModel: Model<FlightDocument>,
+    @InjectModel(File.name)
+    private readonly libraryModel: Model<LibraryDocument>,
   ) {}
 
-  async findAll(): Promise<Flight[]> {
-    return this.flightModel.find();
+  async findAll(): Promise<File[]> {
+    return this.libraryModel.find();
   }
 
-  async findById(id: string): Promise<Flight> {
-    const flight = await this.flightModel.findById(id);
+  async findById(id: string): Promise<File> {
+    const flight = await this.libraryModel.findById(id);
     if (!flight) throw new NotFoundException('Політ не знайдено.');
     return flight;
   }
 
-  async create(file: Express.Multer.File, userId: string): Promise<Flight> {
+  async create(file: Express.Multer.File, userId: string): Promise<File> {
     const filePath = `/flights/${file.filename}`;
     const title = file.originalname;
     const today = new Date();
@@ -35,7 +35,7 @@ export class FlightsService {
       { coordX: 1, coordY: 2, coordZ: 3, comment: 'Mock Point' },
     ];
 
-    return this.flightModel.create({
+    return this.libraryModel.create({
       title,
       userId: new Types.ObjectId(userId),
       date: today,
@@ -46,18 +46,18 @@ export class FlightsService {
   }
 
   async delete(id: string, user: { userId: string; role: UserRole }) {
-    const flight = await this.flightModel.findById(id);
+    const flight = await this.libraryModel.findById(id);
     if (!flight) throw new NotFoundException('Політ не знайдено.');
 
     if (
-      flight.userId.toString() !== user.userId &&
-      user.role !== UserRole.Admin &&
-      user.role !== UserRole.Instructor
+      flight.userId.toString() !== user.userId ||
+      user.role === UserRole.Admin ||
+      user.role === UserRole.Instructor
     ) {
       throw new ForbiddenException('Недостатньо прав для видалення польоту.');
     }
 
-    await this.flightModel.findByIdAndDelete(id);
+    await this.libraryModel.findByIdAndDelete(id);
     return { message: 'Політ успішно видалено.' };
   }
 }
