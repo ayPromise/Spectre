@@ -9,6 +9,7 @@ import { ArrowRight, BookOpen, FileText } from "lucide-react";
 
 interface MaterialNotificationProps {
   material: MaterialUnion;
+  action: "edit" | "create";
   onHover: (id: string) => void;
   isRead: boolean;
 }
@@ -17,6 +18,7 @@ const MaterialNotification: React.FC<MaterialNotificationProps> = ({
   material,
   onHover,
   isRead,
+  action,
 }) => {
   const { kind, title, _id } = material;
   const url = `/materials/${kind.toLowerCase()}/${_id}`;
@@ -24,13 +26,13 @@ const MaterialNotification: React.FC<MaterialNotificationProps> = ({
   const getPrefix = () => {
     switch (kind) {
       case MaterialType.Article:
-        return "Нова стаття: ";
+        return action === "edit" ? "Оновлена стаття: " : "Нова стаття: ";
       case MaterialType.Lecture:
-        return "Нова лекція: ";
+        return action === "edit" ? "Оновлена лекція: " : "Нова лекція: ";
       case MaterialType.Video:
-        return "Нове відео: ";
+        return action === "edit" ? "Оновлене відео: " : "Нове відео: ";
       default:
-        return "Новий матеріал: ";
+        return action === "edit" ? "Оновлений матеріал: " : "Новий матеріал: ";
     }
   };
 

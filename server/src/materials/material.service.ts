@@ -32,7 +32,11 @@ export class MaterialService {
       default:
         throw new BadRequestException('Invalid material kind');
     }
-    this.notificationGateway.sendNewNotification(createdMaterial, 'material');
+    this.notificationGateway.sendNewNotification(
+      createdMaterial,
+      'material',
+      'create',
+    );
 
     return createdMaterial;
   }
@@ -77,6 +81,11 @@ export class MaterialService {
     }
 
     await updatedMaterial.save();
+    this.notificationGateway.sendNewNotification(
+      updatedMaterialAny,
+      'material',
+      'edit',
+    );
     return updatedMaterial;
   }
 

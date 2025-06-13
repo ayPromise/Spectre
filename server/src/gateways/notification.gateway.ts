@@ -15,10 +15,12 @@ export class NotificationGateway {
   sendNewNotification(
     data: MaterialUnion | Schedule,
     type: 'material' | 'schedule',
+    action: 'edit' | 'create',
   ) {
     this.server.emit('newNotification', {
       data,
       type,
+      action,
       isRead: false,
     });
   }

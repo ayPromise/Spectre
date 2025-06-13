@@ -173,6 +173,7 @@ const TopBar: React.FC = () => {
                         return (
                           <MaterialNotification
                             key={idx}
+                            action={item.action}
                             material={item.data as MaterialUnion}
                             onHover={handleNotificationHover}
                             isRead={readNotifications.has(item.data._id)}
@@ -182,6 +183,7 @@ const TopBar: React.FC = () => {
                         return (
                           <ScheduleNotification
                             key={idx}
+                            action={item.action}
                             schedule={item.data as Schedule}
                             onHover={handleNotificationHover}
                             isRead={readNotifications.has(item.data._id)}

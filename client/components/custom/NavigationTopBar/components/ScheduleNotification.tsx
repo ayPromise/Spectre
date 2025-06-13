@@ -8,12 +8,14 @@ interface ScheduleNotificationProps {
   schedule: Schedule;
   onHover: (id: string) => void;
   isRead: boolean;
+  action: "edit" | "create";
 }
 
 const ScheduleNotification: React.FC<ScheduleNotificationProps> = ({
   schedule,
   onHover,
   isRead,
+  action,
 }) => {
   const { _id, title, date } = schedule;
   return (
@@ -27,7 +29,9 @@ const ScheduleNotification: React.FC<ScheduleNotificationProps> = ({
     >
       <div className="flex justify-between items-center w-full rounded-md">
         <span>
-          <div>З'явився новий запис в розкладі:</div>
+          <div>
+            {action === "edit" ? "Оновлено запис" : "Створено новий запис"}
+          </div>
           <div className="italic text-black truncate">
             {title} на {new Date(date).toLocaleDateString()}
           </div>

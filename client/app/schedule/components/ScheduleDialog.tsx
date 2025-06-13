@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 // UTILS
@@ -53,38 +52,48 @@ interface ScheduleDialogProps {
     date: Date;
   };
   isEditing?: boolean;
+  onClose: () => void;
 }
 
 const ScheduleDialog = ({
   date,
   initialValues,
   isEditing = false,
+  onClose,
 }: ScheduleDialogProps) => {
   const { refetchSchedules } = useSchedule();
-  const { mutate: createScheduleMutate, isPending: isScheduleCreating } =
-    useMutation({
-      mutationFn: createSchedule,
-      onSuccess: () => {
-        showSuccess("Заняття було успішно додано в розклад");
-        refetchSchedules();
-      },
-      onError: (error: Error) => {
-        showError(error.message || "Помилка при створенні розкладу");
-      },
-    });
+  const {
+    mutate: createScheduleMutate,
+    isPending: isScheduleCreating,
+    isError: isCreatingError,
+  } = useMutation({
+    mutationFn: createSchedule,
+    onSuccess: () => {
+      showSuccess("Заняття було успішно додано в розклад");
+      refetchSchedules();
+      onClose();
+    },
+    onError: (error: Error) => {
+      showError(error.message || "Помилка при створенні розкладу");
+    },
+  });
 
-  const { mutate: updateScheduleMutate, isPending: isScheduleUpdating } =
-    useMutation({
-      mutationFn: ({ id, data }: { id: string; data: Partial<Schedule> }) =>
-        updateSchedule(id, data),
-      onSuccess: () => {
-        showSuccess("Заняття було успішно оновлено");
-        refetchSchedules();
-      },
-      onError: (error: Error) => {
-        showError(error.message || "Помилка при оновленні розкладу");
-      },
-    });
+  const {
+    mutate: updateScheduleMutate,
+    isPending: isScheduleUpdating,
+    isError: isUpdatingError,
+  } = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: Partial<Schedule> }) =>
+      updateSchedule(id, data),
+    onSuccess: () => {
+      showSuccess("Заняття було успішно оновлено");
+      refetchSchedules();
+      onClose();
+    },
+    onError: (error: Error) => {
+      showError(error.message || "Помилка при оновленні розкладу");
+    },
+  });
 
   const formik = useFormik({
     initialValues: initialValues
@@ -136,7 +145,6 @@ const ScheduleDialog = ({
     handleBlur,
     handleSubmit,
     setFieldValue,
-    isSubmitting,
     errors,
     touched,
   } = formik;
@@ -182,7 +190,12 @@ const ScheduleDialog = ({
             onChange={handleChange}
             onBlur={handleBlur}
             error={touched.title && errors.title}
-            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
+            disabled={
+              isScheduleCreating ||
+              isScheduleUpdating ||
+              ((isScheduleCreating || isScheduleUpdating) &&
+                (!isCreatingError || !isUpdatingError))
+            }
           />
 
           <div className="flex gap-4">
@@ -197,7 +210,10 @@ const ScheduleDialog = ({
                 value={values.lessonType}
                 onValueChange={(val) => setFieldValue("lessonType", val)}
                 disabled={
-                  isScheduleCreating || isScheduleUpdating || isSubmitting
+                  isScheduleCreating ||
+                  isScheduleUpdating ||
+                  ((isScheduleCreating || isScheduleUpdating) &&
+                    (!isCreatingError || !isUpdatingError))
                 }
               >
                 <SelectTrigger>
@@ -226,7 +242,10 @@ const ScheduleDialog = ({
                     onValueChange={(val) => setFieldValue("meetingType", val)}
                     name="meetingType"
                     disabled={
-                      isScheduleCreating || isScheduleUpdating || isSubmitting
+                      isScheduleCreating ||
+                      isScheduleUpdating ||
+                      ((isScheduleCreating || isScheduleUpdating) &&
+                        (!isCreatingError || !isUpdatingError))
                     }
                   >
                     <SelectTrigger>
@@ -258,7 +277,10 @@ const ScheduleDialog = ({
                 onBlur={handleBlur}
                 error={touched.time && errors.time}
                 disabled={
-                  isScheduleCreating || isScheduleUpdating || isSubmitting
+                  isScheduleCreating ||
+                  isScheduleUpdating ||
+                  ((isScheduleCreating || isScheduleUpdating) &&
+                    (!isCreatingError || !isUpdatingError))
                 }
               />
             </div>
@@ -273,12 +295,22 @@ const ScheduleDialog = ({
             onChange={handleChange}
             onBlur={handleBlur}
             error={touched.note && errors.note}
-            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
+            disabled={
+              isScheduleCreating ||
+              isScheduleUpdating ||
+              ((isScheduleCreating || isScheduleUpdating) &&
+                (!isCreatingError || !isUpdatingError))
+            }
           />
 
           <Button
             type="submit"
-            disabled={isScheduleCreating || isScheduleUpdating || isSubmitting}
+            disabled={
+              isScheduleCreating ||
+              isScheduleUpdating ||
+              ((isScheduleCreating || isScheduleUpdating) &&
+                (!isCreatingError || !isUpdatingError))
+            }
           >
             {isEditing ? "Зберегти зміни" : "Повідомити про заняття"}
           </Button>

@@ -144,6 +144,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                         ...schedule,
                         time: getKyivTimeString(schedule.date),
                       }}
+                      onClose={onClose}
                     />
 
                     <Button

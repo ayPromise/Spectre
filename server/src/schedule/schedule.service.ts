@@ -27,7 +27,11 @@ export class ScheduleService {
       const createdSchedule = new this.scheduleModel(createDto);
       const saved = await createdSchedule.save();
 
-      this.notificationGateway.sendNewNotification(createdSchedule, 'schedule');
+      this.notificationGateway.sendNewNotification(
+        createdSchedule,
+        'schedule',
+        'create',
+      );
 
       return {
         ...saved.toObject(),
@@ -63,7 +67,7 @@ export class ScheduleService {
     const schedule = await this.scheduleModel.findById(_id).exec();
 
     if (!schedule) {
-      throw new NotFoundException(`Schedule with _id ${_id} not found`);
+      throw new NotFoundException(`Розклад з _id ${_id} не знайдено.`);
     }
 
     const obj = schedule.toObject();
@@ -78,26 +82,38 @@ export class ScheduleService {
     const result = await this.scheduleModel.findByIdAndDelete(_id).exec();
 
     if (!result) {
-      throw new Error(`Schedule with _id ${_id} not found`);
+      throw new Error(`Розклад з _id ${_id} не знайдено.`);
     }
 
-    return { message: `Schedule with _id ${_id} deleted successfully` };
+    return {
+      message: `Розклад з _id ${_id} видалено успішно`,
+    };
   }
 
   async update(
     _id: string,
     updateDto: Partial<Schedule>,
   ): Promise<{ message: string }> {
-    const updated = await this.scheduleModel.findByIdAndUpdate(_id, updateDto, {
-      new: true,
-      runVal_idators: true,
-    });
+    const updatedSchedule = await this.scheduleModel.findByIdAndUpdate(
+      _id,
+      updateDto,
+      {
+        new: true,
+        runVal_idators: true,
+      },
+    );
 
-    if (!updated) {
-      throw new Error(`Schedule with _id ${_id} not found`);
+    if (!updatedSchedule) {
+      throw new Error(`Розклад з _id ${_id} не знайдено.`);
     }
 
-    return { message: 'Schedule updated' };
+    this.notificationGateway.sendNewNotification(
+      updatedSchedule,
+      'schedule',
+      'edit',
+    );
+
+    return { message: 'Розклад оновлено' };
   }
 
   async signUp(_id: string, user_id: string): Promise<Schedule> {

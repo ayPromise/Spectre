@@ -3,6 +3,7 @@ import { ID, MaterialUnion, Schedule } from "@shared/types";
 interface WebSocketNotification {
   data: MaterialUnion | Schedule;
   type: "material" | "schedule";
+  action: "edit" | "create";
   isRead: boolean;
 }
 
