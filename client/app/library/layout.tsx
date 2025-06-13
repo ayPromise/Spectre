@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Бібліотека польотів | SPECTRE",
+  title: "Бібліотека файлів | SPECTRE",
   description: "Навчальні матеріали для курсантів та інструкторів.",
 };
 
-export default function FlightsLayout({
+export default function LibraryLayout({
   children,
 }: {
   children: React.ReactNode;

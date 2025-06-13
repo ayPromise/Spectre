@@ -11,7 +11,7 @@ const server_endpoints = {
   users: "/auth/get-all-users",
   editUser: "/auth/edit-user",
   deleteUser: "/auth/delete-user",
-  flights: "/flights",
+  library: "/library",
 };
 
 export default server_endpoints;

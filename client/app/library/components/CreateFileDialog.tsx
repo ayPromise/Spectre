@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createFlight } from "../utils/createFlight";
+import { createFile } from "../utils/createFile";
 import { showError, showSuccess } from "@/utils/toast";
 import {
   Dialog,
@@ -17,18 +17,18 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 
-interface CreateFlightDialogProps {
+interface CreateFileDialogProps {
   refetch: () => void;
 }
 
-const CreateFlightDialog: React.FC<CreateFlightDialogProps> = ({ refetch }) => {
+const CreateFileDialog: React.FC<CreateFileDialogProps> = ({ refetch }) => {
   const [open, setOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const createMutation = useMutation({
-    mutationFn: createFlight,
+    mutationFn: createFile,
     onSuccess: () => {
-      showSuccess("Політ додано");
+      showSuccess("Файл завантажено");
       refetch();
       setOpen(false);
     },
@@ -49,15 +49,15 @@ const CreateFlightDialog: React.FC<CreateFlightDialogProps> = ({ refetch }) => {
       <DialogTrigger asChild>
         <Button>
           <Plus size={16} className="mr-2" />
-          Додати свій політ
+          Завантажити свій файл
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Завантажити новий політ</DialogTitle>
+          <DialogTitle>Поділитися цікавим файлом</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <Label htmlFor="file">Файл польоту</Label>
+          <Label htmlFor="file">Файл матеріалу</Label>
           <Input id="file" type="file" ref={fileInputRef} />
         </div>
         <DialogFooter>
@@ -73,4 +73,4 @@ const CreateFlightDialog: React.FC<CreateFlightDialogProps> = ({ refetch }) => {
   );
 };
 
-export default CreateFlightDialog;
+export default CreateFileDialog;

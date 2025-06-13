@@ -4,22 +4,23 @@ import React from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Loader from "@/components/custom/Loader";
 import ErrorMessage from "@/components/custom/ErrorMessage";
-import { getFlights } from "./utils/getFlights";
-import { deleteFlight } from "./utils/deleteFlight";
+import { getFiles } from "./utils/getFiles";
+import { deleteFile } from "./utils/deleteFile";
 import { showError, showSuccess } from "@/utils/toast";
-import CreateFlightDialog from "./components/CreateFlightDialog";
-import FlightTable from "./components/FlightTable";
+import CreateFileDialog from "./components/CreateFileDialog";
+import LibraryTable from "./components/LibraryTable";
+import NotFoundMessage from "@/components/custom/NotFoundMessage";
 
-const FlightsPage = () => {
+const LibraryPage = () => {
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["flights"],
-    queryFn: getFlights,
+    queryKey: ["files"],
+    queryFn: getFiles,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteFlight,
+    mutationFn: deleteFile,
     onSuccess: () => {
-      showSuccess("Політ видалено");
+      showSuccess("Файл видалено");
       refetch();
     },
     onError: (err: Error) => showError(err.message),
@@ -32,15 +33,19 @@ const FlightsPage = () => {
   return (
     <div>
       <div className="mb-4 flex justify-end">
-        <CreateFlightDialog refetch={refetch} />
+        <CreateFileDialog refetch={refetch} />
       </div>
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage>{(error as Error).message}</ErrorMessage>}
 
-      {data && <FlightTable flights={data} onDelete={handleDelete} />}
+      {data?.length ? (
+        <LibraryTable files={data} onDelete={handleDelete} />
+      ) : (
+        <NotFoundMessage>Файли не знайдено</NotFoundMessage>
+      )}
     </div>
   );
 };
 
-export default FlightsPage;
+export default LibraryPage;

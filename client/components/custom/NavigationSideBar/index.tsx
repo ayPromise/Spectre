@@ -22,7 +22,7 @@ const links = [
   { href: "/", label: "Головна сторінка" },
   { href: "/schedule", label: "Розклад" },
   { href: "/materials", label: "Навчальні матеріали" },
-  { href: "/flights", label: "Бібліотека польотів" },
+  { href: "/library", label: "Бібліотека файлів" },
 ];
 
 const SideBar: React.FC = () => {

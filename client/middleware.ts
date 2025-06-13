@@ -4,7 +4,7 @@ import { UserRole } from "@shared/types";
 import getUserFromToken from "./lib/getUserFromToken";
 
 const protectedPatterns = [
-  /^\/profile/,
+  /^\/achievements/,
   /^\/schedule/,
   /^\/archive/,
   /^\/materials(\/[^\/]+)?$/,
@@ -67,7 +67,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/dashboard/:path*",
-    "/profile/:path*",
+    "/achievements",
     "/materials/:path*",
     "/archive/:path*",
     "/schedule/:path*",

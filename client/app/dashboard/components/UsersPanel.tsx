@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { User } from "@shared/types";
 import { getAllUsers } from "../utils/getAllUsers";
 import getAllMaterials from "@/app/materials/utils/getAllMaterials";
-import { getAchievements } from "@/app/profile/achievements/utils/getAchievements";
+import { getAchievements } from "@/app/achievements/utils/getAchievements";
 import { deleteUser } from "../utils/deleteUser";
 import { editUser } from "../utils/editUser";
 import MultiSelect from "@/components/custom/MultiSelect";

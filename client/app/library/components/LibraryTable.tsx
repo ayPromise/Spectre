@@ -3,17 +3,15 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, DownloadIcon } from "lucide-react";
-import Link from "next/link";
-import { FlightTypeNameUA } from "@shared/types/Enums";
-import { Flight } from "@shared/types";
+import { File } from "@shared/types";
 import { useAuth } from "@/context/AuthContext";
 
 type Props = {
-  flights: Flight[];
+  files: File[];
   onDelete: (id: string) => void;
 };
 
-const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
+const LibraryTable: React.FC<Props> = ({ files, onDelete }) => {
   const { userData } = useAuth();
   return (
     <div className="overflow-x-auto rounded border">
@@ -22,26 +20,15 @@ const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
           <tr>
             <th className="px-4 py-2 border-b">Назва</th>
             <th className="px-4 py-2 border-b">Дата</th>
-            <th className="px-4 py-2 border-b">Тип</th>
             <th className="px-4 py-2 border-b text-center"></th>
           </tr>
         </thead>
         <tbody>
-          {flights.map((flight) => (
-            <tr key={flight._id} className="hover:bg-gray-50">
+          {files.map((f) => (
+            <tr key={f._id} className="hover:bg-gray-50">
+              <td className="px-4 py-2 border-b hover:underline">{f.title}</td>
               <td className="px-4 py-2 border-b">
-                <Link
-                  href={`/flights/${flight._id}`}
-                  className=" hover:underline"
-                >
-                  {flight.title}
-                </Link>
-              </td>
-              <td className="px-4 py-2 border-b">
-                {new Date(flight.date).toLocaleString()}
-              </td>
-              <td className="px-4 py-2 border-b">
-                {FlightTypeNameUA[flight.flightType]}
+                {new Date(f.date).toLocaleString()}
               </td>
               <td className="px-4 py-2 border-b text-center flex">
                 <div className="w-1/2">
@@ -49,7 +36,7 @@ const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
                     variant="outline"
                     onClick={() => {
                       const link = document.createElement("a");
-                      link.href = flight.filePath;
+                      link.href = f.filePath;
                       link.download = "";
                       document.body.appendChild(link);
                       link.click();
@@ -60,10 +47,10 @@ const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
                   </Button>
                 </div>
                 <div className="w-1/2">
-                  {userData?.sub === flight.userId && (
+                  {userData?.sub === f.userId && (
                     <Button
                       variant="destructive"
-                      onClick={() => onDelete(flight._id)}
+                      onClick={() => onDelete(f._id)}
                     >
                       <Trash2 size={16} />
                     </Button>
@@ -78,4 +65,4 @@ const FlightTable: React.FC<Props> = ({ flights, onDelete }) => {
   );
 };
 
-export default FlightTable;
+export default LibraryTable;

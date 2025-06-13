@@ -147,7 +147,7 @@ const TopBar: React.FC = () => {
                 <div
                   className={cn(
                     "relative p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer",
-                    pathname === "/profile/achievements" && "bg-muted"
+                    pathname === "/achievements" && "bg-muted"
                   )}
                 >
                   <Archive className="w-5 h-5 text-primary" />
@@ -195,10 +195,10 @@ const TopBar: React.FC = () => {
             </Popover>
 
             <Link
-              href="/profile/achievements"
+              href="/achievements"
               className={cn(
                 "relative p-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors",
-                pathname === "/profile/achievements" && "bg-muted"
+                pathname === "/achievements" && "bg-muted"
               )}
             >
               <Trophy className="w-5 h-5 text-primary" />
@@ -207,14 +207,12 @@ const TopBar: React.FC = () => {
               )}
             </Link>
 
-            <Link href="/profile">
-              <div className="flex gap-4 items-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition cursor-pointer">
-                <User className="w-5 h-5 text-gray-800" />
-                <span className="text-gray-800 font-medium select-none">
-                  {userData?.firstName} {userData?.lastName}
-                </span>
-              </div>
-            </Link>
+            <div className="flex gap-4 items-center px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition cursor-pointer">
+              <User className="w-5 h-5 text-gray-800" />
+              <span className="text-gray-800 font-medium select-none">
+                {userData?.firstName} {userData?.lastName}
+              </span>
+            </div>
           </nav>
         )}
       </div>
