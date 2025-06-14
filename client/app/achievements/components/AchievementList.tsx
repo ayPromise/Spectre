@@ -44,7 +44,7 @@ const AchievementList: React.FC<AchievementListProps> = ({
                   </div>
                   <div className="flex flex-col flex-grow">
                     <h3
-                      className={`font-medium text-sm truncate ${
+                      className={`font-medium text-sm truncate max-w-[170px] ${
                         isGottenAchievement
                           ? "text-indigo-400 drop-shadow-glow"
                           : ""

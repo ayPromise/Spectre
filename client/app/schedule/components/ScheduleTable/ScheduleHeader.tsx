@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { MonthEnum } from "@/types/client/Schedule";
 import MonthSelector from "../MonthSelector";
 import { useSchedule } from "@/context/ScheduleContext";
 
@@ -10,8 +9,8 @@ const ScheduleHeader = () => {
 
   return (
     <div className="flex justify-between items-center mb-3">
-      <h1 className="text-3xl font-bold">
-        Розклад на {MonthEnum[scheduleDate.month]} {scheduleDate.year} року
+      <h1 className="text-md font-bold text-slate-300 -mb-5 ml-4">
+        {scheduleDate.year} рік
       </h1>
       <MonthSelector />
     </div>

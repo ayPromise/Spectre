@@ -7,9 +7,9 @@ import TableBody from "./TableBody";
 
 const ScheduleTable = () => {
   return (
-    <div className="max-w-[1000px]">
+    <div className="">
       <ScheduleHeader />
-      <table className="table-fixed border-collapse">
+      <table className="w-full border-collapse text-sm">
         <TableHead />
         <TableBody />
       </table>

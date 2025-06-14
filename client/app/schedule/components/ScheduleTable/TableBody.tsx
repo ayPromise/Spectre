@@ -61,7 +61,10 @@ const TableBody = () => {
                       />
                     ))
                   ) : canAddLesson ? (
-                    <ScheduleDialog date={dateForSchedule} />
+                    <ScheduleDialog
+                      date={dateForSchedule}
+                      onClose={() => setSelectedSchedule(null)}
+                    />
                   ) : null}
                 </ScheduleDay>
               );

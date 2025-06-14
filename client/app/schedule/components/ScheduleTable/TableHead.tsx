@@ -9,8 +9,8 @@ const TableHead = () => {
         {dayLabels.map((label, i) => (
           <th
             key={i}
-            className={`border-2 border-black p-2 ${
-              i >= 5 ? "text-red-600" : ""
+            className={`border border-slate-300 px-4 py-2 text-left align-middle font-medium ${
+              i >= 5 ? "text-red-600" : "text-slate-900"
             }`}
           >
             {label}
