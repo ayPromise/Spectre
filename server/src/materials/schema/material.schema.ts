@@ -42,7 +42,7 @@ export class Material {
   title: string;
 
   @Prop({ required: true })
-  type: string;
+  course: string;
 }
 
 export const MaterialSchema = SchemaFactory.createForClass(Material);

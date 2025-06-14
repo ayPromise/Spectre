@@ -1,12 +1,12 @@
 import { ID, Test } from ".";
-import { MaterialType, Specification } from "./Enums";
+import { MaterialType } from "./Enums";
 
 export interface Article {
   _id: ID;
   title: string;
   content: string;
   timeToRead: number;
-  type: Specification;
+  course: string;
   kind: MaterialType.Article;
   test: Test;
   createdAt: Date;

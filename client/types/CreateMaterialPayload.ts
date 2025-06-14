@@ -1,10 +1,10 @@
-import { MaterialType, Specification, Test } from "@shared/types";
+import { MaterialType, Test } from "@shared/types";
 
 interface CreateArticlePayload {
   kind: MaterialType.Article;
   title: string;
   content: string;
-  type: Specification;
+  course: string;
   test: Test;
 }
 
@@ -12,7 +12,7 @@ interface UpdateArticlePayload {
   kind: MaterialType.Article;
   title?: string;
   content?: string;
-  type?: Specification;
+  course?: string;
   test?: Test;
 }
 
@@ -22,7 +22,7 @@ interface CreateLecturePayload {
   description: string;
   videoURL: string;
   time: number;
-  type: Specification;
+  course: string;
   test: Test;
 }
 
@@ -32,7 +32,7 @@ interface UpdateLecturePayload {
   description?: string;
   videoURL?: string;
   time: number;
-  type?: Specification;
+  course?: string;
   test?: Test;
 }
 
@@ -41,7 +41,7 @@ interface CreateVideoPayload {
   title: string;
   videoURL: string;
   time: number;
-  type: Specification;
+  course: string;
 }
 
 interface UpdateVideoPayload {
@@ -49,7 +49,7 @@ interface UpdateVideoPayload {
   title?: string;
   videoURL?: string;
   time?: number;
-  type?: Specification;
+  course?: string;
 }
 
 export type {

@@ -20,7 +20,7 @@ export class CreateVideoDto {
   time: number;
 
   @IsString()
-  type: string;
+  course: string;
 
   @ValidateNested({ each: true })
   @Type(() => TestDto)

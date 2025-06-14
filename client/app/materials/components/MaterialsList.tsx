@@ -2,13 +2,14 @@
 
 import React, { useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { MaterialUnion, Specification } from "@shared/types";
+import { MaterialUnion } from "@shared/types";
 import useDebounce from "@/hooks/useDebounce";
 import NotFoundMessage from "@/components/custom/NotFoundMessage";
 import MaterialCardLarge from "./MaterialCardLarge";
 import { Button } from "@/components/ui/button";
-import { MaterialType, SpecificationeNameUA } from "@shared/types/Enums";
+import { MaterialType } from "@shared/types/Enums";
 import { useAuth } from "@/context/AuthContext";
+import { useMaterials } from "@/context/MaterialsContext";
 
 interface MaterialsListProps {
   materials: MaterialUnion[];
@@ -20,13 +21,18 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
   listType,
 }) => {
   const { userData } = useAuth();
+  const { materials: allMaterials } = useMaterials();
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeType, setActiveType] = useState<Specification | null>(null);
+  const [activeCourse, setActiveCourse] = useState<string>("");
   const debouncedSearch = useDebounce(searchTerm, 300);
 
-  const toggleType = (type: Specification) => {
-    if (activeType === type) setActiveType(null);
-    else setActiveType(type);
+  const allCourses = Array.from(
+    new Set(allMaterials.map((material) => material.course).filter(Boolean))
+  );
+
+  const toggleCourse = (course: string) => {
+    if (activeCourse === course) setActiveCourse("");
+    else setActiveCourse(course);
   };
 
   const filteredMaterials = useMemo(() => {
@@ -46,7 +52,7 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
       const matchesSearch =
         !debouncedSearch.trim() ||
         item.title.toLowerCase().includes(debouncedSearch.toLowerCase());
-      const matchesType = !activeType || activeType === item.type;
+      const matchesType = !activeCourse || activeCourse === item.course;
       return matchesSearch && matchesType;
     };
 
@@ -58,7 +64,7 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
     );
 
     return [...incomplete, ...complete];
-  }, [debouncedSearch, materials, activeType, userData]);
+  }, [debouncedSearch, materials, activeCourse, userData]);
 
   const completedCount =
     listType === "all"
@@ -93,14 +99,14 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
           />
 
           <div className="flex gap-2 overflow-x-auto custom-scrollbar">
-            {Object.values(Specification).map((type) => (
+            {allCourses.map((course) => (
               <Button
-                key={type}
-                variant={activeType === type ? "default" : "ghost"}
-                onClick={() => toggleType(type)}
+                key={course}
+                variant={activeCourse === course ? "default" : "ghost"}
+                onClick={() => toggleCourse(course)}
                 className={`rounded-full text-sm border transition`}
               >
-                {SpecificationeNameUA[type]}
+                {course}
               </Button>
             ))}
           </div>

@@ -7,21 +7,10 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 
 import { showError, showSuccess } from "@/utils/toast";
-import { Specification, Question } from "@shared/types";
-import {
-  MaterialType,
-  MaterialTypeNameUA,
-  SpecificationeNameUA,
-} from "@shared/types/Enums";
+import { Question } from "@shared/types";
+import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { Input } from "@/components/ui/input";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
@@ -44,8 +33,6 @@ const defaultTest = [
   },
 ];
 
-const specificationOptions = Object.values(Specification);
-
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
   description: Yup.string().trim().required("Опис обовʼязковий"),
@@ -61,16 +48,18 @@ const validationSchema = Yup.object({
       "Потрібно відео",
       (value) => !value || (value && value.type.startsWith("video/"))
     ),
-  type: Yup.mixed<Specification>()
-    .oneOf(Object.values(Specification), "Невірний тип")
-    .required("Тип обовʼязковий"),
+  course: Yup.string().trim().required("Тип обовʼязковий"),
 });
 
 type LectureFormProps = {
   initialData?: Lecture;
+  selectedCourse?: string;
 };
 
-const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
+const LectureForm: React.FC<LectureFormProps> = ({
+  initialData,
+  selectedCourse,
+}) => {
   const isEditingMode = !!initialData;
 
   const router = useRouter();
@@ -84,6 +73,7 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
   };
 
   const { refetch } = useMaterials();
+
   const {
     mutate: createMaterialMutation,
     isPending,
@@ -121,9 +111,11 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
             mocked: true,
           } as any)
         : null,
-      type: initialData?.type ?? specificationOptions[0],
+      course: initialData?.course ?? selectedCourse ?? "",
       context: { initialData },
     },
+    enableReinitialize: true,
+
     validationSchema,
     onSubmit: async (values) => {
       if (!questions.length) {
@@ -206,38 +198,6 @@ const LectureForm: React.FC<LectureFormProps> = ({ initialData }) => {
           required
           disabled={((isSubmitting && !isValid) || isPending) && !isError}
         />
-
-        <div>
-          <Label htmlFor="type" className="block mb-3 font-medium">
-            Тип лекції
-          </Label>
-          <Select
-            name="type"
-            value={values.type}
-            onValueChange={(value) => setFieldValue("type", value)}
-            disabled={((isSubmitting && !isValid) || isPending) && !isError}
-          >
-            <SelectTrigger
-              className={`w-full border p-2 rounded-md ${
-                touched.type && errors.type
-                  ? "border-red-600"
-                  : "border-gray-300"
-              }`}
-            >
-              <SelectValue placeholder="Оберіть тип..." />
-            </SelectTrigger>
-            <SelectContent>
-              {specificationOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {SpecificationeNameUA[option]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {touched.type && errors.type && (
-            <p className="text-red-600 text-sm mt-1">{errors.type}</p>
-          )}
-        </div>
 
         <FormTextarea
           id="description"

@@ -16,12 +16,8 @@ import {
 } from "@/components/ui/select";
 
 import { showError, showSuccess } from "@/utils/toast";
-import { Specification, Video } from "@shared/types";
-import {
-  MaterialType,
-  MaterialTypeNameUA,
-  SpecificationeNameUA,
-} from "@shared/types/Enums";
+import { Video } from "@shared/types";
+import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 import { useMaterials } from "@/context/MaterialsContext";
 import { CreateVideoPayload } from "@/types/CreateMaterialPayload";
 import saveMaterial from "../utils/saveMaterial";
@@ -36,23 +32,28 @@ const validationSchema = Yup.object({
       /^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$/,
       "Має бути посиланням на YouTube"
     ),
-  type: Yup.mixed<Specification>()
-    .oneOf(Object.values(Specification), "Невірний тип")
-    .required("Тип обовʼязковий"),
+  course: Yup.string().trim().required("Тип обовʼязковий"),
 });
-
-const specificationOptions = Object.values(Specification);
 
 type VideoFormProps = {
   initialData?: Video;
+  selectedCourse?: string;
 };
 
-const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
+const VideoForm: React.FC<VideoFormProps> = ({
+  initialData,
+  selectedCourse,
+}) => {
   const isEditingMode = !!initialData;
 
   const router = useRouter();
 
-  const { refetch } = useMaterials();
+  const { materials, refetch } = useMaterials();
+
+  const allCourses = Array.from(
+    new Set(materials.map((material) => material.course).filter(Boolean))
+  );
+
   const {
     mutate: createVideoMutation,
     isPending,
@@ -82,8 +83,9 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
       title: initialData?.title ?? "",
       description: initialData?.description ?? "",
       videoURL: initialData?.videoURL ?? "",
-      type: initialData?.type ?? specificationOptions[0],
+      course: initialData?.course ?? selectedCourse ?? "",
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
       createVideoMutation({
@@ -126,29 +128,29 @@ const VideoForm: React.FC<VideoFormProps> = ({ initialData }) => {
           </Label>
           <Select
             name="type"
-            value={values.type}
-            onValueChange={(value) => setFieldValue("type", value)}
+            value={values.course}
+            onValueChange={(value) => setFieldValue("course", value)}
             disabled={(isSubmitting || isPending) && !isError}
           >
             <SelectTrigger
               className={`w-full border p-2 rounded-md ${
-                touched.type && errors.type
+                touched.course && errors.course
                   ? "border-red-600"
                   : "border-gray-300"
               }`}
             >
-              <SelectValue placeholder="Оберіть тип..." />
+              <SelectValue placeholder="Призначте курс..." />
             </SelectTrigger>
             <SelectContent>
-              {specificationOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {SpecificationeNameUA[option]}
+              {allCourses.map((course) => (
+                <SelectItem key={course} value={course}>
+                  {course}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {touched.type && errors.type && (
-            <p className="text-red-600 text-sm mt-1">{errors.type}</p>
+          {touched.course && errors.course && (
+            <p className="text-red-600 text-sm mt-1">{errors.course}</p>
           )}
         </div>
 

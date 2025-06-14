@@ -13,6 +13,11 @@ html{
   scrollbar-gutter: stable;
 }
 
+::selection {
+  @apply bg-black text-white;
+}
+
+
 body{
   overflow: auto !important;
 }

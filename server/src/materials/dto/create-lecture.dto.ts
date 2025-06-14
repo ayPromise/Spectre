@@ -20,7 +20,7 @@ export class CreateLectureDto {
   time: number;
 
   @IsString()
-  type: string;
+  course: string;
 
   @ValidateNested({ each: true })
   @Type(() => TestDto)

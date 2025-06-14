@@ -6,7 +6,6 @@ export {
   FlightType,
   MaterialType,
   UserRole,
-  Specification,
 } from "./Enums";
 
 export type { User } from "./User";

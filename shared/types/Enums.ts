@@ -6,13 +6,13 @@ export enum UserRole {
 
 export enum LessonType {
   Lecture = "Lecture",
-  Flight = "Flight",
+  Practice = "Practice",
   Mixed = "Mixed",
 }
 
 export const LessonTypeNameUA: Record<LessonType, string> = {
   [LessonType.Lecture]: "Лекція",
-  [LessonType.Flight]: "Політ",
+  [LessonType.Practice]: "Практика",
   [LessonType.Mixed]: "Змішаний",
 };
 
@@ -36,18 +36,6 @@ export const FlightTypeNameUA: Record<FlightType, string> = {
   [FlightType.Recon]: "Розвідка",
   [FlightType.Assault]: "Атака",
   [FlightType.Mixed]: "Змішаний",
-};
-
-export enum Specification {
-  Tech = "Tech",
-  UsageExperience = "Usage experience",
-  Engineering = "Engineering",
-}
-
-export const SpecificationeNameUA: Record<Specification, string> = {
-  [Specification.Tech]: "Next.js",
-  [Specification.UsageExperience]: "React Native",
-  [Specification.Engineering]: "Jest",
 };
 
 export enum MaterialType {

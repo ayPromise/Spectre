@@ -68,7 +68,7 @@ export class MaterialService {
     if ('description' in dtoAny)
       updatedMaterialAny.description = dtoAny.description;
     if ('videoURL' in dtoAny) updatedMaterialAny.videoURL = dtoAny.videoURL;
-    if ('type' in dtoAny) updatedMaterialAny.type = dtoAny.type;
+    if ('course' in dtoAny) updatedMaterialAny.course = dtoAny.course;
     if ('kind' in dtoAny) updatedMaterialAny.kind = dtoAny.kind;
     if ('time' in dtoAny) updatedMaterialAny.time = dtoAny.time;
 

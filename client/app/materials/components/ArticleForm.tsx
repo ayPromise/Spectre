@@ -5,20 +5,8 @@ import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
 import { Label } from "@/components/ui/label";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Article, Question, Specification } from "@shared/types";
-import {
-  MaterialType,
-  MaterialTypeNameUA,
-  SpecificationeNameUA,
-} from "@shared/types/Enums";
+import { Article, Question } from "@shared/types";
+import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
 import TestForm from "./TestForm";
 import { showError, showSuccess } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
@@ -31,20 +19,16 @@ import saveMaterial from "../utils/saveMaterial";
 type ArticleFormData = {
   title: string;
   content: string;
-  type: Specification;
+  course: string;
   testId?: string;
 };
 
 const validationSchema = Yup.object({
   title: Yup.string().trim().required("Заголовок обовʼязковий"),
   content: Yup.string().trim().required("Контент обовʼязковий"),
-  type: Yup.mixed<Specification>()
-    .oneOf(Object.values(Specification), "Невірний тип")
-    .required("Тип обовʼязковий"),
+  course: Yup.string().trim().required("Тип обовʼязковий"),
   testId: Yup.string().optional(),
 });
-
-const specificationOptions = Object.values(Specification);
 
 const defaultTest = [
   {
@@ -66,9 +50,13 @@ const defaultTest = [
 
 type ArticleFormProps = {
   initialData?: Article;
+  selectedCourse?: string;
 };
 
-const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
+const ArticleForm: React.FC<ArticleFormProps> = ({
+  initialData,
+  selectedCourse,
+}) => {
   const isEditingMode = !!initialData;
 
   const router = useRouter();
@@ -81,6 +69,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
   };
   const [isValid, setIsValid] = useState(false);
   const { refetch } = useMaterials();
+
   const {
     mutate: createMaterialMutation,
     isPending: isCreating,
@@ -128,8 +117,9 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
                     <h2>Джерела та додаткові матеріали:</h2>
                     <p></p>
         `,
-      type: initialData?.type ?? specificationOptions[0],
+      course: initialData?.course ?? selectedCourse ?? "",
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
       if (!questions.length) {
@@ -164,6 +154,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
     touched,
   } = formik;
 
+  console.log(values.course, selectedCourse);
+
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6" id="articleForm">
@@ -180,39 +172,8 @@ const ArticleForm: React.FC<ArticleFormProps> = ({ initialData }) => {
         />
 
         <div>
-          <Label htmlFor="type" className="block mb-3 font-medium">
-            Тип статті
-          </Label>
-          <Select
-            name="type"
-            value={values.type}
-            onValueChange={(value) => setFieldValue("type", value)}
-            disabled={((isSubmitting && !isValid) || isCreating) && !isError}
-          >
-            <SelectTrigger
-              className={`w-full border p-2 rounded-md ${
-                touched.type && errors.type
-                  ? "border-red-600"
-                  : "border-gray-300"
-              }`}
-            >
-              <SelectValue placeholder="Оберіть тип..." />
-            </SelectTrigger>
-            <SelectContent>
-              {specificationOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {SpecificationeNameUA[option]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {touched.type && errors.type && (
-            <p className="text-red-600 text-sm mt-1">{errors.type}</p>
-          )}
-        </div>
-        <div>
           <Label htmlFor="content" className="block mb-3 font-medium">
-            Контент
+            Редактор статті
           </Label>
           <SimpleEditor
             value={values.content}
