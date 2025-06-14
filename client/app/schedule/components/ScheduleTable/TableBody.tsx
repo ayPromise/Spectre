@@ -7,6 +7,12 @@ import ScheduleDialog from "../ScheduleDialog";
 import { useSchedule } from "@/context/ScheduleContext";
 import ScheduleSidebar from "../ScheduleSidebar";
 import { SelectedSchedule } from "@/types/SelectedSchedule";
+import LeftCountBar from "./LeftCountBar";
+import RightCountBar from "./RightCountBar";
+import {
+  countLessonsAfterSelectedMonth,
+  countLessonsBeforeSelectedMonth,
+} from "../../utils/countLessons";
 
 const TableBody = () => {
   const { scheduleDate, schedules } = useSchedule();
@@ -23,9 +29,26 @@ const TableBody = () => {
 
   const canAddLesson = hasAdminAccess || hasInstructorAccess;
 
+  const now = new Date();
+  const lessonsBefore = countLessonsBeforeSelectedMonth(
+    schedules,
+    scheduleDate.year,
+    scheduleDate.month,
+    now
+  );
+
+  const lessonsAfter = countLessonsAfterSelectedMonth(
+    schedules,
+    scheduleDate.year,
+    scheduleDate.month,
+    now
+  );
+
   return (
     <>
-      <tbody>
+      <tbody className="relative">
+        <LeftCountBar counts={lessonsBefore} />
+
         {Array.from({ length: rows }).map((_, rowIndex) => (
           <tr key={rowIndex}>
             {Array.from({ length: 7 }).map((_, colIndex) => {
@@ -85,6 +108,7 @@ const TableBody = () => {
             })}
           </tr>
         ))}
+        <RightCountBar counts={lessonsAfter} />
       </tbody>
 
       <ScheduleSidebar

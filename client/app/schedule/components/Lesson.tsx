@@ -1,3 +1,4 @@
+import { useSchedule } from "@/context/ScheduleContext";
 import { Schedule } from "@shared/types";
 import { MeetingType, MeetingTypeNameUA } from "@shared/types/Enums";
 import React from "react";
@@ -19,6 +20,7 @@ const typeHoverColors: Record<MeetingType, string> = {
 
 const Lesson: React.FC<LessonProps> = ({ schedule, handleOnClick }) => {
   const { title, meetingType } = schedule;
+
   return (
     <div
       className={`w-full h-full p-1 text-xs cursor-pointer 
