@@ -39,7 +39,7 @@ export class AuthController {
 
     res.cookie('token', token.access_token, {
       httpOnly: true,
-      secure: false, // 👉 true на проді з HTTPS
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
