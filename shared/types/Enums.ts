@@ -45,9 +45,9 @@ export enum Specification {
 }
 
 export const SpecificationeNameUA: Record<Specification, string> = {
-  [Specification.Tech]: "Технологія",
-  [Specification.UsageExperience]: "Досвід використання",
-  [Specification.Engineering]: "Розробка",
+  [Specification.Tech]: "Next.js",
+  [Specification.UsageExperience]: "React Native",
+  [Specification.Engineering]: "Jest",
 };
 
 export enum MaterialType {

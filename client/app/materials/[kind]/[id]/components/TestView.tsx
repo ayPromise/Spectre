@@ -133,9 +133,6 @@ const TestView: React.FC<Props> = ({ material, test }) => {
   return (
     <>
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-center">
-          Перевірка на засвоєння інформації
-        </h2>
         <QuestionDisplay
           question={currentQuestion}
           isMultiple={isMultiple}

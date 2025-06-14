@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -14,6 +15,8 @@ export class LibraryService {
     @InjectModel(File.name)
     private readonly libraryModel: Model<LibraryDocument>,
   ) {}
+
+  private readonly logger = new Logger(LibraryService.name);
 
   async findAll(): Promise<File[]> {
     return this.libraryModel.find();
@@ -42,10 +45,11 @@ export class LibraryService {
     const flight = await this.libraryModel.findById(id);
     if (!flight) throw new NotFoundException('Файл не знайдено.');
 
+    this.logger.log(flight, user);
     if (
-      flight.userId.toString() !== user.userId ||
-      user.role === UserRole.Admin ||
-      user.role === UserRole.Instructor
+      flight.userId.toString() !== user.userId &&
+      user.role !== UserRole.Admin &&
+      user.role !== UserRole.Instructor
     ) {
       throw new ForbiddenException('Недостатньо прав для видалення файлу.');
     }
