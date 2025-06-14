@@ -8,10 +8,13 @@ import {
   Delete,
   Param,
   Patch,
+  Req,
+  BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
 import { User, UserRole } from '@shared/types';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -103,5 +106,54 @@ export class AuthController {
   @Roles(UserRole.Admin, UserRole.Instructor)
   async editUser(@Param('id') id: string, @Body() body: Partial<User>) {
     return this.authService.editUser(id, body);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@Req() req: Request) {
+    const userId = req.user.userId;
+    const user = await this.authService.getUserById(userId);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return user;
+  }
+
+  @Post('sign-out')
+  signOut(@Res({ passthrough: true }) res: Response) {
+    res.cookie('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      maxAge: 0,
+      path: '/',
+    });
+    return { message: 'Logged out' };
+  }
+
+  @Post('update-token')
+  async updateToken(
+    @Body('token') token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (!token) {
+      throw new BadRequestException('Token is required');
+    }
+
+    const userPayload = this.authService.validateToken(token);
+
+    if (!userPayload) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+
+    return { message: 'Token updated', user: userPayload };
   }
 }

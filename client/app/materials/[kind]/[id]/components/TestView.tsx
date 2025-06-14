@@ -62,7 +62,7 @@ const TestView: React.FC<Props> = ({ material, test }) => {
 
   const mutation = useMutation({
     mutationFn: () =>
-      completeMaterial(material.kind, material._id, userData?.sub),
+      completeMaterial(material.kind, material._id, userData?._id),
     onSuccess: async (data) => {
       const token = data.access_token;
       const { user } = await updateToken(token);

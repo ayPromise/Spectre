@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useAccess } from "@/hooks/useAccess";
 import client_endpoints from "@/app/api/client_endpoints";
+import server_endpoints from "@/app/api/server_endpoints";
+import signOut from "./utils/signOut";
 
 const adminLinks = [{ href: "/dashboard", label: "Панель керування" }];
 
@@ -44,19 +46,11 @@ const SideBar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(client_endpoints.signOut, {
-        method: "GET",
-        credentials: "include",
-      });
+      await signOut();
 
-      if (res.ok) {
-        setIsAuth(false);
-        router.push("/");
-        showSuccess("Ви успішно вийшли зі свого профілю");
-      } else {
-        showError("Щось пішло не так. Звернітся до служби підтримки!");
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setIsAuth(false);
+      router.push("/");
+      showSuccess("Ви успішно вийшли зі свого профілю");
     } catch (error: any) {
       showError(`Помилка: ${error.message}`);
     }

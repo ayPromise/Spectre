@@ -1,18 +1,13 @@
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import AuthStatus from "@/types/client/AuthStatus";
+import me from "@/lib/me";
 
-const getServerUser = async () =>{
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  if (!token) return null;
-
+export async function getServerUser(cookieHeader?: string) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as AuthStatus;
-    return decoded;
-  } catch {
-    return null;
+    const user = await me(cookieHeader);
+    return user;
+  } catch (error: any) {
+    if (error.message === "Not authenticated") {
+      return null;
+    }
+    throw error;
   }
 }
-
-export default getServerUser

@@ -38,10 +38,10 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
   const { userData } = useAuth();
   const { refetchSchedules } = useSchedule();
   const isUserAlreadySignedUp =
-    userData && schedule?.assignedUsers.includes(userData?.sub);
+    userData && schedule?.assignedUsers.includes(userData?._id);
 
   const { mutate: signUp, isPending: isSigningUp } = useMutation({
-    mutationFn: () => signUpToSchedule(schedule!._id, userData!.sub),
+    mutationFn: () => signUpToSchedule(schedule!._id, userData!._id),
     onSuccess: () => {
       showSuccess("Будемо вас чекати на занятті 😉");
       refetchSchedules();
@@ -53,7 +53,7 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
   });
 
   const { mutate: unsubscribe, isPending: isUnsubscribing } = useMutation({
-    mutationFn: () => unsubscribeFromSchedule(schedule!._id, userData!.sub),
+    mutationFn: () => unsubscribeFromSchedule(schedule!._id, userData!._id),
     onSuccess: () => {
       showSuccess("З вами було б набагато краще 😢");
       refetchSchedules();

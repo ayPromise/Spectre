@@ -154,8 +154,6 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
     touched,
   } = formik;
 
-  console.log(values.course, selectedCourse);
-
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6" id="articleForm">

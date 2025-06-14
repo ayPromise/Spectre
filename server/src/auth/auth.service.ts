@@ -15,6 +15,7 @@ import * as bcrypt from 'bcryptjs';
 import { UserRole } from '@shared/types';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { User, UserDocument } from './schemas/user';
+import { JwtPayload } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -73,11 +74,8 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  async getUsersByIds(ids: string[]) {
-    return this.userModel
-      .find({ _id: { $in: ids } })
-      .select('_id firstName phoneNumber')
-      .exec();
+  async getUserById(id: string) {
+    return this.userModel.findById(id).select('-password').exec();
   }
 
   async completeArticle(userId: string, articleId: string) {
@@ -155,6 +153,14 @@ export class AuthService {
     await user.save();
 
     return this.userModel.findById(userId).select('-password');
+  }
+
+  validateToken(token: string): JwtPayload | null {
+    try {
+      return this.jwtService.verify(token);
+    } catch (error) {
+      return null;
+    }
   }
 
   generateToken(user: UserDocument) {

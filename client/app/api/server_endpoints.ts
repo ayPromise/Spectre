@@ -1,5 +1,8 @@
 const server_endpoints = {
+  me: "/auth/me",
   singIn: "/auth/sign-in",
+  signOut: "/auth/sign-out",
+  updateToken: "/auth/update-token",
   schedule: "/schedule",
   materials: "/materials",
   completeVideo: "/auth/complete-video",

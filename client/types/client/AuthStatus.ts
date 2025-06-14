@@ -1,7 +1,7 @@
 import { ID, UserRole } from "@shared/types";
 
 interface AuthStatus {
-  sub: ID;
+  _id: ID;
   email: string;
   firstName: string;
   lastName: string;

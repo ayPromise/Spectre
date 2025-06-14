@@ -42,7 +42,7 @@ const TopBar: React.FC = () => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored) as StorageNotifications;
-        if (userData?.sub === parsed.userId) {
+        if (userData?._id === parsed.userId) {
           setNotifications(
             parsed.notifications.filter((item) => !item.isRead).slice(0, 5)
           );
@@ -96,7 +96,7 @@ const TopBar: React.FC = () => {
         "notifications",
         JSON.stringify({
           notifications: notificationsToSave,
-          userId: userData?.sub,
+          userId: userData?._id,
         })
       );
     }

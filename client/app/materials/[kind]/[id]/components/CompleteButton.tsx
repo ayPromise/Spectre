@@ -19,10 +19,11 @@ type Props = {
 
 const CompleteButton = ({ type, videoId }: Props) => {
   const { userData, setUserData } = useAuth();
+  console.log(userData);
   const isFinished = isMaterialFinished(userData, type, videoId);
   const [isChecked, setIsChecked] = useState(isFinished);
   const mutation = useMutation({
-    mutationFn: () => completeMaterial(type, videoId, userData?.sub),
+    mutationFn: () => completeMaterial(type, videoId, userData?._id),
     onSuccess: async (data) => {
       setIsChecked(true);
       const token = data.access_token;

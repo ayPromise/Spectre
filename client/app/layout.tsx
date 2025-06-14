@@ -4,7 +4,8 @@ import { Inter, Saira } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
 import Providers from "@/components/providers";
-import getServerUser from "@/lib/auth";
+import { cookies } from "next/headers";
+import { getServerUser } from "@/lib/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,14 +30,19 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userFromServer = await getServerUser();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.get("token")
+    ? `token=${cookieStore.get("token")?.value}`
+    : "";
+
+  const userFromServer = await getServerUser(cookieHeader);
 
   return (
     <html lang="uk">
       <body
         className={`antialiased ${inter.variable} flex flex-col h-screen ${saira.variable}`}
       >
-        <Providers user={userFromServer}>
+        <Providers user={userFromServer} cookieHeader={cookieHeader}>
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />

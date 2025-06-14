@@ -21,7 +21,7 @@ export const tryAssignAchievements = async (
 
     if (newAchievements.length > 0) {
       const data = await assignAchievements({
-        userId: userData.sub,
+        userId: userData._id,
         achievements: newAchievements.map((a) => a._id),
       });
 

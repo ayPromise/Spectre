@@ -35,6 +35,7 @@ const SignInPage = () => {
       refetchUser();
       showSuccess(data.message);
       router.push(redirectURL);
+      window.location.reload();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {

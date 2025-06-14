@@ -47,7 +47,7 @@ const LibraryTable: React.FC<Props> = ({ files, onDelete }) => {
                   </Button>
                 </div>
                 <div className="w-1/2">
-                  {userData?.sub === f.userId && (
+                  {userData?._id === f.userId && (
                     <Button
                       variant="destructive"
                       onClick={() => onDelete(f._id)}

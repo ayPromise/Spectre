@@ -1,20 +1,15 @@
-import client_endpoints from "@/app/api/client_endpoints";
+import me from "@/lib/me";
 import { useQuery } from "@tanstack/react-query";
 
 interface useAuthStatusProps {
   enabled: boolean;
+  cookieHeader?: string;
 }
 
-export function useAuthStatus({ enabled }: useAuthStatusProps) {
+export function useAuthStatus({ enabled, cookieHeader }: useAuthStatusProps) {
   return useQuery({
-    queryKey: ["auth-status"],
-    queryFn: async () => {
-      const res = await fetch(client_endpoints.isAuth, {
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Not authenticated");
-      return res.json();
-    },
+    queryKey: ["auth-status", cookieHeader],
+    queryFn: () => me(cookieHeader),
     retry: false,
     staleTime: 5 * 60 * 1000,
     enabled,

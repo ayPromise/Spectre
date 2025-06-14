@@ -81,11 +81,6 @@ const TableBody = () => {
                         new Date(schedule.date),
                         new Date()
                       );
-
-                      if (schedule.title === "sadasdasd") {
-                        console.log("schedule", new Date(schedule.date));
-                        console.log("now", new Date());
-                      }
                       return (
                         <Lesson
                           key={schedule._id}

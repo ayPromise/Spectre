@@ -40,7 +40,6 @@ export default function UsersPanel() {
 
   const editMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: Partial<User> }) => {
-      console.log(id, updates);
       return editUser(id, updates);
     },
     onSuccess: () => {

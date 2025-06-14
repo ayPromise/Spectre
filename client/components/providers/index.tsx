@@ -11,9 +11,11 @@ import { MaterialsProvider } from "@/context/MaterialsContext";
 const Providers = ({
   children,
   user,
+  cookieHeader = "",
 }: {
   children: React.ReactNode;
   user: AuthStatus | null;
+  cookieHeader: string;
 }) => {
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -23,7 +25,7 @@ const Providers = ({
 
   return (
     <QueryProvider>
-      <AuthProvider user={user}>
+      <AuthProvider user={user} cookieHeader={cookieHeader}>
         <MaterialsProvider>{children}</MaterialsProvider>
       </AuthProvider>
       {hasMounted && (
