@@ -25,7 +25,7 @@ const Lesson: React.FC<LessonProps> = ({ schedule, handleOnClick }) => {
   ${typeColors[meetingType]} ${typeHoverColors[meetingType]} transition`}
       onClick={handleOnClick}
     >
-      <div className="font-bold">{title}</div>
+      <div className="font-bold max-w-[140px]">{title}</div>
       <div className="text-[10px] opacity-70">
         {MeetingTypeNameUA[meetingType]}
       </div>

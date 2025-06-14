@@ -1,9 +1,16 @@
-import { ID, LessonType, MeetingType  } from '@shared/types';
-import { IsArray, IsDateString, IsEnum, IsMongoId, IsOptional, IsString } from 'class-validator';
+import { ID, LessonType, MeetingType } from '@shared/types';
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateScheduleDto {
   @IsString()
-  title: string;
+  title: ID;
 
   @IsDateString()
   date: string;
@@ -13,6 +20,10 @@ export class CreateScheduleDto {
 
   @IsEnum(MeetingType)
   meetingType: MeetingType;
+
+  @IsOptional()
+  @IsString()
+  meetingURL?: string;
 
   @IsOptional()
   @IsString()

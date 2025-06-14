@@ -8,5 +8,6 @@ export interface Schedule {
   lessonType: LessonType;
   meetingType: MeetingType;
   note?: string;
+  meetingURL?: string;
   assignedUsers: ID[];
 }

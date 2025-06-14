@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Schedule } from "@shared/types";
 import {
   Sheet,
   SheetContent,
@@ -23,9 +22,11 @@ import deleteSchedule from "../utils/deleteSchedule";
 import ScheduleDialog from "./ScheduleDialog";
 import getKyivTimeString from "../utils/getKyivTimeString";
 import UserListTable from "./UserListTable";
+import Link from "next/link";
+import { SelectedSchedule } from "@/types/SelectedSchedule";
 
 interface ScheduleSidebarProps {
-  schedule: Schedule | null;
+  schedule: SelectedSchedule | null;
   onClose: () => void;
 }
 
@@ -100,11 +101,20 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
                   {new Date(schedule.date).toLocaleString()}
                 </p>
               </div>
+
+              {schedule?.meetingURL && (
+                <div>
+                  <p className="text-muted-foreground">Посилання на заняття</p>
+                  <p className="font-medium hover:underline text-indigo-600">
+                    <Link href={schedule.meetingURL}>
+                      {schedule.meetingURL}
+                    </Link>
+                  </p>
+                </div>
+              )}
               <div>
-                <p className="text-muted-foreground">Нотатки</p>
-                <p className="font-medium">
-                  {schedule.note || "Немає нотаток"}
-                </p>
+                <p className="text-muted-foreground">Додаткова інформація</p>
+                <p className="font-medium">{schedule.note || "Відсутня"}</p>
               </div>
 
               {schedule && (hasAdminAccess || hasInstructorAccess) && (
@@ -113,7 +123,8 @@ const ScheduleSidebar: React.FC<ScheduleSidebarProps> = ({
 
               <Separator className="my-4" />
               <div className="flex flex-col gap-2">
-                {!hasAdminAccess &&
+                {!schedule.isPast &&
+                  !hasAdminAccess &&
                   !hasInstructorAccess &&
                   (isUserAlreadySignedUp ? (
                     <Button

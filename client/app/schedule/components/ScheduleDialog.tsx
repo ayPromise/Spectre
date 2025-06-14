@@ -48,6 +48,7 @@ interface ScheduleDialogProps {
     time: string;
     lessonType: LessonType;
     meetingType: MeetingType;
+    meetingURL?: string;
     note?: string;
     date: Date;
   };
@@ -103,6 +104,7 @@ const ScheduleDialog = ({
           lessonType: initialValues.lessonType,
           meetingType: initialValues.meetingType,
           note: initialValues.note,
+          meetingURL: initialValues.meetingURL,
         }
       : {
           title: "",
@@ -151,7 +153,7 @@ const ScheduleDialog = ({
 
   useEffect(() => {
     if (
-      values.lessonType === LessonType.Flight ||
+      values.lessonType === LessonType.Practice ||
       values.lessonType === LessonType.Mixed
     ) {
       setFieldValue("meetingType", MeetingType.Offline);
@@ -222,7 +224,7 @@ const ScheduleDialog = ({
 
                 <SelectContent>
                   <SelectItem value={LessonType.Lecture}>Лекція</SelectItem>
-                  <SelectItem value={LessonType.Flight}>Політ</SelectItem>
+                  <SelectItem value={LessonType.Practice}>Практика</SelectItem>
                   <SelectItem value={LessonType.Mixed}>Змішане</SelectItem>
                 </SelectContent>
               </Select>
@@ -285,6 +287,25 @@ const ScheduleDialog = ({
               />
             </div>
           </div>
+
+          {values.meetingType === MeetingType.Online && (
+            <FormInput
+              id="meetingURL"
+              name="meetingURL"
+              type="text"
+              label="Посилання на заняття"
+              value={values.meetingURL}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.meetingURL && errors.meetingURL}
+              disabled={
+                isScheduleCreating ||
+                isScheduleUpdating ||
+                ((isScheduleCreating || isScheduleUpdating) &&
+                  (!isCreatingError || !isUpdatingError))
+              }
+            />
+          )}
 
           <FormTextarea
             label="Додаткова інформація"

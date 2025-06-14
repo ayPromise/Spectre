@@ -6,14 +6,13 @@ import { useAccess } from "@/hooks/useAccess";
 import ScheduleDialog from "../ScheduleDialog";
 import { useSchedule } from "@/context/ScheduleContext";
 import ScheduleSidebar from "../ScheduleSidebar";
-import { Schedule } from "@shared/types";
+import { SelectedSchedule } from "@/types/SelectedSchedule";
 
 const TableBody = () => {
   const { scheduleDate, schedules } = useSchedule();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
-  const [selectedSchedule, setSelectedSchedule] = useState<Schedule | null>(
-    null
-  );
+  const [selectedSchedule, setSelectedSchedule] =
+    useState<SelectedSchedule | null>(null);
 
   const totalDays = new Date(
     scheduleDate.year,
@@ -50,14 +49,29 @@ const TableBody = () => {
                 year: scheduleDate.year,
               };
 
+              const scheduleDateObj = new Date(
+                dateForSchedule.year,
+                dateForSchedule.month,
+                dateForSchedule.day
+              );
+
               return (
-                <ScheduleDay key={colIndex} day={currentDay}>
+                <ScheduleDay
+                  key={colIndex}
+                  day={currentDay}
+                  isPast={scheduleDateObj < new Date()}
+                >
                   {schedulesForDay.length > 0 ? (
                     schedulesForDay.map((schedule) => (
                       <Lesson
                         key={schedule._id}
                         schedule={schedule}
-                        handleOnClick={() => setSelectedSchedule(schedule)}
+                        handleOnClick={() =>
+                          setSelectedSchedule({
+                            ...schedule,
+                            isPast: scheduleDateObj < new Date(),
+                          })
+                        }
                       />
                     ))
                   ) : canAddLesson ? (

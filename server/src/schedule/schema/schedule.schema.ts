@@ -9,7 +9,7 @@ export class Schedule {
   @Prop({ required: true })
   title: string;
 
-  @Prop({ required: true, unique:true })
+  @Prop({ required: true, unique: true })
   date: Date;
 
   @Prop({ required: true, enum: LessonType })
@@ -20,6 +20,9 @@ export class Schedule {
 
   @Prop({ type: String })
   note?: string;
+
+  @Prop({ type: String })
+  meetingURL?: string;
 
   @Prop({ type: [Types.ObjectId], ref: 'User', default: [] })
   assignedUsers: string[];
