@@ -2,6 +2,6 @@
   "extends": "./tsconfig.json",
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
   "paths": {
-    "@shared/*": ["../shared/*"]
+    "@shared/*": ["shared/*"]
   }
 }
