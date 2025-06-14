@@ -66,4 +66,13 @@ function countLessonsAfterSelectedMonth(
   return { offline, online, passed };
 }
 
-export { countLessonsBeforeSelectedMonth, countLessonsAfterSelectedMonth };
+function isSchedulePast(scheduleDate: Date, now: Date) {
+  const TWO_HOURS_IN_MS = 2 * 60 * 60 * 1000;
+  return now.getTime() - scheduleDate.getTime() >= TWO_HOURS_IN_MS;
+}
+
+export {
+  countLessonsBeforeSelectedMonth,
+  countLessonsAfterSelectedMonth,
+  isSchedulePast,
+};

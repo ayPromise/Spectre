@@ -98,7 +98,7 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
             className="w-full h-[30px] max-h-[30px]"
           />
 
-          <div className="flex gap-2 overflow-x-auto custom-scrollbar">
+          <div className="saira flex gap-2 overflow-x-auto custom-scrollbar items-center">
             {allCourses.map((course) => (
               <Button
                 key={course}

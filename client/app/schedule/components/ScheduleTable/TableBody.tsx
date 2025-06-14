@@ -12,7 +12,9 @@ import RightCountBar from "./RightCountBar";
 import {
   countLessonsAfterSelectedMonth,
   countLessonsBeforeSelectedMonth,
+  isSchedulePast,
 } from "../../utils/countLessons";
+import Legend from "./Legend";
 
 const TableBody = () => {
   const { scheduleDate, schedules } = useSchedule();
@@ -71,32 +73,33 @@ const TableBody = () => {
                 month: scheduleDate.month,
                 year: scheduleDate.year,
               };
-
-              const scheduleDateObj = new Date(
-                dateForSchedule.year,
-                dateForSchedule.month,
-                dateForSchedule.day
-              );
-
               return (
-                <ScheduleDay
-                  key={colIndex}
-                  day={currentDay}
-                  isPast={scheduleDateObj < new Date()}
-                >
+                <ScheduleDay key={colIndex} day={currentDay}>
                   {schedulesForDay.length > 0 ? (
-                    schedulesForDay.map((schedule) => (
-                      <Lesson
-                        key={schedule._id}
-                        schedule={schedule}
-                        handleOnClick={() =>
-                          setSelectedSchedule({
-                            ...schedule,
-                            isPast: scheduleDateObj < new Date(),
-                          })
-                        }
-                      />
-                    ))
+                    schedulesForDay.map((schedule) => {
+                      const isPast = isSchedulePast(
+                        new Date(schedule.date),
+                        new Date()
+                      );
+
+                      if (schedule.title === "sadasdasd") {
+                        console.log("schedule", new Date(schedule.date));
+                        console.log("now", new Date());
+                      }
+                      return (
+                        <Lesson
+                          key={schedule._id}
+                          schedule={schedule}
+                          handleOnClick={() =>
+                            setSelectedSchedule({
+                              ...schedule,
+                              isPast: isPast,
+                            })
+                          }
+                          isPast={isPast}
+                        />
+                      );
+                    })
                   ) : canAddLesson ? (
                     <ScheduleDialog
                       date={dateForSchedule}
@@ -108,6 +111,8 @@ const TableBody = () => {
             })}
           </tr>
         ))}
+
+        <Legend />
         <RightCountBar counts={lessonsAfter} />
       </tbody>
 

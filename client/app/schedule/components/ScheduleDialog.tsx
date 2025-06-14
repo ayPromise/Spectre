@@ -121,18 +121,31 @@ const ScheduleDialog = ({
       note: Yup.string().max(500, "Занадто довга нотатка"),
     }),
     onSubmit: (values) => {
+      const hours = parseInt(values.time.split(":")[0], 10);
+      const minutes = parseInt(values.time.split(":")[1], 10);
+
       if (isEditing && initialValues) {
+        const originalDate = new Date(initialValues.date);
+        const fullDate = new Date(
+          originalDate.getFullYear(),
+          originalDate.getMonth(),
+          originalDate.getDate(),
+          hours,
+          minutes
+        );
         const { time, ...rest } = values;
-        updateScheduleMutate({ id: initialValues._id, data: rest });
+        updateScheduleMutate({
+          id: initialValues._id,
+          data: { ...rest, date: fullDate },
+        });
       } else if (date) {
         const fullDate = new Date(
           date.year,
           date.month,
           date.day,
-          parseInt(values.time.split(":")[0], 10),
-          parseInt(values.time.split(":")[1], 10)
+          hours,
+          minutes
         );
-
         const { time, ...rest } = values;
         createScheduleMutate({ ...rest, date: fullDate });
       }

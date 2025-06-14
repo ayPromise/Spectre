@@ -32,8 +32,8 @@ const LeftCountBar: React.FC<CountBarProps> = ({ counts }) => {
       )}
 
       {!!counts.passed && (
-        <div className="flex-grow flex flex-row-reverse gap-2 items-center">
-          <div className="bg-slate-300 min-w-[8px] h-full rounded"></div>
+        <div className="flex-grow flex flex-row-reverse gap-2 items-center grayscale">
+          <div className="bg-slate-200 min-w-[8px] h-full rounded"></div>
           <span className="text-slate-400 font-bold text-3xl">
             {counts.passed}
           </span>
