@@ -7,6 +7,8 @@ import * as express from 'express';
 import { resolve } from 'path';
 
 async function bootstrap() {
+  console.log('Allowed CORS origin:', process.env.CLIENT_URL);
+
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: process.env.CLIENT_URL || 'http://localhost:3000',
