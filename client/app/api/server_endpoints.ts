@@ -5,6 +5,7 @@ const server_endpoints = {
   completeVideo: "/auth/complete-video",
   completeArticle: "/auth/complete-article",
   completeLecture: "/auth/complete-lecture",
+  upload: "/materials/upload",
   achievements: "/achievements",
   assignAchievements: "/auth/assign-achievements",
   createUser: "/auth/create-user",

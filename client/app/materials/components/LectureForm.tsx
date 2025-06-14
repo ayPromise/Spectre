@@ -16,10 +16,11 @@ import { Input } from "@/components/ui/input";
 import { CreateLecturePayload } from "@/types/CreateMaterialPayload";
 import { useMaterials } from "@/context/MaterialsContext";
 import { UploadCloud } from "lucide-react";
-import client_endpoints from "@/app/api/client_endpoints";
 import { Lecture } from "@shared/types/Lecture";
 import saveMaterial from "../utils/saveMaterial";
 import FormTextarea from "@/components/custom/FormTextarea";
+import server_endpoints from "@/app/api/server_endpoints";
+import uploadLecture from "../utils/uploadLecture";
 
 const defaultTest = [
   {
@@ -143,14 +144,7 @@ const LectureForm: React.FC<LectureFormProps> = ({
 
         if (isNewVideoFile) {
           try {
-            const res = await fetch(client_endpoints.upload, {
-              method: "POST",
-              body: formData,
-            });
-
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Upload failed");
-
+            const data = await uploadLecture(formData);
             uploadedVideoUrl = data.url;
           } catch (error: any) {
             showError(error.message);

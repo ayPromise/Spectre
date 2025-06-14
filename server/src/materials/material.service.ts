@@ -7,8 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Material, MaterialDocument } from './schema/material.schema';
 import { Model } from 'mongoose';
 import { CreateMaterialDto } from './dto/create-material.dto';
-import { MaterialType, MaterialUnion, Test } from '@shared/types';
-import { TestDto } from './dto/test.dto';
+import { MaterialType, MaterialUnion } from '@shared/types';
 import { NotificationGateway } from 'src/gateways/notification.gateway';
 
 @Injectable()

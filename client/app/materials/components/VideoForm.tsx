@@ -6,15 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-
 import { showError, showSuccess } from "@/utils/toast";
 import { Video } from "@shared/types";
 import { MaterialType, MaterialTypeNameUA } from "@shared/types/Enums";
@@ -48,11 +39,7 @@ const VideoForm: React.FC<VideoFormProps> = ({
 
   const router = useRouter();
 
-  const { materials, refetch } = useMaterials();
-
-  const allCourses = Array.from(
-    new Set(materials.map((material) => material.course).filter(Boolean))
-  );
+  const { refetch } = useMaterials();
 
   const {
     mutate: createVideoMutation,
@@ -103,82 +90,47 @@ const VideoForm: React.FC<VideoFormProps> = ({
     handleChange,
     handleBlur,
     handleSubmit,
-    setFieldValue,
     isSubmitting,
   } = formik;
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="space-y-6" id="videoForm">
-        <FormInput
-          id="title"
-          label="Заголовок"
-          name="title"
-          value={values.title}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.title && errors.title}
-          required
-          disabled={(isSubmitting || isPending) && !isError}
-        />
+    <form onSubmit={handleSubmit} className="space-y-6" id="videoForm">
+      <FormInput
+        id="title"
+        label="Заголовок"
+        name="title"
+        value={values.title}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.title && errors.title}
+        required
+        disabled={(isSubmitting || isPending) && !isError}
+      />
 
-        <div>
-          <Label htmlFor="type" className="block mb-3 font-medium">
-            Тип відео
-          </Label>
-          <Select
-            name="type"
-            value={values.course}
-            onValueChange={(value) => setFieldValue("course", value)}
-            disabled={(isSubmitting || isPending) && !isError}
-          >
-            <SelectTrigger
-              className={`w-full border p-2 rounded-md ${
-                touched.course && errors.course
-                  ? "border-red-600"
-                  : "border-gray-300"
-              }`}
-            >
-              <SelectValue placeholder="Призначте курс..." />
-            </SelectTrigger>
-            <SelectContent>
-              {allCourses.map((course) => (
-                <SelectItem key={course} value={course}>
-                  {course}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {touched.course && errors.course && (
-            <p className="text-red-600 text-sm mt-1">{errors.course}</p>
-          )}
-        </div>
+      <FormTextarea
+        id="description"
+        name="description"
+        placeholder="Введіть короткий опис лекції..."
+        value={values.description}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required
+        label="Опис"
+        error={touched.description && errors.description}
+        disabled={(isSubmitting || isPending) && !isError}
+      />
 
-        <FormTextarea
-          id="description"
-          name="description"
-          placeholder="Введіть короткий опис лекції..."
-          value={values.description}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          required
-          label="Опис"
-          error={touched.description && errors.description}
-          disabled={(isSubmitting || isPending) && !isError}
-        />
-
-        <FormInput
-          id="videoURL"
-          label="Посилання на YouTube відео"
-          name="videoURL"
-          value={values.videoURL}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.videoURL && errors.videoURL}
-          required
-          disabled={(isSubmitting || isPending) && !isError}
-        />
-      </form>
+      <FormInput
+        id="videoURL"
+        label="Посилання на YouTube відео"
+        name="videoURL"
+        value={values.videoURL}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        error={touched.videoURL && errors.videoURL}
+        required
+        disabled={(isSubmitting || isPending) && !isError}
+      />
 
       <Button
         type="submit"
@@ -188,7 +140,7 @@ const VideoForm: React.FC<VideoFormProps> = ({
       >
         {isEditingMode ? "Оновити" : "Створити"}
       </Button>
-    </>
+    </form>
   );
 };
 
