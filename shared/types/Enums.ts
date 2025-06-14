@@ -26,17 +26,17 @@ export const MeetingTypeNameUA: Record<MeetingType, string> = {
   [MeetingType.Online]: "Онлайн",
 };
 
-export enum FlightType {
-  Recon = "Recon",
-  Assault = "Assault",
-  Mixed = "Mixed",
-}
+// export enum FlightType {
+//   Recon = "Recon",
+//   Assault = "Assault",
+//   Mixed = "Mixed",
+// }
 
-export const FlightTypeNameUA: Record<FlightType, string> = {
-  [FlightType.Recon]: "Розвідка",
-  [FlightType.Assault]: "Атака",
-  [FlightType.Mixed]: "Змішаний",
-};
+// export const FlightTypeNameUA: Record<FlightType, string> = {
+//   [FlightType.Recon]: "Розвідка",
+//   [FlightType.Assault]: "Атака",
+//   [FlightType.Mixed]: "Змішаний",
+// };
 
 export enum MaterialType {
   Article = "Article",

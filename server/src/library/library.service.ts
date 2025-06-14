@@ -23,9 +23,9 @@ export class LibraryService {
   }
 
   async findById(id: string): Promise<File> {
-    const flight = await this.libraryModel.findById(id);
-    if (!flight) throw new NotFoundException('Файл не знайдено.');
-    return flight;
+    const file = await this.libraryModel.findById(id);
+    if (!file) throw new NotFoundException('Файл не знайдено.');
+    return file;
   }
 
   async create(file: Express.Multer.File, userId: string): Promise<File> {
@@ -42,12 +42,12 @@ export class LibraryService {
   }
 
   async delete(id: string, user: { userId: string; role: UserRole }) {
-    const flight = await this.libraryModel.findById(id);
-    if (!flight) throw new NotFoundException('Файл не знайдено.');
+    const file = await this.libraryModel.findById(id);
+    if (!file) throw new NotFoundException('Файл не знайдено.');
 
-    this.logger.log(flight, user);
+    this.logger.log(file, user);
     if (
-      flight.userId.toString() !== user.userId &&
+      file.userId.toString() !== user.userId &&
       user.role !== UserRole.Admin &&
       user.role !== UserRole.Instructor
     ) {

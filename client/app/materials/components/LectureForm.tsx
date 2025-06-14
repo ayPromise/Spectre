@@ -43,11 +43,13 @@ const validationSchema = Yup.object({
       }
       return value != null;
     })
-    .test(
-      "fileType",
-      "Потрібно відео",
-      (value) => !value || (value && value.type.startsWith("video/"))
-    ),
+    .test("fileType", "Потрібно відео", (value) => {
+      if (!value) return true;
+      if ("type" in value && typeof value.type === "string") {
+        return value.type.startsWith("video/");
+      }
+      return false;
+    }),
   course: Yup.string().trim().required("Тип обовʼязковий"),
 });
 

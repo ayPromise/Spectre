@@ -78,11 +78,11 @@ const CreateMaterialPage = () => {
       )}
 
       {selectedType === MaterialType.Lecture && (
-        <LectureForm course={selectedCourse} />
+        <LectureForm selectedCourse={selectedCourse} />
       )}
 
       {selectedType === MaterialType.Video && (
-        <VideoForm course={selectedCourse} />
+        <VideoForm selectedCourse={selectedCourse} />
       )}
     </div>
   );

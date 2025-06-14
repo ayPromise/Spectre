@@ -3,7 +3,7 @@ import { MaterialType } from "@shared/types/Enums";
 
 type Props = {
   children: React.ReactNode;
-  params: { kind: string };
+  params: Promise<{ kind: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

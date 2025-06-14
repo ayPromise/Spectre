@@ -18,4 +18,4 @@ export class File {
   filePath: string;
 }
 
-export const FlightSchema = SchemaFactory.createForClass(File);
+export const LibrarySchema = SchemaFactory.createForClass(File);

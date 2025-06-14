@@ -1,12 +1,6 @@
 export type ID = string;
 
-export {
-  MeetingType,
-  LessonType,
-  FlightType,
-  MaterialType,
-  UserRole,
-} from "./Enums";
+export { MeetingType, LessonType, MaterialType, UserRole } from "./Enums";
 
 export type { User } from "./User";
 

@@ -8,8 +8,12 @@ const getUserFromToken = async (token: string | undefined) => {
   try {
     const { payload } = await jwtVerify(token, secret);
     return payload;
-  } catch (error: Error) {
-    console.error(error.message);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    } else {
+      console.error("Unknown error", error);
+    }
     return null;
   }
 };

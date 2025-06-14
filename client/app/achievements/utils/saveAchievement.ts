@@ -1,4 +1,5 @@
 import server_endpoints from "@/app/api/server_endpoints";
+import { Achievement } from "@shared/types";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export interface RequiredMaterialRef {
@@ -6,15 +7,7 @@ export interface RequiredMaterialRef {
   kind: string;
 }
 
-const saveAchievement = async (
-  data: {
-    title: string;
-    description: string;
-    category: string;
-    requiredMaterials: RequiredMaterialRef[];
-  },
-  id?: string
-) => {
+const saveAchievement = async (data: Partial<Achievement>, id?: string) => {
   const url = id
     ? `${SERVER_URL}${server_endpoints.achievements}/${id}`
     : `${SERVER_URL}${server_endpoints.achievements}`;
