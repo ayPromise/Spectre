@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import AuthLayout from "../layouts/AuthLayout";
 
 export const metadata: Metadata = {
   title: "Розклад | SPECTRE",
@@ -10,5 +11,5 @@ export default function ScheduleLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <AuthLayout>{children}</AuthLayout>;
 }
