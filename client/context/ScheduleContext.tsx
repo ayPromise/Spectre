@@ -1,5 +1,8 @@
 import getAllSchedules from "@/app/schedule/utils/getAllSchedules";
+import getAllSchedules from "@/app/schedule/utils/getAllSchedules";
 import { Schedule } from "@shared/types";
+import { useQuery } from "@tanstack/react-query";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
@@ -61,6 +64,7 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
         schedules,
         setPreviousMonth,
         setNextMonth,
+        refetchSchedules: refetch,
         refetchSchedules: refetch,
         loading,
       }}
