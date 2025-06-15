@@ -9,7 +9,6 @@ import MaterialCardLarge from "./MaterialCardLarge";
 import { Button } from "@/components/ui/button";
 import { MaterialType } from "@shared/types/Enums";
 import { useAuth } from "@/context/AuthContext";
-import { useMaterials } from "@/context/MaterialsContext";
 
 interface MaterialsListProps {
   materials: MaterialUnion[];
@@ -21,14 +20,15 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
   listType,
 }) => {
   const { userData } = useAuth();
-  const { materials: allMaterials } = useMaterials();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCourse, setActiveCourse] = useState<string>("");
   const debouncedSearch = useDebounce(searchTerm, 300);
 
   const allCourses = Array.from(
-    new Set(allMaterials.map((material) => material.course).filter(Boolean))
-  );
+    new Set(materials.map((material) => material.course))
+  ).sort();
+
+  console.log(materials, allCourses);
 
   const toggleCourse = (course: string) => {
     if (activeCourse === course) setActiveCourse("");
@@ -66,26 +66,33 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
     return [...incomplete, ...complete];
   }, [debouncedSearch, materials, activeCourse, userData]);
 
-  const completedCount =
+  const completedIds =
     listType === "all"
       ? userData
         ? [
             ...(userData.completedArticles ?? []),
             ...(userData.completedLectures ?? []),
             ...(userData.completedVideos ?? []),
-          ].length
-        : 0
+          ]
+        : []
       : listType === MaterialType.Article
-      ? userData?.completedArticles.length ?? 0
+      ? userData?.completedArticles ?? []
       : listType === MaterialType.Lecture
-      ? userData?.completedLectures.length ?? 0
+      ? userData?.completedLectures ?? []
       : listType === MaterialType.Video
-      ? userData?.completedVideos.length ?? 0
-      : 0;
+      ? userData?.completedVideos ?? []
+      : [];
 
-  const progressCompletion = materials
-    ? Math.floor((completedCount / materials.length) * 100)
+  const completedFilteredCount = filteredMaterials
+    ? filteredMaterials.filter((material) =>
+        completedIds.includes(material._id)
+      ).length
     : 0;
+
+  const progressCompletion =
+    filteredMaterials && filteredMaterials.length > 0
+      ? Math.floor((completedFilteredCount / filteredMaterials.length) * 100)
+      : 0;
 
   return (
     <div className="space-y-6 grow-1 flex flex-col">
@@ -123,7 +130,7 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
                 {listType === MaterialType.Lecture && "лекцій"}
                 {listType === MaterialType.Video && "відео"}:
               </span>
-              {materials.length}
+              {filteredMaterials.length}
             </div>
           </div>
           <div className="relative w-[65%] h-[70%] border-2 rounded-md">

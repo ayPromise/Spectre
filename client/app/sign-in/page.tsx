@@ -47,8 +47,8 @@ const SignInContent = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "test@example.com",
-      password: "strongPassword123",
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
       email: Yup.string()

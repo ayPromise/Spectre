@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   BadRequestException,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
@@ -33,7 +34,6 @@ export class AuthService {
     const saltRounds = Number(this.configService.get<string>('SALT_ROUNDS'));
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     if (role === UserRole.Admin) {
       throw new BadRequestException('Creating admin users is not allowed.');
     }
@@ -48,6 +48,7 @@ export class AuthService {
         completedLectures: [],
         achievements: [],
         lastLogin: new Date(),
+        role,
         ...rest,
       }).save();
 

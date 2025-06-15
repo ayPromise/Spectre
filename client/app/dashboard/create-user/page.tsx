@@ -35,7 +35,6 @@ const validationSchema = Yup.object({
   role: Yup.mixed<UserRole>().oneOf(Object.values(UserRole), "Невірна роль"),
 });
 
-// Компонент із useSearchParams
 const UserCreationContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -172,7 +171,6 @@ const UserCreationContent = () => {
         <Select
           name="role"
           value={values.role}
-          defaultValue="Student"
           onValueChange={(val) => setFieldValue("role", val)}
           disabled={(isSubmitting || isPending) && !isError}
         >

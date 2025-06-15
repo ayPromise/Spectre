@@ -100,7 +100,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
       title: initialData?.title ?? "",
       content:
         initialData?.content ??
-        `<h1>Початок роботи з дроном:</h1>
+        `<h1>Навчальна робота:</h1>
                     <p></p>
                     <h2>Мета розділу:</h2>
                     <p></p>

@@ -15,7 +15,7 @@ const OnlyPublicLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isAuth, userData, router]);
 
-  if (!isAuth || !userData) {
+  if (isAuth || userData) {
     return <Loader />;
   }
 
