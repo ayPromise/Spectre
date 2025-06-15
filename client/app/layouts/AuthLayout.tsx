@@ -9,6 +9,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuth, userData } = useAuth();
   const router = useRouter();
 
+  console.log(isAuth, userData);
+
   useEffect(() => {
     if (!isAuth || !userData) {
       console.log(

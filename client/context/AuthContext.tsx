@@ -30,15 +30,43 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [userData, setUserData] = useState<AuthStatus | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(!!userData);
+  const getInitialAuthState = () => {
+    const storedAuth = localStorage.getItem("auth");
+    if (storedAuth) {
+      try {
+        const { isAuthenticated, user, expiresAt } = JSON.parse(storedAuth);
+        if (expiresAt > Date.now()) {
+          return { isAuth: isAuthenticated, userData: user };
+        }
+        localStorage.removeItem("auth");
+      } catch (error) {
+        console.error(`Error parsing localStorage auth: ${error}`);
+      }
+    }
+    return { isAuth: false, userData: null };
+  };
+  const { isAuth: initialIsAuth, userData: initialUserData } =
+    getInitialAuthState();
+  const [userData, setUserData] = useState<AuthStatus | null>(initialUserData);
+  const [isAuth, setIsAuth] = useState<boolean>(initialIsAuth);
 
-  const { data, isError, refetch } = useAuthStatus({ enabled: true });
+  const { data, isError, refetch } = useAuthStatus({
+    enabled: !isAuth || !userData,
+  });
 
   useEffect(() => {
     if (data) {
       setIsAuth(true);
       setUserData(data);
+
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({
+          isAuthenticated: true,
+          user: data,
+          expiresAt: Date.now() + 24 * 60 * 60 * 1000,
+        })
+      );
     } else if (isError) {
       setIsAuth(false);
       setUserData(null);

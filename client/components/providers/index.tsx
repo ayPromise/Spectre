@@ -16,11 +16,17 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <QueryProvider>
-      <AuthProvider>
-        <MaterialsProvider>{children}</MaterialsProvider>
-      </AuthProvider>
       {hasMounted && (
-        <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+        <>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar
+          />
+          <AuthProvider>
+            <MaterialsProvider>{children}</MaterialsProvider>
+          </AuthProvider>
+        </>
       )}
     </QueryProvider>
   );

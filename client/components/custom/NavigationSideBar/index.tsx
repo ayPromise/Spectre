@@ -14,8 +14,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { useAccess } from "@/hooks/useAccess";
-import client_endpoints from "@/app/api/client_endpoints";
-import server_endpoints from "@/app/api/server_endpoints";
 import signOut from "./utils/signOut";
 
 const adminLinks = [{ href: "/dashboard", label: "Панель керування" }];
@@ -47,7 +45,7 @@ const SideBar: React.FC = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-
+      localStorage.removeItem("auth");
       setIsAuth(false);
       router.push("/");
       showSuccess("Ви успішно вийшли зі свого профілю");
