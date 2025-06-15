@@ -1,7 +1,4 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { UserRole } from "@shared/types";
-import { getServerUser } from "./lib/auth";
+import { NextResponse, NextRequest } from "next/server";
 
 const protectedPatterns = [
   /^\/achievements/,
@@ -22,18 +19,19 @@ const adminOnlyPatterns = [
 const publicOnlyPaths = ["/sign-in"];
 
 export async function middleware(req: NextRequest) {
-  const user = await getServerUser();
-  const role = user?.role as string | undefined;
-  const { pathname } = req.nextUrl;
+  // Перевіряємо наявність cookie token
+  const token = req.cookies.get("token")?.value;
+  console.log(`Middleware: token: ${token || "none"}`);
 
+  const { pathname } = req.nextUrl;
   const isProtected = protectedPatterns.some((regex) => regex.test(pathname));
   const isAdminOnly = adminOnlyPatterns.some((regex) => regex.test(pathname));
   const isPublicOnly = publicOnlyPaths.some((path) =>
     pathname.startsWith(path)
   );
 
-  // 1) Redirect unauthenticated users from admin or protected routes to /sign-in
-  if ((isProtected || isAdminOnly) && !user) {
+  // Перенаправлення для захищених маршрутів без токена
+  if ((isProtected || isAdminOnly) && !token) {
     const redirectUrl = new URL("/sign-in", req.url);
     redirectUrl.searchParams.set("redirectURL", req.url);
     const response = NextResponse.redirect(redirectUrl);
@@ -41,26 +39,20 @@ export async function middleware(req: NextRequest) {
     return response;
   }
 
-  // 2) Redirect authenticated users without admin role if route is admin only
-  if (
-    isAdminOnly &&
-    user &&
-    ![UserRole.Admin, UserRole.Instructor].includes(role as UserRole)
-  ) {
+  // Для adminOnly маршрутів покладаємося на клієнтську перевірку
+  if (isAdminOnly && token) {
+    // Роль перевіряється на клієнті через useAuthStatus
+  }
+
+  // Перенаправлення авторизованих користувачів із public-only маршрутів
+  if (isPublicOnly && token) {
     const response = NextResponse.redirect(new URL("/", req.url));
     response.headers.set("x-middleware-cache", "no-cache");
     return response;
   }
 
-  // 3) Redirect authenticated users from public-only paths (like sign-in) to home
-  if (isPublicOnly && user) {
-    const response = NextResponse.redirect(new URL("/", req.url));
-    response.headers.set("x-middleware-cache", "no-cache");
-    return response;
-  }
-
-  // 4) Catch-all: if the URL is NOT public, NOT protected, and user is NOT authenticated, redirect to sign-in
-  if (!isPublicOnly && !isProtected && !user) {
+  // Catch-all: перенаправлення неавторизованих користувачів
+  if (!isPublicOnly && !isProtected && !token) {
     const redirectUrl = new URL("/sign-in", req.url);
     redirectUrl.searchParams.set("redirectURL", req.url);
     const response = NextResponse.redirect(redirectUrl);

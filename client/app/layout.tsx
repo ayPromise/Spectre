@@ -4,7 +4,6 @@ import { Inter, Saira } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
 import Providers from "@/components/providers";
-import { getServerUser } from "@/lib/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,18 +28,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userFromServer = await getServerUser();
-  console.log(
-    `RootLayout: userFromServer: ${
-      userFromServer ? JSON.stringify(userFromServer) : "null"
-    }`
-  );
   return (
     <html lang="uk">
       <body
         className={`antialiased ${inter.variable} flex flex-col h-screen ${saira.variable}`}
       >
-        <Providers user={userFromServer}>
+        <Providers user={null}>
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />
