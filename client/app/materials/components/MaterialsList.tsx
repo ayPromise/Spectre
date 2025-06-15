@@ -28,8 +28,6 @@ const MaterialsList: React.FC<MaterialsListProps> = ({
     new Set(materials.map((material) => material.course))
   ).sort();
 
-  console.log(materials, allCourses);
-
   const toggleCourse = (course: string) => {
     if (activeCourse === course) setActiveCourse("");
     else setActiveCourse(course);
