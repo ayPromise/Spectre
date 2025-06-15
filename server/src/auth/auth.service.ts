@@ -74,6 +74,13 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  async getUsersByIds(ids: string[]) {
+    return this.userModel
+      .find({ _id: { $in: ids } })
+      .select('_id firstName phoneNumber')
+      .exec();
+  }
+
   async getUserById(id: string) {
     return this.userModel.findById(id).select('-password').exec();
   }
