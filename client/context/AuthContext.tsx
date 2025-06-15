@@ -21,20 +21,17 @@ const AuthContext = createContext<{
 export function AuthProvider({
   children,
   user = null,
-  cookieHeader = "",
 }: {
   children: React.ReactNode;
   user: AuthStatus | null;
-  cookieHeader?: string;
 }) {
   console.log(
-    `AuthProvider initialized with cookieHeader: ${
-      cookieHeader || "none"
-    }, user: ${user ? JSON.stringify(user) : "null"}`
+    `AuthProvider initialized with user: ${
+      user ? JSON.stringify(user) : "null"
+    }`
   );
   const { data, isError, refetch } = useAuthStatus({
     enabled: !user,
-    cookieHeader,
   });
   const [isAuth, setIsAuth] = useState<boolean>(!!user);
   const [userData, setUserData] = useState<AuthStatus | null>(user);

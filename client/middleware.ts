@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { UserRole } from "@shared/types";
 import { getServerUser } from "./lib/auth";
-import { cookies } from "next/headers";
 
 const protectedPatterns = [
   /^\/achievements/,
@@ -23,11 +22,7 @@ const adminOnlyPatterns = [
 const publicOnlyPaths = ["/sign-in"];
 
 export async function middleware(req: NextRequest) {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.get("token")
-    ? `token=${cookieStore.get("token")?.value}`
-    : "";
-  const user = await getServerUser(cookieHeader);
+  const user = await getServerUser();
   const role = user?.role as string | undefined;
   const { pathname } = req.nextUrl;
 

@@ -4,7 +4,6 @@ import { Inter, Saira } from "next/font/google";
 import TopBar from "@/components/custom/NavigationTopBar";
 import SideBar from "@/components/custom/NavigationSideBar";
 import Providers from "@/components/providers";
-import { cookies } from "next/headers";
 import { getServerUser } from "@/lib/auth";
 
 const inter = Inter({
@@ -30,13 +29,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.get("token")
-    ? `token=${cookieStore.get("token")?.value}`
-    : "";
-  console.log(`RootLayout: Generated cookieHeader: ${cookieHeader}`);
-
-  const userFromServer = await getServerUser(cookieHeader);
+  const userFromServer = await getServerUser();
   console.log(
     `RootLayout: userFromServer: ${
       userFromServer ? JSON.stringify(userFromServer) : "null"
@@ -47,7 +40,7 @@ export default async function RootLayout({
       <body
         className={`antialiased ${inter.variable} flex flex-col h-screen ${saira.variable}`}
       >
-        <Providers user={userFromServer} cookieHeader={cookieHeader}>
+        <Providers user={userFromServer}>
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />
