@@ -19,7 +19,6 @@ type Props = {
 
 const CompleteButton = ({ type, videoId }: Props) => {
   const { userData, setUserData } = useAuth();
-  console.log(userData);
   const isFinished = isMaterialFinished(userData, type, videoId);
   const [isChecked, setIsChecked] = useState(isFinished);
   const mutation = useMutation({

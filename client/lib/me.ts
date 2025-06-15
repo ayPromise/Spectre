@@ -3,12 +3,10 @@ import server_endpoints from "@/app/api/server_endpoints";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const me = async () => {
-  console.log(`Fetching /auth/me with method: GET`);
   const res = await fetch(`${SERVER_URL}${server_endpoints.me}`, {
     method: "GET",
     credentials: "include",
   });
-  console.log(`Response from /auth/me: status ${res.status}, ok: ${res.ok}`);
   if (!res.ok) {
     const errorText = await res.text();
     console.error(`Error from /auth/me: ${errorText}`);

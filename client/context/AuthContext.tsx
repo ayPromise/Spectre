@@ -36,19 +36,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data, isError, refetch } = useAuthStatus({ enabled: true });
 
   useEffect(() => {
-    console.log(
-      `useAuthStatus result: data=${
-        data ? JSON.stringify(data) : "null"
-      }, isError=${isError}`
-    );
     if (data) {
       setIsAuth(true);
       setUserData(data);
-      console.log(`Updated userData: ${JSON.stringify(data)}`);
     } else if (isError) {
       setIsAuth(false);
       setUserData(null);
-      console.log(`Cleared userData due to error`);
     }
   }, [data, isError]);
 

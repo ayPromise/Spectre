@@ -11,7 +11,6 @@ import {
   Req,
   BadRequestException,
   UnauthorizedException,
-  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -39,14 +38,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() body: { email: string; password: string },
   ) {
-    const logger = new Logger('AuthController');
-    logger.log(`Received sign-in request with email: ${body.email}`);
-
     const token = await this.authService.signIn(body.email, body.password);
-
-    logger.log(
-      `Setting token cookie: ${token.access_token.substring(0, 20)}...`,
-    );
     res.cookie('token', token.access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -118,19 +110,11 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMe(@Req() req: Request) {
-    const logger = new Logger('AuthController'); // Створюємо логгер
-    logger.log(
-      `Received /auth/me request with method: ${req.method}, cookies: ${JSON.stringify(req.cookies)}`,
-    );
-
     const userId = req.user.userId;
     const user = await this.authService.getUserById(userId);
     if (!user) {
-      logger.error(`User not found for userId: ${userId}`);
       throw new UnauthorizedException();
     }
-
-    logger.log(`Returning user data for userId: ${userId}`);
     return user;
   }
 

@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -15,9 +14,6 @@ export class LibraryService {
     @InjectModel(File.name)
     private readonly libraryModel: Model<LibraryDocument>,
   ) {}
-
-  private readonly logger = new Logger(LibraryService.name);
-
   async findAll(): Promise<File[]> {
     return this.libraryModel.find();
   }
@@ -44,8 +40,6 @@ export class LibraryService {
   async delete(id: string, user: { userId: string; role: UserRole }) {
     const file = await this.libraryModel.findById(id);
     if (!file) throw new NotFoundException('Файл не знайдено.');
-
-    this.logger.log(file, user);
     if (
       file.userId.toString() !== user.userId &&
       user.role !== UserRole.Admin &&

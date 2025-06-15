@@ -15,7 +15,6 @@ const MaterialsPage = () => {
 
   useEffect(() => {
     if (!isAuth || !userData) {
-      console.log(`Redirecting to /sign-in from dashboard due to lack of auth`);
       router.push("/sign-in");
     }
   }, [isAuth, userData, router]);
@@ -23,8 +22,6 @@ const MaterialsPage = () => {
   if (!isAuth || !userData) {
     return null;
   }
-
-  console.log("we got access");
 
   if (isLoading || !materials.length) {
     return <Loader />;
