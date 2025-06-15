@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import OnlyPublicLayout from "../layouts/OnlyPublicLayout";
 
 export const metadata: Metadata = {
   title: "Сторінка авторизації | SPECTRE",
@@ -10,5 +11,5 @@ export default function SignInLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return <OnlyPublicLayout>{children}</OnlyPublicLayout>;
 }

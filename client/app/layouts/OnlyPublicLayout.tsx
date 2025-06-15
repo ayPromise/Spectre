@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Loader from "@/components/custom/Loader";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const OnlyPublicLayout = ({ children }: { children: React.ReactNode }) => {
   const { isAuth, userData } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuth || !userData) {
-      router.push("/sign-in");
+    if (isAuth || userData) {
+      router.push("/");
     }
   }, [isAuth, userData, router]);
 
@@ -22,4 +22,4 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-export default AuthLayout;
+export default OnlyPublicLayout;
