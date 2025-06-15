@@ -33,10 +33,12 @@ const SignInPage = () => {
     mutationFn: signIn,
     onSuccess: async (data) => {
       const { data: userData } = await refetchUser();
-      setIsAuth(true);
-      setUserData(userData);
-      showSuccess(data.message);
-      router.push(redirectURL);
+      if (userData) {
+        setIsAuth(true);
+        setUserData(userData);
+        showSuccess(data.message);
+        router.push(redirectURL);
+      }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {

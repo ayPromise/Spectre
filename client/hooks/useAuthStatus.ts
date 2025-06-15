@@ -1,4 +1,5 @@
 import me from "@/lib/me";
+import AuthStatus from "@/types/client/AuthStatus";
 import { useQuery } from "@tanstack/react-query";
 
 interface useAuthStatusProps {
@@ -7,7 +8,7 @@ interface useAuthStatusProps {
 }
 
 export function useAuthStatus({ enabled, cookieHeader }: useAuthStatusProps) {
-  return useQuery({
+  return useQuery<AuthStatus | null, Error>({
     queryKey: ["auth-status", cookieHeader],
     queryFn: () => me(cookieHeader),
     retry: false,

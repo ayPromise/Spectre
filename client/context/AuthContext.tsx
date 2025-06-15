@@ -2,19 +2,20 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthStatus } from "@/hooks/useAuthStatus";
 import AuthStatus from "@/types/client/AuthStatus";
+import { QueryObserverResult } from "@tanstack/react-query";
 
 const AuthContext = createContext<{
   isAuth: boolean;
   setIsAuth: (v: boolean) => void;
   userData: AuthStatus | null;
   setUserData: (v: AuthStatus) => void;
-  refetchUser: () => void;
+  refetchUser: () => Promise<QueryObserverResult<AuthStatus | null, Error>>;
 }>({
   isAuth: false,
   userData: null,
   setIsAuth: () => {},
   setUserData: () => {},
-  refetchUser: () => {},
+  refetchUser: () => Promise.reject(new Error("Not implemented")),
 });
 
 export function AuthProvider({
@@ -48,7 +49,7 @@ export function AuthProvider({
         setIsAuth,
         userData,
         setUserData,
-        refetchUser: () => refetch(),
+        refetchUser: refetch,
       }}
     >
       {children}
