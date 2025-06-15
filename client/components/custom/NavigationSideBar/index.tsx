@@ -28,7 +28,7 @@ const links = [
 const SideBar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const pathName = usePathname();
-  const { isAuth, setIsAuth } = useAuth();
+  const { isAuth, setIsAuth, setUserData } = useAuth();
   const { hasAdminAccess } = useAccess();
   const router = useRouter();
 
@@ -47,6 +47,7 @@ const SideBar: React.FC = () => {
       await signOut();
       localStorage.removeItem("auth");
       setIsAuth(false);
+      setUserData(null);
       router.push("/");
       showSuccess("Ви успішно вийшли зі свого профілю");
     } catch (error: any) {
