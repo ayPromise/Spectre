@@ -36,7 +36,7 @@ export function AuthProvider({
   useEffect(() => {
     if (data) {
       setIsAuth(true);
-      setUserData(data.user);
+      setUserData(data);
     }
     if (isError) setIsAuth(false);
   }, [data, isError]);

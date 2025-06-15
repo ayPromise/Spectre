@@ -26,16 +26,17 @@ const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 const SignInPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { refetchUser } = useAuth();
+  const { refetchUser, setIsAuth, setUserData } = useAuth();
   const redirectURL = searchParams.get("redirectURL") || "/";
 
   const { mutate, isPending, isError } = useMutation({
     mutationFn: signIn,
-    onSuccess: (data) => {
-      refetchUser();
+    onSuccess: async (data) => {
+      const { data: userData } = await refetchUser();
+      setIsAuth(true);
+      setUserData(userData);
       showSuccess(data.message);
       router.push(redirectURL);
-      window.location.reload();
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
