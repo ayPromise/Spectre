@@ -1,14 +1,19 @@
 "use client";
 
 import React from "react";
-import ScheduleTable from "./components/ScheduleTable/ScheduleTable";
-import { ScheduleProvider } from "@/context/ScheduleContext";
+import ScheduleHeader from "./components/ScheduleTable/ScheduleHeader";
+import TableHead from "./components/ScheduleTable/TableHead";
+import TableBody from "./components/ScheduleTable/TableBody";
 
 const SchedulePage: React.FC = () => {
   return (
-    <ScheduleProvider>
-      <ScheduleTable />
-    </ScheduleProvider>
+    <div>
+      <ScheduleHeader />
+      <table className="w-full border-collapse text-sm">
+        <TableHead />
+        <TableBody />
+      </table>
+    </div>
   );
 };
 

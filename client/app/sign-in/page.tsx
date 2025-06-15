@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import FormInput from "@/components/custom/FormInput";
+import { Mail, User, Lock } from "lucide-react";
 
 const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_APPLY_ID;
@@ -102,7 +103,7 @@ const SignInContent = () => {
 
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <div className="flex flex-col gap-6 w-[500px]">
+      <div className="relative flex flex-col gap-6 w-[500px]">
         <Card>
           <CardHeader>
             <CardTitle>Увійдіть в свій акаунт</CardTitle>

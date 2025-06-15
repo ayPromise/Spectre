@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MaterialsProvider } from "@/context/MaterialsContext";
+import { ScheduleProvider } from "@/context/ScheduleContext";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [hasMounted, setHasMounted] = useState(false);
@@ -18,14 +19,16 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
     <QueryProvider>
       {hasMounted && (
         <>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar
-          />
-          <AuthProvider>
-            <MaterialsProvider>{children}</MaterialsProvider>
-          </AuthProvider>
+          <ScheduleProvider>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar
+            />
+            <AuthProvider>
+              <MaterialsProvider>{children}</MaterialsProvider>
+            </AuthProvider>
+          </ScheduleProvider>
         </>
       )}
     </QueryProvider>
