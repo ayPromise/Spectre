@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 
 const protectedPatterns = [
   /^\/achievements/,
+  /^\/library/,
   /^\/schedule/,
   /^\/archive/,
   /^\/materials(\/[^\/]+)?$/,
@@ -40,7 +41,9 @@ export async function middleware(req: NextRequest) {
   if ((isProtected || isAdminOnly) && !user) {
     const redirectUrl = new URL("/sign-in", req.url);
     redirectUrl.searchParams.set("redirectURL", req.url);
-    return NextResponse.redirect(redirectUrl);
+    const response = NextResponse.redirect(redirectUrl);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
   // 2) Redirect authenticated users without admin role if route is admin only
@@ -49,23 +52,30 @@ export async function middleware(req: NextRequest) {
     user &&
     ![UserRole.Admin, UserRole.Instructor].includes(role as UserRole)
   ) {
-    return NextResponse.redirect(new URL("/", req.url));
+    const response = NextResponse.redirect(new URL("/", req.url));
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
   // 3) Redirect authenticated users from public-only paths (like sign-in) to home
   if (isPublicOnly && user) {
-    return NextResponse.redirect(new URL("/", req.url));
+    const response = NextResponse.redirect(new URL("/", req.url));
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
   // 4) Catch-all: if the URL is NOT public, NOT protected, and user is NOT authenticated, redirect to sign-in
   if (!isPublicOnly && !isProtected && !user) {
     const redirectUrl = new URL("/sign-in", req.url);
     redirectUrl.searchParams.set("redirectURL", req.url);
-    return NextResponse.redirect(redirectUrl);
+    const response = NextResponse.redirect(redirectUrl);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
-  // Otherwise, allow request
-  return NextResponse.next();
+  const response = NextResponse.next();
+  response.headers.set("x-middleware-cache", "no-cache");
+  return response;
 }
 
 export const config = {
@@ -75,6 +85,7 @@ export const config = {
     "/materials/:path*",
     "/archive/:path*",
     "/schedule/:path*",
+    "/library/:path*",
     "/sign-in",
   ],
 };
