@@ -1,7 +1,7 @@
 import getAllSchedules from "@/app/schedule/utils/getAllSchedules";
 import { Schedule } from "@shared/types";
-import { useQuery } from "@tanstack/react-query";
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 interface ScheduleDate {
   month: number;
