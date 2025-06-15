@@ -34,9 +34,14 @@ export default async function RootLayout({
   const cookieHeader = cookieStore.get("token")
     ? `token=${cookieStore.get("token")?.value}`
     : "";
+  console.log(`RootLayout: Generated cookieHeader: ${cookieHeader}`);
 
   const userFromServer = await getServerUser(cookieHeader);
-
+  console.log(
+    `RootLayout: userFromServer: ${
+      userFromServer ? JSON.stringify(userFromServer) : "null"
+    }`
+  );
   return (
     <html lang="uk">
       <body

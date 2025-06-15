@@ -27,6 +27,11 @@ export function AuthProvider({
   user: AuthStatus | null;
   cookieHeader?: string;
 }) {
+  console.log(
+    `AuthProvider initialized with cookieHeader: ${
+      cookieHeader || "none"
+    }, user: ${user ? JSON.stringify(user) : "null"}`
+  );
   const { data, isError, refetch } = useAuthStatus({
     enabled: !user,
     cookieHeader,
@@ -35,6 +40,11 @@ export function AuthProvider({
   const [userData, setUserData] = useState<AuthStatus | null>(user);
 
   useEffect(() => {
+    console.log(
+      `useAuthStatus result: data=${
+        data ? JSON.stringify(data) : "null"
+      }, isError=${isError}`
+    );
     if (data) {
       setIsAuth(true);
       setUserData(data);
