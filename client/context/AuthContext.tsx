@@ -1,40 +1,39 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
-import { useAuthStatus } from "@/hooks/useAuthStatus";
+
+import React, { createContext, useState, useEffect, useContext } from "react";
 import AuthStatus from "@/types/client/AuthStatus";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 import { QueryObserverResult } from "@tanstack/react-query";
 
-const AuthContext = createContext<{
+interface AuthContextType {
   isAuth: boolean;
-  setIsAuth: (v: boolean) => void;
+  setIsAuth: React.Dispatch<React.SetStateAction<boolean>>;
   userData: AuthStatus | null;
-  setUserData: (v: AuthStatus) => void;
+  setUserData: React.Dispatch<React.SetStateAction<AuthStatus | null>>;
   refetchUser: () => Promise<QueryObserverResult<AuthStatus | null, Error>>;
-}>({
+}
+
+export const AuthContext = createContext<AuthContextType>({
   isAuth: false,
-  userData: null,
   setIsAuth: () => {},
+  userData: null,
   setUserData: () => {},
-  refetchUser: () => Promise.reject(new Error("Not implemented")),
+  refetchUser: async () =>
+    ({
+      data: null,
+      status: "idle",
+      isError: false,
+      isLoading: false,
+      isSuccess: false,
+      error: null,
+    } as unknown as QueryObserverResult<AuthStatus | null, Error>),
 });
 
-export function AuthProvider({
-  children,
-  user = null,
-}: {
-  children: React.ReactNode;
-  user: AuthStatus | null;
-}) {
-  console.log(
-    `AuthProvider initialized with user: ${
-      user ? JSON.stringify(user) : "null"
-    }`
-  );
-  const { data, isError, refetch } = useAuthStatus({
-    enabled: !user,
-  });
-  const [isAuth, setIsAuth] = useState<boolean>(!!user);
-  const [userData, setUserData] = useState<AuthStatus | null>(user);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [userData, setUserData] = useState<AuthStatus | null>(null);
+  const [isAuth, setIsAuth] = useState<boolean>(!!userData);
+
+  const { data, isError, refetch } = useAuthStatus({ enabled: true });
 
   useEffect(() => {
     console.log(
@@ -45,8 +44,12 @@ export function AuthProvider({
     if (data) {
       setIsAuth(true);
       setUserData(data);
+      console.log(`Updated userData: ${JSON.stringify(data)}`);
+    } else if (isError) {
+      setIsAuth(false);
+      setUserData(null);
+      console.log(`Cleared userData due to error`);
     }
-    if (isError) setIsAuth(false);
   }, [data, isError]);
 
   return (
@@ -64,4 +67,10 @@ export function AuthProvider({
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

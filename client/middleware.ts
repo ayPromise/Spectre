@@ -19,9 +19,10 @@ const adminOnlyPatterns = [
 const publicOnlyPaths = ["/sign-in"];
 
 export async function middleware(req: NextRequest) {
-  // Перевіряємо наявність cookie token
   const token = req.cookies.get("token")?.value;
-  console.log(`Middleware: token: ${token || "none"}`);
+  console.log(
+    `Middleware: pathname: ${req.nextUrl.pathname}, token: ${token || "none"}`
+  );
 
   const { pathname } = req.nextUrl;
   const isProtected = protectedPatterns.some((regex) => regex.test(pathname));
@@ -30,34 +31,19 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith(path)
   );
 
-  // Перенаправлення для захищених маршрутів без токена
-  if ((isProtected || isAdminOnly) && !token) {
-    const redirectUrl = new URL("/sign-in", req.url);
-    redirectUrl.searchParams.set("redirectURL", req.url);
-    const response = NextResponse.redirect(redirectUrl);
-    response.headers.set("x-middleware-cache", "no-cache");
-    return response;
-  }
-
-  // Для adminOnly маршрутів покладаємося на клієнтську перевірку
-  if (isAdminOnly && token) {
-    // Роль перевіряється на клієнті через useAuthStatus
-  }
-
   // Перенаправлення авторизованих користувачів із public-only маршрутів
   if (isPublicOnly && token) {
+    console.log(
+      `Middleware: Redirecting authenticated user from ${pathname} to /`
+    );
     const response = NextResponse.redirect(new URL("/", req.url));
     response.headers.set("x-middleware-cache", "no-cache");
     return response;
   }
 
-  // Catch-all: перенаправлення неавторизованих користувачів
-  if (!isPublicOnly && !isProtected && !token) {
-    const redirectUrl = new URL("/sign-in", req.url);
-    redirectUrl.searchParams.set("redirectURL", req.url);
-    const response = NextResponse.redirect(redirectUrl);
-    response.headers.set("x-middleware-cache", "no-cache");
-    return response;
+  // Пропускаємо перевірку для захищених маршрутів, покладаємося на клієнт
+  if (isProtected || isAdminOnly) {
+    console.log(`Middleware: Allowing access to protected route: ${pathname}`);
   }
 
   const response = NextResponse.next();

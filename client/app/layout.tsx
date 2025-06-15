@@ -33,7 +33,7 @@ export default async function RootLayout({
       <body
         className={`antialiased ${inter.variable} flex flex-col h-screen ${saira.variable}`}
       >
-        <Providers user={null}>
+        <Providers>
           <TopBar />
           <main className="flex grow justify-center">
             <SideBar />

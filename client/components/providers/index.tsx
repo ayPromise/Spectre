@@ -5,16 +5,9 @@ import QueryProvider from "./QueryProvider";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AuthStatus from "@/types/client/AuthStatus";
 import { MaterialsProvider } from "@/context/MaterialsContext";
 
-const Providers = ({
-  children,
-  user,
-}: {
-  children: React.ReactNode;
-  user: AuthStatus | null;
-}) => {
+const Providers = ({ children }: { children: React.ReactNode }) => {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -23,7 +16,7 @@ const Providers = ({
 
   return (
     <QueryProvider>
-      <AuthProvider user={user}>
+      <AuthProvider>
         <MaterialsProvider>{children}</MaterialsProvider>
       </AuthProvider>
       {hasMounted && (

@@ -1,14 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useMaterials } from "@/context/MaterialsContext";
 import MaterialsList from "./components/MaterialsList";
 import NotFoundMessage from "@/components/custom/NotFoundMessage";
 import ErrorMessage from "@/components/custom/ErrorMessage";
 import Loader from "@/components/custom/Loader";
-
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 const MaterialsPage = () => {
   const { materials, isLoading, isError, error } = useMaterials();
+  const { isAuth, userData } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuth || !userData) {
+      console.log(`Redirecting to /sign-in from dashboard due to lack of auth`);
+      router.push("/sign-in");
+    }
+  }, [isAuth, userData, router]);
+
+  if (!isAuth || !userData) {
+    return null;
+  }
+
+  console.log("we got access");
 
   if (isLoading || !materials.length) {
     return <Loader />;

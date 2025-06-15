@@ -19,7 +19,6 @@ const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_APPLY_ID;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-// Компонент для обробки useSearchParams
 const SignInContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
