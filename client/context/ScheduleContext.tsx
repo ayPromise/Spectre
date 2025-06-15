@@ -1,11 +1,7 @@
+import getAllSchedules from "@/app/schedule/utils/getAllSchedules";
 import { Schedule } from "@shared/types";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface ScheduleDate {
   month: number;
@@ -21,8 +17,6 @@ interface ScheduleContextValue {
   loading: boolean;
 }
 
-const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-
 const ScheduleContext = createContext<ScheduleContextValue | undefined>(
   undefined
 );
@@ -33,29 +27,16 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
     year: new Date().getFullYear(),
   });
 
-  const [schedules, setSchedules] = useState<Schedule[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchSchedules = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${SERVER_URL}/schedule`, {
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Failed to fetch schedules");
-      const data = await response.json();
-      setSchedules(data);
-    } catch (error) {
-      console.error(error);
-      setSchedules([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSchedules();
-  }, []);
+  const {
+    data: schedules = [],
+    isLoading: loading,
+    refetch,
+  } = useQuery<Schedule[]>({
+    queryKey: ["schedules"],
+    queryFn: getAllSchedules,
+    staleTime: 1000 * 60 * 5,
+    enabled: true,
+  });
 
   const setPreviousMonth = () => {
     setScheduleDate((prev) =>
@@ -73,10 +54,6 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const refetchSchedules = async () => {
-    await fetchSchedules();
-  };
-
   return (
     <ScheduleContext.Provider
       value={{
@@ -84,7 +61,7 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
         schedules,
         setPreviousMonth,
         setNextMonth,
-        refetchSchedules,
+        refetchSchedules: refetch,
         loading,
       }}
     >
