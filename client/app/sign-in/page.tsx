@@ -1,19 +1,15 @@
 "use client";
 
-// HOOKS
 import React from "react";
 import { useFormik } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
-
-// UTILS
+import { Suspense } from "react";
 import { showError, showSuccess } from "@/utils/toast";
 import * as Yup from "yup";
 import signIn from "./utils/signIn";
 import emailjs from "@emailjs/browser";
-
-// COMPONENTS
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -23,7 +19,8 @@ const SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_APPLY_ID;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-const SignInPage = () => {
+// Компонент для обробки useSearchParams
+const SignInContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { refetchUser, setIsAuth, setUserData } = useAuth();
@@ -40,8 +37,7 @@ const SignInPage = () => {
         router.push(redirectURL);
       }
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (error: any) => {
+    onError: (error: Error) => {
       let errorMessage = error.message;
       if (errorMessage === "Invalid credentials") {
         errorMessage = "Введено невірні дані";
@@ -73,7 +69,6 @@ const SignInPage = () => {
 
   const handleChange = (e: React.ChangeEvent) => {
     formik.handleChange(e);
-
     if (formik.errors.email) {
       formik.setFieldError("email", "");
     }
@@ -87,7 +82,6 @@ const SignInPage = () => {
       if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
         return;
       }
-
       await emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
@@ -177,6 +171,14 @@ const SignInPage = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+const SignInPage = () => {
+  return (
+    <Suspense fallback={<div>Завантаження...</div>}>
+      <SignInContent />
+    </Suspense>
   );
 };
 

@@ -3,7 +3,6 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { Button } from "@/components/ui/button";
 import FormInput from "@/components/custom/FormInput";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { showSuccess, showError } from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,6 +20,7 @@ import { UserRole } from "@shared/types";
 import generatePassword from "./utils/generatePassword";
 import createUser from "./utils/createUser";
 import { CreateUserPayload } from "@/types/UserPayloads";
+import { Suspense } from "react";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Невірний email").required("Обов'язкове поле"),
@@ -36,7 +35,8 @@ const validationSchema = Yup.object({
   role: Yup.mixed<UserRole>().oneOf(Object.values(UserRole), "Невірна роль"),
 });
 
-const UserCreationForm = () => {
+// Компонент із useSearchParams
+const UserCreationContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialEmail = searchParams.get("email") || "";
@@ -99,7 +99,6 @@ const UserCreationForm = () => {
         required
         disabled={(isSubmitting || isPending) && !isError}
       />
-
       <FormInput
         id="firstName"
         label="Ім’я"
@@ -113,7 +112,6 @@ const UserCreationForm = () => {
         required
         disabled={(isSubmitting || isPending) && !isError}
       />
-
       <FormInput
         id="lastName"
         label="Прізвище"
@@ -127,7 +125,6 @@ const UserCreationForm = () => {
         required
         disabled={(isSubmitting || isPending) && !isError}
       />
-
       <FormInput
         id="phoneNumber"
         label="Номер телефону"
@@ -143,7 +140,6 @@ const UserCreationForm = () => {
         required
         disabled={(isSubmitting || isPending) && !isError}
       />
-
       <div className="flex items-end gap-2">
         <div className="flex-grow">
           <FormInput
@@ -169,7 +165,6 @@ const UserCreationForm = () => {
           Згенерувати
         </Button>
       </div>
-
       <div>
         <Label htmlFor="role" className="block mb-2">
           Роль
@@ -193,7 +188,6 @@ const UserCreationForm = () => {
           <p className="text-red-600 text-sm mt-1">{errors.role}</p>
         )}
       </div>
-
       <Button
         type="submit"
         disabled={(isSubmitting || isPending) && !isError}
@@ -202,6 +196,14 @@ const UserCreationForm = () => {
         Створити користувача
       </Button>
     </form>
+  );
+};
+
+const UserCreationForm = () => {
+  return (
+    <Suspense fallback={<div>Завантаження...</div>}>
+      <UserCreationContent />
+    </Suspense>
   );
 };
 
