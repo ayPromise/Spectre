@@ -23,8 +23,10 @@ import ScheduleNotification from "./components/ScheduleNotification";
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
-const socket = io(SOCKET_URL);
-
+const socket = io(SOCKET_URL, {
+  transports: ["websocket"],
+  withCredentials: true,
+});
 const TopBar: React.FC = () => {
   const { isAuth, userData } = useAuth();
   const pathname = usePathname();

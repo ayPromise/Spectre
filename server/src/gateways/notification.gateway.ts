@@ -3,7 +3,7 @@ import { MaterialUnion } from '@shared/types';
 import { Server } from 'socket.io';
 import { Schedule } from 'src/schedule/schema/schedule.schema';
 
-@WebSocketGateway(3333, {
+@WebSocketGateway({
   cors: {
     origin: '*',
   },
