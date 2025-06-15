@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { MaterialType } from "@shared/types/Enums";
+import AuthLayout from "@/app/layouts/AuthLayout";
 
 type Props = {
   children: React.ReactNode;
@@ -33,5 +34,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function MaterialsByKindLayout({ children }: Props) {
-  return <>{children}</>;
+  return <AuthLayout>{children}</AuthLayout>;
 }
