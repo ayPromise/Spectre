@@ -27,12 +27,12 @@ const ScheduleNotification: React.FC<ScheduleNotificationProps> = ({
         isRead ? "bg-white text-muted-foreground" : "bg-indigo-50"
       )}
     >
-      <div className="flex justify-between items-center w-full rounded-md max-w-[270px]">
+      <div className="flex justify-between items-center w-full rounded-md">
         <span>
           <div>
             {action === "edit" ? "Оновлено запис" : "Створено новий запис"}
           </div>
-          <div className="italic text-black truncate">
+          <div className="italic text-black truncate max-w-[200px]">
             {new Date(date).toLocaleDateString()}: {title}
           </div>
         </span>
