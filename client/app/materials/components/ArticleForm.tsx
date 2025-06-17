@@ -62,7 +62,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
   const router = useRouter();
 
   const [questions, setQuestions] = useState<Question[]>(
-    initialData?.test.questions ?? defaultTest
+    initialData?.test?.questions ?? defaultTest
   );
   const handleQuestionsChange = (newQuestions: Question[]) => {
     setQuestions(newQuestions);
@@ -117,7 +117,7 @@ const ArticleForm: React.FC<ArticleFormProps> = ({
                     <h2>Джерела та додаткові матеріали:</h2>
                     <p></p>
         `,
-      course: initialData?.course ?? selectedCourse ?? "",
+      course: selectedCourse ?? "",
     },
     enableReinitialize: true,
     validationSchema,

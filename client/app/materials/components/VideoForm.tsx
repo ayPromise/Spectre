@@ -70,7 +70,7 @@ const VideoForm: React.FC<VideoFormProps> = ({
       title: initialData?.title ?? "",
       description: initialData?.description ?? "",
       videoURL: initialData?.videoURL ?? "",
-      course: initialData?.course ?? selectedCourse ?? "",
+      course: selectedCourse ?? "",
     },
     enableReinitialize: true,
     validationSchema,

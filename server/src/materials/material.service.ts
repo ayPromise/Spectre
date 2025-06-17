@@ -53,39 +53,47 @@ export class MaterialService {
   }
 
   async update(id: string, dto: Partial<CreateMaterialDto>): Promise<Material> {
-    const updatedMaterial = await this.materialModel.findById(id).exec();
+    const existingMaterial = await this.materialModel.findById(id).exec();
 
-    if (!updatedMaterial) {
+    if (!existingMaterial) {
       throw new NotFoundException(`Матеріал з id ${id} не знайдено.`);
     }
+    const material = existingMaterial.toObject() as Material;
 
-    const dtoAny = dto as any;
-    const updatedMaterialAny = updatedMaterial as any;
+    if (dto.kind && dto.kind !== material.kind) {
+      await this.materialModel.findByIdAndDelete(id).exec();
 
-    if ('title' in dtoAny) updatedMaterialAny.title = dtoAny.title;
-    if ('content' in dtoAny) updatedMaterialAny.content = dtoAny.content;
-    if ('description' in dtoAny)
-      updatedMaterialAny.description = dtoAny.description;
-    if ('videoURL' in dtoAny) updatedMaterialAny.videoURL = dtoAny.videoURL;
-    if ('course' in dtoAny) updatedMaterialAny.course = dtoAny.course;
-    if ('kind' in dtoAny) updatedMaterialAny.kind = dtoAny.kind;
-    if ('time' in dtoAny) updatedMaterialAny.time = dtoAny.time;
+      const created = await this.materialModel.discriminators[dto.kind].create({
+        ...dto,
+        _id: id, // зберігаємо старий id, якщо потрібно
+      });
 
-    if (
-      'test' in dtoAny &&
-      (updatedMaterialAny.kind === MaterialType.Article ||
-        updatedMaterialAny.kind === MaterialType.Lecture)
-    ) {
-      updatedMaterialAny.test = dtoAny.test;
+      this.notificationGateway.sendNewNotification(created, 'material', 'edit');
+
+      return created;
     }
 
-    await updatedMaterial.save();
+    // Якщо kind не змінюється — оновлюємо як завжди
+    const updatedAny = existingMaterial as any;
+    const dtoAny = dto as any;
+
+    if ('title' in dtoAny) updatedAny.title = dtoAny.title;
+    if ('content' in dtoAny) updatedAny.content = dtoAny.content;
+    if ('description' in dtoAny) updatedAny.description = dtoAny.description;
+    if ('videoURL' in dtoAny) updatedAny.videoURL = dtoAny.videoURL;
+    if ('course' in dtoAny) updatedAny.course = dtoAny.course;
+    if ('time' in dtoAny) updatedAny.time = dtoAny.time;
+    if ('test' in dtoAny) updatedAny.test = dtoAny.test;
+
+    await existingMaterial.save();
+
     this.notificationGateway.sendNewNotification(
-      updatedMaterialAny,
+      updatedAny,
       'material',
       'edit',
     );
-    return updatedMaterial;
+
+    return updatedAny;
   }
 
   async delete(id: string): Promise<{ message: string }> {

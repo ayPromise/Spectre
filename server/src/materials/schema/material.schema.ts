@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { MaterialType } from '@shared/types';
 import { HydratedDocument, Types } from 'mongoose';
 
 export type MaterialDocument = HydratedDocument<Material>;
@@ -38,6 +39,8 @@ export class Test {
 
 @Schema({ discriminatorKey: 'kind', timestamps: true })
 export class Material {
+  kind: MaterialType;
+
   @Prop({ required: true })
   title: string;
 

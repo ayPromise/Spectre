@@ -19,7 +19,6 @@ import { UploadCloud } from "lucide-react";
 import { Lecture } from "@shared/types/Lecture";
 import saveMaterial from "../utils/saveMaterial";
 import FormTextarea from "@/components/custom/FormTextarea";
-import server_endpoints from "@/app/api/server_endpoints";
 import uploadLecture from "../utils/uploadLecture";
 
 const defaultTest = [
@@ -67,7 +66,7 @@ const LectureForm: React.FC<LectureFormProps> = ({
 
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>(
-    initialData?.test.questions ?? defaultTest
+    initialData?.test?.questions ?? defaultTest
   );
   const [isValid, setIsValid] = useState(false);
 
@@ -103,18 +102,23 @@ const LectureForm: React.FC<LectureFormProps> = ({
     },
   });
 
+  console.log(
+    initialData?.videoURL && !initialData?.videoURL.startsWith("http")
+  );
+
   const formik = useFormik({
     initialValues: {
       title: initialData?.title ?? "",
       description: initialData?.description ?? "",
-      video: initialData?.videoURL
-        ? ({
-            name: initialData.videoURL,
-            type: "video/mp4",
-            mocked: true,
-          } as any)
-        : null,
-      course: initialData?.course ?? selectedCourse ?? "",
+      video:
+        initialData?.videoURL && !initialData.videoURL.startsWith("http")
+          ? ({
+              name: initialData.videoURL,
+              type: "video/mp4",
+              mocked: true,
+            } as any)
+          : null,
+      course: selectedCourse ?? "",
       context: { initialData },
     },
     enableReinitialize: true,
@@ -140,7 +144,10 @@ const LectureForm: React.FC<LectureFormProps> = ({
         formData.append("video", video as File);
         const isNewVideoFile = video && !(video as any).mocked;
 
-        let uploadedVideoUrl = initialData?.videoURL || "";
+        let uploadedVideoUrl =
+          (initialData?.videoURL &&
+            !initialData?.videoURL.startsWith("http")) ||
+          "";
 
         if (isNewVideoFile) {
           try {
@@ -218,7 +225,8 @@ const LectureForm: React.FC<LectureFormProps> = ({
           >
             <span>
               {values.video?.name ||
-                initialData?.videoURL ||
+                (initialData?.videoURL &&
+                  !initialData?.videoURL.startsWith("http")) ||
                 "Оберіть відео файл"}
             </span>
             <UploadCloud className="w-5 h-5 ml-2" />
