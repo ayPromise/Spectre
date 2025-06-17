@@ -1,7 +1,14 @@
 import getAllSchedules from "@/app/schedule/utils/getAllSchedules";
 import { Schedule } from "@shared/types";
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "./AuthContext";
 
 interface ScheduleDate {
   month: number;
@@ -26,6 +33,7 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
     month: new Date().getMonth(),
     year: new Date().getFullYear(),
   });
+  const { isAuth } = useAuth();
 
   const {
     data: schedules = [],
@@ -53,6 +61,12 @@ export const ScheduleProvider = ({ children }: { children: ReactNode }) => {
         : { ...prev, month: prev.month + 1 }
     );
   };
+
+  useEffect(() => {
+    if (isAuth) {
+      refetch();
+    }
+  }, [isAuth, refetch]);
 
   return (
     <ScheduleContext.Provider
