@@ -23,7 +23,7 @@ const AchievementsPage: React.FC = () => {
   const { materials } = useMaterials();
   const { hasAdminAccess, hasInstructorAccess } = useAccess();
   const [isOpenCreationForm, setIsOpenCreationForm] = useState(false);
-  const { userData, setUserData } = useAuth();
+  const { refetchUser, userData, setUserData } = useAuth();
 
   const {
     data: achievements,
@@ -42,9 +42,10 @@ const AchievementsPage: React.FC = () => {
       (async () => {
         await tryAssignAchievements(userData, setUserData);
         await refetchAchievements();
+        refetchUser();
       })();
     }
-  }, [userData, achievements, setUserData, refetchAchievements]);
+  }, [userData, achievements, setUserData, refetchAchievements, refetchUser]);
 
   useEffect(() => {
     localStorage.removeItem("hasNewAchievements");

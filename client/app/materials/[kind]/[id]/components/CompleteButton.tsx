@@ -18,7 +18,7 @@ type Props = {
 };
 
 const CompleteButton = ({ type, videoId }: Props) => {
-  const { userData, setUserData } = useAuth();
+  const { userData, setUserData, refetchUser } = useAuth();
   const isFinished = isMaterialFinished(userData, type, videoId);
   const [isChecked, setIsChecked] = useState(isFinished);
   const mutation = useMutation({
@@ -27,9 +27,11 @@ const CompleteButton = ({ type, videoId }: Props) => {
       setIsChecked(true);
       const token = data.access_token;
       const { user } = await updateToken(token);
-      setUserData(user);
-      await tryAssignAchievements(user, setUserData);
+      if (user.sub)
+        await tryAssignAchievements({ ...user, _id: user.sub }, setUserData);
+      else await tryAssignAchievements(user, setUserData);
       showSuccess("Гарна робота!");
+      refetchUser();
     },
     onError: (error) => {
       showError(error.message);

@@ -32,7 +32,7 @@ const TestView: React.FC<Props> = ({ material, test }) => {
   const [showResult, setShowResult] = useState(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [didMount, setDidMount] = useState(false);
-  const { userData, setUserData } = useAuth();
+  const { userData, setUserData, refetchUser } = useAuth();
 
   const currentQuestion = test.questions[currentQuestionIndex];
   const isMultiple =
@@ -66,9 +66,11 @@ const TestView: React.FC<Props> = ({ material, test }) => {
     onSuccess: async (data) => {
       const token = data.access_token;
       const { user } = await updateToken(token);
-      setUserData(user);
-      await tryAssignAchievements(user, setUserData);
+      if (user.sub)
+        await tryAssignAchievements({ ...user, _id: user.sub }, setUserData);
+      else await tryAssignAchievements(user, setUserData);
       showSuccess("Гарна робота!");
+      refetchUser();
     },
     onError: (error) => {
       showError(error.message);
